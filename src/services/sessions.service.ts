@@ -1,0 +1,100 @@
+import { api } from "./api";
+import type {
+  SessionStatus,
+  WorkoutSession,
+  WorkoutSessionDetail,
+  ExerciseSet,
+  MissedWorkout,
+} from "../types/api.types";
+
+export interface ListSessionsParams {
+  workout_id?: string;
+  from?: string;
+  to?: string;
+}
+
+export interface CreateSessionInput {
+  workout_id: string;
+  date: string;
+  status: SessionStatus;
+}
+
+export interface AddSetInput {
+  exercise_id: string;
+  set_number: number;
+  reps?: number | null;
+  weight?: number | null;
+  duration?: number | null;
+}
+
+export interface UpdateSetInput {
+  reps?: number | null;
+  weight?: number | null;
+  duration?: number | null;
+}
+
+export const sessionsService = {
+  async create(input: CreateSessionInput): Promise<WorkoutSession> {
+    const { data } = await api.post<WorkoutSession>("/workout-sessions", input);
+    return data;
+  },
+
+  async list(params: ListSessionsParams = {}): Promise<WorkoutSession[]> {
+    const { data } = await api.get<WorkoutSession[]>("/workout-sessions", {
+      params,
+    });
+    return data;
+  },
+
+  async missed(params: { from?: string; to?: string } = {}): Promise<
+    MissedWorkout[]
+  > {
+    const { data } = await api.get<MissedWorkout[]>(
+      "/workout-sessions/missed",
+      { params }
+    );
+    return data;
+  },
+
+  async get(id: string): Promise<WorkoutSessionDetail> {
+    const { data } = await api.get<WorkoutSessionDetail>(
+      `/workout-sessions/${id}`
+    );
+    return data;
+  },
+
+  async updateStatus(
+    id: string,
+    status: SessionStatus
+  ): Promise<WorkoutSession> {
+    const { data } = await api.put<WorkoutSession>(
+      `/workout-sessions/${id}`,
+      { status }
+    );
+    return data;
+  },
+
+  async addSet(sessionId: string, input: AddSetInput): Promise<ExerciseSet> {
+    const { data } = await api.post<ExerciseSet>(
+      `/workout-sessions/${sessionId}/sets`,
+      input
+    );
+    return data;
+  },
+
+  async updateSet(
+    sessionId: string,
+    setId: string,
+    input: UpdateSetInput
+  ): Promise<ExerciseSet> {
+    const { data } = await api.put<ExerciseSet>(
+      `/workout-sessions/${sessionId}/sets/${setId}`,
+      input
+    );
+    return data;
+  },
+
+  async deleteSet(sessionId: string, setId: string): Promise<void> {
+    await api.delete(`/workout-sessions/${sessionId}/sets/${setId}`);
+  },
+};
