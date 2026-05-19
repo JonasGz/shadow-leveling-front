@@ -8,6 +8,7 @@ import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
+import { useAuthStore } from "../../src/stores/auth.store";
 
 const schema = z
   .object({
@@ -25,6 +26,7 @@ type FormData = z.infer<typeof schema>;
 export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const setUser = useAuthStore((s) => s.setUser);
 
   const {
     control,
@@ -36,7 +38,9 @@ export default function RegisterScreen() {
     setLoading(true);
     try {
       await authService.register(data.email, data.password);
-      router.push({ pathname: "/(auth)/register-verify", params: { email: data.email } });
+      const user = await authService.me();
+      setUser(user);
+      router.replace("/(tabs)/");
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 409) showToast("E-mail já cadastrado.", "warning");
@@ -69,6 +73,7 @@ export default function RegisterScreen() {
             name="email"
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
+                testID="register-email"
                 label="E-mail"
                 value={value}
                 onChangeText={onChange}
@@ -87,6 +92,7 @@ export default function RegisterScreen() {
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
+                testID="register-password"
                 label="Senha"
                 value={value}
                 onChangeText={onChange}
@@ -104,6 +110,7 @@ export default function RegisterScreen() {
             name="confirm"
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
+                testID="register-confirm"
                 label="Confirmar senha"
                 value={value}
                 onChangeText={onChange}
@@ -117,6 +124,7 @@ export default function RegisterScreen() {
           />
 
           <Button
+            testID="register-submit"
             label="Criar conta"
             onPress={handleSubmit(onSubmit)}
             loading={loading}

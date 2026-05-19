@@ -1,0 +1,39 @@
+# Flow: Criar treino e verificar na lista
+#
+# Rode via wrapper (abre o projeto no Expo Go antes):
+#   .maestro/run.sh 02_create_workout.yaml
+
+appId: host.exp.Exponent
+---
+- runFlow: subflows/login.yaml
+
+# Vai para aba Treinos
+- tapOn:
+    text: "Treinos"
+
+# Botão de criar novo treino
+- tapOn:
+    text: "+"
+
+- assertVisible: "Novo treino"
+
+# Preenche nome
+- tapOn:
+    text: "Nome do treino"
+- inputText: ${WORKOUT_NAME}
+
+# Preenche descrição
+- tapOn:
+    text: "Descrição"
+- inputText: ${WORKOUT_DESC}
+
+# Seleciona um dia da semana
+- tapOn:
+    text: "SEG"
+
+# Cria o treino
+- tapOn:
+    text: "Criar treino"
+
+# Deve aparecer na lista
+- assertVisible: ${WORKOUT_NAME}

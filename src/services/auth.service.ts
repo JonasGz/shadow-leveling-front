@@ -8,32 +8,16 @@ import type {
 } from "../types/api.types";
 
 export const authService = {
-  async register(email: string, password: string) {
-    await api.post("/auth/register", { email, password });
-  },
-
-  async registerVerify(email: string, code: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/register/verify", { email, code });
+  async register(email: string, password: string): Promise<AuthToken> {
+    const { data } = await api.post<AuthToken>("/auth/register", { email, password });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
   },
 
-  async registerResend(email: string) {
-    await api.post("/auth/register/resend", { email });
-  },
-
-  async login(email: string, password: string) {
-    await api.post("/auth/login", { email, password });
-  },
-
-  async loginVerify(email: string, code: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/login/verify", { email, code });
+  async login(email: string, password: string): Promise<AuthToken> {
+    const { data } = await api.post<AuthToken>("/auth/login", { email, password });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
-  },
-
-  async loginResend(email: string) {
-    await api.post("/auth/login/resend", { email });
   },
 
   async me(): Promise<User> {

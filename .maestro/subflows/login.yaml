@@ -1,0 +1,58 @@
+# Subflow reutilizável: garante sessão logada com a conta de teste.
+# Importado via runFlow nos flows que precisam de sessão ativa.
+#
+# Pré-condição: o wrapper .maestro/run.sh já disparou o deep link
+# exp:// e o bundle está carregando.
+#
+# Variáveis esperadas: EMAIL, PASSWORD
+#
+# Lida com dois estados:
+#   - Tela de login visível ("Entrar"): preenche e entra.
+#   - Já logado (sessão persistida): pula direto.
+
+appId: host.exp.Exponent
+---
+# Aguarda o bundle JS terminar de carregar: ou aparece "Entrar"
+# (deslogado) ou "TREINOS DO DIA" (já logado na Home).
+- extendedWaitUntil:
+    visible: "Entrar"
+    timeout: 40000
+    optional: true
+- extendedWaitUntil:
+    visible: "TREINOS DO DIA"
+    timeout: 5000
+    optional: true
+
+# Se a tela de login estiver visível, faz login.
+- runFlow:
+    when:
+      visible: "Entrar"
+    commands:
+      # Campos selecionados por testID — robusto a mudanças de layout.
+      - tapOn:
+          id: "login-email"
+      - eraseText
+      - inputText: ${EMAIL}
+      - tapOn:
+          id: "login-password"
+      - eraseText
+      - inputText: ${PASSWORD}
+      # Fecha o teclado tocando no título estático "Entrar" (dentro do
+      # card, não desfoca o form nem rola a tela).
+      - tapOn:
+          text: "Entrar"
+      - tapOn:
+          id: "login-submit"
+      # Dispensa o popup nativo do iOS "Save Password?" se aparecer.
+      - tapOn:
+          text: "Not Now"
+          optional: true
+      - extendedWaitUntil:
+          visible: "TREINOS DO DIA"
+          timeout: 15000
+      - extendedWaitUntil:
+          visible: "Shadow Leveling"
+          timeout: 15000
+
+# Garante que chegou na Home, independente do caminho.
+- assertVisible: "TREINOS DO DIA"

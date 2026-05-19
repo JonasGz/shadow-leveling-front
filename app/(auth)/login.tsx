@@ -8,6 +8,7 @@ import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
+import { useAuthStore } from "../../src/stores/auth.store";
 
 const schema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -19,23 +20,24 @@ type FormData = z.infer<typeof schema>;
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const setUser = useAuthStore((s) => s.setUser);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-    getValues,
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   async function onSubmit(data: FormData) {
     setLoading(true);
     try {
       await authService.login(data.email, data.password);
-      router.push({ pathname: "/(auth)/login-verify", params: { email: data.email } });
+      const user = await authService.me();
+      setUser(user);
+      router.replace("/(tabs)/");
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 401) showToast("E-mail ou senha incorretos.", "error");
-      else if (status === 403) showToast("E-mail não verificado. Faça o registro.", "warning");
       else showToast("Erro ao fazer login. Tente novamente.", "error");
     } finally {
       setLoading(false);
@@ -67,6 +69,7 @@ export default function LoginScreen() {
             name="email"
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
+                testID="login-email"
                 label="E-mail"
                 value={value}
                 onChangeText={onChange}
@@ -85,6 +88,7 @@ export default function LoginScreen() {
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
+                testID="login-password"
                 label="Senha"
                 value={value}
                 onChangeText={onChange}
@@ -98,6 +102,7 @@ export default function LoginScreen() {
           />
 
           <Button
+            testID="login-submit"
             label="Entrar"
             onPress={handleSubmit(onSubmit)}
             loading={loading}
