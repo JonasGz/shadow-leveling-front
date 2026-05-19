@@ -188,7 +188,8 @@ export default function HomeScreen() {
   }, [load]);
 
   const email = user?.email ?? "";
-  const name = email ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
+  const generatedName = email ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
+  const name = user?.nickname?.trim() || generatedName;
   const initial = (email[0] ?? "?").toUpperCase();
 
   const wp = metrics?.workouts.progress;
@@ -198,7 +199,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16 border-b border-outline-variant">
+      <View className="flex-row justify-between items-center px-md h-20 border-b border-outline-variant">
         <View className="flex-row items-center gap-3">
           <View className="w-10 h-10 rounded-full border-2 border-primary bg-primary-container items-center justify-center">
             <Text className="text-on-primary font-bold">{initial}</Text>

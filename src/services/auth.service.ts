@@ -46,6 +46,11 @@ export const authService = {
     return data;
   },
 
+  async updateNickname(nickname: string): Promise<User> {
+    const { data } = await api.patch<User>("/auth/me", { nickname });
+    return data;
+  },
+
   async logout() {
     await api.post("/auth/logout");
     await SecureStore.deleteItemAsync(TOKEN_KEY);

@@ -7,6 +7,10 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
@@ -66,6 +70,9 @@ export default function ProfileScreen() {
   const [revoking, setRevoking] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [level, setLevel] = useState<UserLevel | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [nicknameInput, setNicknameInput] = useState("");
+  const [savingNick, setSavingNick] = useState(false);
 
   const load = useCallback(async () => {
     setError(false);
@@ -164,8 +171,41 @@ export default function ProfileScreen() {
 
   const email = user?.email ?? storeUser?.email ?? "—";
   const initial = (email[0] ?? "?").toUpperCase();
-  const displayName =
+  // Prioriza o nickname; fallback ao nome derivado do e-mail (auto-gerado).
+  const generatedName =
     email !== "—" ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
+  const displayName = user?.nickname?.trim() || generatedName;
+
+  function openNicknameEditor() {
+    setNicknameInput(user?.nickname ?? "");
+    setEditing(true);
+  }
+
+  async function saveNickname() {
+    const value = nicknameInput.trim();
+    if (value.length < 2 || value.length > 30) {
+      showToast("O nick deve ter entre 2 e 30 caracteres.", "warning");
+      return;
+    }
+    setSavingNick(true);
+    try {
+      const updated = await authService.updateNickname(value);
+      setLocalUser(updated);
+      setUser(updated);
+      setEditing(false);
+      showToast("Nick atualizado.", "success");
+    } catch (err: any) {
+      const st = err?.response?.status;
+      showToast(
+        st === 400
+          ? "Nick inválido. Use entre 2 e 30 caracteres."
+          : "Erro ao atualizar o nick.",
+        "error"
+      );
+    } finally {
+      setSavingNick(false);
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -257,9 +297,15 @@ export default function ProfileScreen() {
             </View>
 
             <View className="items-center gap-1">
-              <Text className="text-headline-mobile text-on-surface capitalize">
-                {displayName}
-              </Text>
+              <Pressable
+                onPress={openNicknameEditor}
+                className="flex-row items-center gap-2 active:opacity-70"
+              >
+                <Text className="text-headline-mobile text-on-surface capitalize">
+                  {displayName}
+                </Text>
+                <Text className="text-primary text-base">✎</Text>
+              </Pressable>
               <Text className="text-body-lg text-on-surface-variant">
                 {email}
               </Text>
@@ -418,6 +464,63 @@ export default function ProfileScreen() {
           </View>
         </ScrollView>
       )}
+
+      {/* Modal de edição do nick */}
+      <Modal
+        visible={editing}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEditing(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          className="flex-1 bg-black/70 items-center justify-center px-lg"
+        >
+          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
+            <Text className="text-title-md text-on-surface font-bold">
+              Editar nick
+            </Text>
+            <Text className="text-label-sm text-on-surface-variant">
+              Como você quer ser chamado? (2 a 30 caracteres)
+            </Text>
+            <TextInput
+              value={nicknameInput}
+              onChangeText={setNicknameInput}
+              placeholder={generatedName}
+              placeholderTextColor="#958ea0"
+              maxLength={30}
+              autoFocus
+              autoCapitalize="none"
+              autoCorrect={false}
+              className="bg-surface-lowest border border-outline-variant rounded-lg px-md py-3 text-on-surface text-body-lg"
+            />
+            <View className="flex-row gap-md mt-sm">
+              <Pressable
+                onPress={() => setEditing(false)}
+                disabled={savingNick}
+                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+              >
+                <Text className="text-on-surface-variant text-label-md uppercase tracking-widest">
+                  Cancelar
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={saveNickname}
+                disabled={savingNick}
+                className="flex-1 rounded-lg bg-primary py-3 items-center active:opacity-80"
+              >
+                {savingNick ? (
+                  <ActivityIndicator size="small" color="#3c0091" />
+                ) : (
+                  <Text className="text-on-primary text-label-md uppercase tracking-widest font-semibold">
+                    Salvar
+                  </Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </SafeAreaView>
   );
 }

@@ -250,9 +250,34 @@ GET /auth/me
 {
   "id": "uuid",
   "email": "user@example.com",
+  "nickname": "ShadowHunter",
   "created_at": "2024-01-01T00:00:00Z"
 }
 ```
+
+> `nickname` pode ser `null` caso o usuário ainda não tenha definido um.
+
+---
+
+### Atualizar nickname (privado)
+
+```
+PATCH /auth/me
+```
+
+**Body:**
+
+```json
+{ "nickname": "ShadowHunter" }
+```
+
+| Campo      | Tipo   | Obrigatório | Valores          |
+| ---------- | ------ | ----------- | ---------------- |
+| `nickname` | string | sim         | 2 a 30 caracteres |
+
+**Resposta 200:** User atualizado (mesmo formato do `GET /auth/me`)
+
+**Erros:** `400` (nickname inválido — fora do intervalo de 2 a 30 caracteres)
 
 ---
 
@@ -1192,6 +1217,7 @@ Retorna a especificação OpenAPI 3.0 em YAML.
 | `POST`   | `/auth/login/verify`                  | —    | Verificar código de login      |
 | `POST`   | `/auth/login/resend`                  | —    | Reenviar código de login       |
 | `GET`    | `/auth/me`                            | sim  | Dados do usuário logado        |
+| `PATCH`  | `/auth/me`                            | sim  | Atualizar nickname             |
 | `POST`   | `/auth/logout`                        | sim  | Logout                         |
 | `GET`    | `/auth/sessions`                      | sim  | Listar sessões                 |
 | `DELETE` | `/auth/sessions/{id}`                 | sim  | Revogar sessão                 |
@@ -1263,6 +1289,7 @@ Histórico
 
 Perfil / Progresso
   ├─ Dados do usuário → GET /auth/me
+  ├─ Editar nickname → PATCH /auth/me
   ├─ Nível, XP e streak → GET /me/level
   ├─ Sessões ativas → GET /auth/sessions
   └─ Logout → POST /auth/logout
