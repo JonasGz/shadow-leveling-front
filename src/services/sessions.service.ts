@@ -60,7 +60,9 @@ export const sessionsService = {
     const { data } = await api.get<WorkoutSessionDetail>(
       `/workout-sessions/${id}`
     );
-    return data;
+    // O backend pode omitir/retornar null em `sets` quando a sessão
+    // não tem séries registradas. Normaliza para sempre ser um array.
+    return { ...data, sets: data.sets ?? [] };
   },
 
   async updateStatus(

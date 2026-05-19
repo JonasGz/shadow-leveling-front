@@ -11,6 +11,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
+import { authService } from "../../../src/services/auth.service";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
@@ -82,6 +83,8 @@ export default function SessionCompleteScreen() {
   const [error, setError] = useState(false);
   const [status, setStatus] = useState<SessionStatus>("complete");
   const [submitting, setSubmitting] = useState(false);
+  // XP previsto ao concluir (fórmula backend: 50 + min(streak * 5, 50))
+  const [projectedXp, setProjectedXp] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -89,6 +92,15 @@ export default function SessionCompleteScreen() {
     try {
       const s = await sessionsService.get(id);
       setSession(s);
+
+      // XP previsto ao concluir: streak atual + fórmula do backend.
+      try {
+        const lvl = await authService.level();
+        setProjectedXp(50 + Math.min(lvl.current_streak * 5, 50));
+      } catch {
+        // sem /me/level: usa o XP base (sem bônus de streak)
+        setProjectedXp(50);
+      }
 
       // Resolve nome/tipo de cada exercício pelo workout da sessão
       const wId = workoutId || s.workout_id;
@@ -130,18 +142,46 @@ export default function SessionCompleteScreen() {
   const { summaries, totalVolume } = useMemo(
     () =>
       session
-        ? buildSummary(session.sets, nameOf, isTimeOf)
+        ? buildSummary(session.sets ?? [], nameOf, isTimeOf)
         : { summaries: [], totalVolume: 0 },
     [session, nameOf, isTimeOf]
   );
 
+  const hasSets = (session?.sets?.length ?? 0) > 0;
+
+  // Sem séries registradas, "Completo" não é uma opção válida:
+  // rebaixa a seleção para "Incompleto" automaticamente.
+  useEffect(() => {
+    if (session && !hasSets && status === "complete") {
+      setStatus("incomplete");
+    }
+  }, [session, hasSets, status]);
+
   async function handleConfirm() {
     if (!session) return;
+
+    // Sem nenhuma série registrada não há treino de fato — não pode
+    // ser concluído como "complete" (evita XP indevido no backend).
+    if (status === "complete" && !hasSets) {
+      showToast(
+        "Registre ao menos uma série para concluir como completo.",
+        "warning"
+      );
+      return;
+    }
+
     setSubmitting(true);
     try {
       await sessionsService.updateStatus(session.id, status);
       await refreshWorkouts();
-      showToast("Treino finalizado!", "success");
+
+      // XP só é concedido pelo backend quando o status é "complete".
+      if (status === "complete" && projectedXp != null) {
+        showToast(`Treino finalizado!  +${projectedXp} XP`, "success");
+      } else {
+        showToast("Treino finalizado!", "success");
+      }
+
       if (workoutId) router.replace(`/workout/${workoutId}`);
       else router.replace("/(tabs)/workouts");
     } catch {
@@ -216,7 +256,40 @@ export default function SessionCompleteScreen() {
           </Text>
         </View>
 
-        {/* Stats (sem XP) */}
+        {/* XP ganho — card destacado, largura total */}
+        {status === "complete" && projectedXp != null ? (
+          <View
+            className="w-full rounded-xl border border-primary mb-md overflow-hidden"
+            style={{
+              shadowColor: "#d0bcff",
+              shadowOpacity: 0.45,
+              shadowRadius: 20,
+              shadowOffset: { width: 0, height: 0 },
+            }}
+          >
+            <LinearGradient
+              colors={["#a078ff", "#6d3bd7"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ position: "absolute", inset: 0 }}
+            />
+            <View className="p-lg items-center">
+              <Text className="text-label-sm text-on-primary-container uppercase tracking-widest mb-1">
+                XP Conquistado
+              </Text>
+              <View className="flex-row items-end gap-1">
+                <Text className="text-display-lg text-on-primary font-black">
+                  +{projectedXp}
+                </Text>
+                <Text className="text-headline-mobile text-on-primary font-bold mb-2">
+                  XP
+                </Text>
+              </View>
+            </View>
+          </View>
+        ) : null}
+
+        {/* Stats */}
         <View className="flex-row gap-md mb-xl">
           <View className="flex-1 bg-surface-low p-lg rounded-xl border border-outline-variant overflow-hidden">
             <View className="absolute top-0 left-0 w-1 h-full bg-secondary" />
@@ -242,7 +315,7 @@ export default function SessionCompleteScreen() {
             </Text>
             <View className="flex-row items-end gap-1">
               <Text className="text-display-md text-tertiary">
-                {session.sets.length}
+                {session.sets?.length ?? 0}
               </Text>
               <Text className="text-title-md text-tertiary mb-1.5">total</Text>
             </View>
@@ -335,11 +408,12 @@ export default function SessionCompleteScreen() {
         <View className="flex-row gap-md">
           <Pressable
             onPress={() => setStatus("complete")}
+            disabled={!hasSets}
             className={`flex-1 rounded-xl p-md items-center gap-1 border-2 ${
               status === "complete"
                 ? "bg-surface-high border-primary"
                 : "bg-surface-container border-outline-variant"
-            }`}
+            } ${!hasSets ? "opacity-40" : ""}`}
             style={
               status === "complete"
                 ? {
@@ -397,6 +471,13 @@ export default function SessionCompleteScreen() {
             </Text>
           </Pressable>
         </View>
+
+        {!hasSets ? (
+          <Text className="text-label-sm text-on-surface-variant text-center mt-md px-lg">
+            Nenhuma série registrada — registre ao menos uma para concluir
+            como completo e ganhar XP.
+          </Text>
+        ) : null}
       </ScrollView>
 
       {/* Barra de ação fixa */}

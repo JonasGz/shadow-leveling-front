@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
-import type { Session, User } from "../../src/types/api.types";
+import type { Session, User, UserLevel } from "../../src/types/api.types";
 
 function fmtSince(iso: string) {
   const d = new Date(iso);
@@ -65,16 +65,20 @@ export default function ProfileScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [revoking, setRevoking] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [level, setLevel] = useState<UserLevel | null>(null);
 
   const load = useCallback(async () => {
     setError(false);
     try {
-      const [me, sess] = await Promise.all([
+      const [me, sess, lvl] = await Promise.all([
         authService.me(),
         authService.sessions(),
+        // /me/level é secundário: se falhar, perfil ainda carrega
+        authService.level().catch(() => null),
       ]);
       setLocalUser(me);
       setUser(me);
+      setLevel(lvl);
       setSessions(
         [...sess].sort(
           (a, b) =>
@@ -268,6 +272,62 @@ export default function ProfileScreen() {
               ) : null}
             </View>
           </View>
+
+          {/* Nível / XP / Rank / Streak */}
+          {level ? (
+            <View className="gap-md">
+              <View className="flex-row gap-md">
+                <View className="flex-1 bg-surface-low p-md rounded-xl border border-outline-variant items-center">
+                  <Text className="text-label-sm text-outline uppercase tracking-widest">
+                    Rank
+                  </Text>
+                  <Text className="text-display-md text-secondary">
+                    {level.rank}
+                  </Text>
+                </View>
+                <View className="flex-1 bg-surface-low p-md rounded-xl border border-outline-variant items-center">
+                  <Text className="text-label-sm text-outline uppercase tracking-widest">
+                    Nível
+                  </Text>
+                  <Text className="text-display-md text-primary">
+                    {level.level}
+                  </Text>
+                </View>
+              </View>
+
+              <View className="bg-surface-low p-md rounded-xl border border-outline-variant gap-sm">
+                <View className="flex-row justify-between items-end">
+                  <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+                    Progresso do nível
+                  </Text>
+                  <Text className="text-label-sm text-primary">
+                    {level.xp_into_level} / {level.xp_for_next_level} XP
+                  </Text>
+                </View>
+                <View className="h-2 w-full bg-surface-highest rounded-full overflow-hidden">
+                  <View
+                    className="h-full bg-primary rounded-full"
+                    style={{
+                      width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
+                      shadowColor: "#d0bcff",
+                      shadowOpacity: 0.5,
+                      shadowRadius: 10,
+                      shadowOffset: { width: 0, height: 0 },
+                    }}
+                  />
+                </View>
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-label-sm text-outline uppercase tracking-widest">
+                    {level.total_xp.toLocaleString("pt-BR")} XP total
+                  </Text>
+                  <Text className="text-label-sm text-tertiary uppercase tracking-widest">
+                    🔥 {level.current_streak}{" "}
+                    {level.current_streak === 1 ? "dia" : "dias"} de streak
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ) : null}
 
           {/* Sessões ativas */}
           <View className="gap-md">

@@ -154,6 +154,25 @@ export interface TodayMetrics {
   };
 }
 
+// Nivelamento / XP
+export type Rank =
+  | "E-Rank"
+  | "D-Rank"
+  | "C-Rank"
+  | "B-Rank"
+  | "A-Rank"
+  | "S-Rank";
+
+export interface UserLevel {
+  level: number;
+  rank: Rank;
+  total_xp: number;
+  xp_into_level: number;
+  xp_for_next_level: number;
+  progress_pct: number;
+  current_streak: number;
+}
+
 // Generic API error
 export interface ApiError {
   error: string;

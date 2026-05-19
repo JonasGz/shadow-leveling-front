@@ -1,6 +1,11 @@
 import { api, TOKEN_KEY } from "./api";
 import * as SecureStore from "expo-secure-store";
-import type { AuthToken, User, Session } from "../types/api.types";
+import type {
+  AuthToken,
+  User,
+  Session,
+  UserLevel,
+} from "../types/api.types";
 
 export const authService = {
   async register(email: string, password: string) {
@@ -33,6 +38,11 @@ export const authService = {
 
   async me(): Promise<User> {
     const { data } = await api.get<User>("/auth/me");
+    return data;
+  },
+
+  async level(): Promise<UserLevel> {
+    const { data } = await api.get<UserLevel>("/me/level");
     return data;
   },
 
