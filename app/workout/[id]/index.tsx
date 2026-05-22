@@ -5,11 +5,13 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { workoutsService } from "../../../src/services/workouts.service";
+import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
   DayOfWeek,
   Workout,
@@ -79,9 +81,11 @@ function StatCard({
 function ExerciseCard({
   index,
   item,
+  onDelete,
 }: {
   index: number;
   item: WorkoutExercise;
+  onDelete: (item: WorkoutExercise) => void;
 }) {
   const isTime = item.exercise.type === "time";
   return (
@@ -138,16 +142,23 @@ function ExerciseCard({
         ) : null}
       </View>
 
-      {/* Handle de reorder (visual) */}
-      <View className="w-10 items-center justify-center">
-        <Text className="text-outline text-lg">⠿</Text>
-      </View>
+      {/* Excluir exercício */}
+      <Pressable
+        onPress={() => onDelete(item)}
+        hitSlop={8}
+        className="w-11 items-center justify-center border-l border-outline-variant active:bg-error/10"
+      >
+        <View className="w-8 h-8 items-center justify-center rounded-full bg-error/15">
+          <Text className="text-error text-base font-bold">✕</Text>
+        </View>
+      </Pressable>
     </View>
   );
 }
 
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const removeWorkout = useWorkoutsStore((s) => s.remove);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -164,6 +175,55 @@ export default function WorkoutDetailScreen() {
       setLoading(false);
     }
   }, [id]);
+
+  const handleDeleteWorkout = useCallback(() => {
+    if (!id) return;
+    Alert.alert(
+      "Excluir treino",
+      `Tem certeza que deseja excluir "${workout?.name ?? "este treino"}"? Os exercícios e o histórico de sessões serão removidos.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await removeWorkout(id);
+              router.back();
+            } catch {
+              Alert.alert("Erro", "Não foi possível excluir o treino.");
+            }
+          },
+        },
+      ]
+    );
+  }, [id, workout?.name, removeWorkout]);
+
+  const handleDeleteExercise = useCallback(
+    (ex: WorkoutExercise) => {
+      if (!id) return;
+      Alert.alert(
+        "Remover exercício",
+        `Remover "${ex.exercise.name}" deste treino?`,
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Remover",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                await workoutsService.removeExercise(id, ex.id);
+                await load();
+              } catch {
+                Alert.alert("Erro", "Não foi possível remover o exercício.");
+              }
+            },
+          },
+        ]
+      );
+    },
+    [id, load]
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -194,20 +254,29 @@ export default function WorkoutDetailScreen() {
             {workout?.name ?? "Treino"}
           </Text>
         </View>
-        <Pressable
-          onPress={() => router.push(`/workout/${id}/session`)}
-          className="bg-primary px-5 py-2 rounded-lg active:opacity-80"
-          style={{
-            shadowColor: "#d0bcff",
-            shadowOpacity: 0.3,
-            shadowRadius: 15,
-            shadowOffset: { width: 0, height: 0 },
-          }}
-        >
-          <Text className="text-on-primary text-label-md uppercase tracking-wider font-semibold">
-            Iniciar
-          </Text>
-        </Pressable>
+        <View className="flex-row items-center gap-2">
+          <Pressable
+            onPress={handleDeleteWorkout}
+            hitSlop={8}
+            className="w-9 h-9 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
+          >
+            <Text className="text-error text-base font-bold">✕</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push(`/workout/${id}/session`)}
+            className="bg-primary px-5 py-2 rounded-lg active:opacity-80"
+            style={{
+              shadowColor: "#d0bcff",
+              shadowOpacity: 0.3,
+              shadowRadius: 15,
+              shadowOffset: { width: 0, height: 0 },
+            }}
+          >
+            <Text className="text-on-primary text-label-md uppercase tracking-wider font-semibold">
+              Iniciar
+            </Text>
+          </Pressable>
+        </View>
       </View>
 
       {loading ? (
@@ -307,7 +376,12 @@ export default function WorkoutDetailScreen() {
                 .slice()
                 .sort((a, b) => a.sort_order - b.sort_order)
                 .map((ex, i) => (
-                  <ExerciseCard key={ex.id} index={i} item={ex} />
+                  <ExerciseCard
+                    key={ex.id}
+                    index={i}
+                    item={ex}
+                    onDelete={handleDeleteExercise}
+                  />
                 ))}
             </View>
           )}

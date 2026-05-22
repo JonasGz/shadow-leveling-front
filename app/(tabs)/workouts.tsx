@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Pressable,
+  Alert,
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -96,7 +97,13 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
 }
 
 /** Card da seção "Sua Biblioteca" */
-function LibraryWorkoutCard({ workout }: { workout: Workout }) {
+function LibraryWorkoutCard({
+  workout,
+  onDelete,
+}: {
+  workout: Workout;
+  onDelete: (workout: Workout) => void;
+}) {
   const count = workout.exercises?.length ?? 0;
   const daysLabel = workout.days_of_week
     .map((d) => DAY_SHORT[d])
@@ -118,7 +125,13 @@ function LibraryWorkoutCard({ workout }: { workout: Workout }) {
             {daysLabel || "Sem dias definidos"}
           </Text>
         </View>
-        <Text className="text-on-surface-variant text-xl">⋮</Text>
+        <Pressable
+          onPress={() => onDelete(workout)}
+          hitSlop={8}
+          className="w-8 h-8 -mt-1 -mr-1 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
+        >
+          <Text className="text-error text-base font-bold">✕</Text>
+        </Pressable>
       </View>
 
       <View className="flex-row items-center justify-between bg-surface-lowest rounded-lg p-md mb-md">
@@ -168,7 +181,8 @@ function LibraryWorkoutCard({ workout }: { workout: Workout }) {
 }
 
 export default function WorkoutsScreen() {
-  const { workouts, loading, error, fetch, refresh } = useWorkoutsStore();
+  const { workouts, loading, error, fetch, refresh, remove } =
+    useWorkoutsStore();
   const user = useAuthStore((s) => s.user);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
@@ -196,6 +210,30 @@ export default function WorkoutsScreen() {
     await refresh();
     setRefreshing(false);
   }, [refresh]);
+
+  const handleDelete = useCallback(
+    (workout: Workout) => {
+      Alert.alert(
+        "Excluir treino",
+        `Tem certeza que deseja excluir "${workout.name}"? Os exercícios e o histórico de sessões serão removidos.`,
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Excluir",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                await remove(workout.id);
+              } catch {
+                Alert.alert("Erro", "Não foi possível excluir o treino.");
+              }
+            },
+          },
+        ]
+      );
+    },
+    [remove]
+  );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -302,7 +340,11 @@ export default function WorkoutsScreen() {
             </Text>
 
             {libraryWorkouts.map((w) => (
-              <LibraryWorkoutCard key={w.id} workout={w} />
+              <LibraryWorkoutCard
+                key={w.id}
+                workout={w}
+                onDelete={handleDelete}
+              />
             ))}
 
             {filtered.length === 0 ? (

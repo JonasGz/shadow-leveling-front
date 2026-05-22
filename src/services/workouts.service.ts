@@ -59,4 +59,8 @@ export const workoutsService = {
     );
     return data;
   },
+
+  async removeExercise(workoutId: string, weId: string): Promise<void> {
+    await api.delete(`/workouts/${workoutId}/exercises/${weId}`);
+  },
 };
