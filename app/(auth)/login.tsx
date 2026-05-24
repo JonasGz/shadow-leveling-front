@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Pressable } from "react-native";
+import { View, Text, KeyboardAvoidingView, ScrollView, Pressable } from "react-native";
 import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -46,11 +46,11 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior="padding"
       className="flex-1 bg-background"
     >
       <ScrollView
-        contentContainerClassName="flex-1 justify-center px-md"
+        contentContainerClassName="flex-grow justify-center px-md"
         keyboardShouldPersistTaps="handled"
       >
         {/* Logo / título */}

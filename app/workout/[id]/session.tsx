@@ -7,6 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
@@ -287,6 +288,7 @@ export default function WorkoutSessionScreen() {
         </Pressable>
       </View>
 
+      <KeyboardAvoidingView behavior="padding" className="flex-1">
       <ScrollView
         contentContainerClassName="px-md py-lg pb-32"
         showsVerticalScrollIndicator={false}
@@ -525,6 +527,7 @@ export default function WorkoutSessionScreen() {
           )}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Timer de descanso flutuante */}
       {rest != null && (
