@@ -17,6 +17,7 @@
       "supportsTablet": false
     },
     "android": {
+      "package": "com.jonasgz.shadowleveling",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#131314"
@@ -36,6 +37,13 @@
           "faceIDPermission": "Allow Shadow Leveling to access Face ID"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bda9751d-bd11-450f-99bb-a12b5dd60c97"
+      }
+    },
+    "owner": "jonasgz"
   }
 }
