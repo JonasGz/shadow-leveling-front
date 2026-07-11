@@ -15,7 +15,7 @@ export default function RootLayout() {
     async function bootstrap() {
       const token = await authService.getStoredToken();
       if (!token) {
-        router.replace("/(auth)/login");
+        router.replace("/(auth)");
         return;
       }
       try {
