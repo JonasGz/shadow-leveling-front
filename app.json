@@ -14,7 +14,9 @@
       "backgroundColor": "#131314"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.jonasgz.shadowleveling",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.jonasgz.shadowleveling",
@@ -38,7 +40,9 @@
         {
           "faceIDPermission": "Allow Shadow Leveling to access Face ID"
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin",
+      "expo-apple-authentication"
     ],
     "extra": {
       "router": {},

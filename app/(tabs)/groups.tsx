@@ -79,6 +79,7 @@ export default function GroupsScreen() {
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       <ScrollView
         className="flex-1 px-md"
+        contentContainerClassName="pb-[112px]"
         refreshControl={
           <RefreshControl refreshing={false} onRefresh={load} tintColor="#d0bcff" />
         }

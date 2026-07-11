@@ -8,15 +8,24 @@ import type {
   UserLevel,
 } from "../types/api.types";
 
+export type SocialProvider = "google" | "apple";
+
 export const authService = {
-  async register(email: string, password: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/register", { email, password });
+  /** Sends a 6-digit login code to the email. Create-or-login is decided at verify time. */
+  async requestEmailCode(email: string): Promise<void> {
+    await api.post("/auth/email/request", { email });
+  },
+
+  /** Verifies the emailed code and stores the returned session token. */
+  async verifyEmailCode(email: string, code: string): Promise<AuthToken> {
+    const { data } = await api.post<AuthToken>("/auth/email/verify", { email, code });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
   },
 
-  async login(email: string, password: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/login", { email, password });
+  /** Exchanges a provider ID token for a session and stores it. */
+  async socialLogin(provider: SocialProvider, idToken: string): Promise<AuthToken> {
+    const { data } = await api.post<AuthToken>("/auth/social", { provider, id_token: idToken });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
   },
