@@ -5,6 +5,7 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
@@ -14,6 +15,7 @@ import { useToast } from "../../../src/components/ui/Toast";
 import { authService } from "../../../src/services/auth.service";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
+import { pickImage } from "../../../src/lib/pickImage";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
   ExerciseSet,
@@ -83,6 +85,7 @@ export default function SessionCompleteScreen() {
   const [error, setError] = useState(false);
   const [status, setStatus] = useState<SessionStatus>("complete");
   const [submitting, setSubmitting] = useState(false);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   // XP previsto ao concluir (fórmula backend: 50 + min(streak * 5, 50))
   const [projectedXp, setProjectedXp] = useState<number | null>(null);
 
@@ -173,6 +176,14 @@ export default function SessionCompleteScreen() {
     setSubmitting(true);
     try {
       await sessionsService.updateStatus(session.id, status);
+      // Foto é opcional e não bloqueia a conclusão do treino.
+      if (photoUri) {
+        try {
+          await sessionsService.attachPhoto(session.id, photoUri);
+        } catch {
+          showToast("Treino salvo, mas a foto falhou ao enviar.", "warning");
+        }
+      }
       await refreshWorkouts();
 
       // XP só é concedido pelo backend quando o status é "complete".
@@ -400,6 +411,37 @@ export default function SessionCompleteScreen() {
             ))}
           </View>
         )}
+
+        {/* Foto do treino (opcional) */}
+        <Text className="text-label-md text-on-surface-variant uppercase tracking-widest mb-md text-center">
+          Foto do treino (opcional)
+        </Text>
+        <Pressable
+          onPress={async () => {
+            const uri = await pickImage();
+            if (uri) setPhotoUri(uri);
+          }}
+          className="mb-xl rounded-xl border-2 border-dashed border-outline-variant bg-surface-container items-center justify-center overflow-hidden"
+          style={{ height: 160 }}
+        >
+          {photoUri ? (
+            <Image source={{ uri: photoUri }} style={{ width: "100%", height: "100%" }} />
+          ) : (
+            <View className="items-center gap-1">
+              <Text className="text-3xl">📸</Text>
+              <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+                Adicionar foto
+              </Text>
+            </View>
+          )}
+        </Pressable>
+        {photoUri ? (
+          <Pressable onPress={() => setPhotoUri(null)} className="items-center -mt-lg mb-xl">
+            <Text className="text-label-sm text-error uppercase tracking-widest">
+              Remover foto
+            </Text>
+          </Pressable>
+        ) : null}
 
         {/* Seletor de status */}
         <Text className="text-label-md text-on-surface-variant uppercase tracking-widest mb-md text-center">

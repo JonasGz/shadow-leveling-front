@@ -105,6 +105,7 @@ export interface WorkoutSession {
   workout_id: string;
   date: string;
   status: SessionStatus;
+  photo_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -172,6 +173,45 @@ export interface UserLevel {
   xp_for_next_level: number;
   progress_pct: number;
   current_streak: number;
+}
+
+// Groups
+export interface Group {
+  id: string;
+  name: string;
+  cover_url: string | null;
+  invite_code: string;
+  owner_id: string;
+  created_at: string;
+}
+
+export interface GroupDetail extends Group {
+  top_score: number;
+  my_score: number;
+  member_count: number;
+}
+
+export interface RankingEntry {
+  user_id: string;
+  name: string;
+  points: number;
+}
+
+export interface FeedItem {
+  session_id: string;
+  user_id: string;
+  name: string;
+  workout_name: string;
+  photo_url: string | null;
+  created_at: string;
+}
+
+export interface FeedPage {
+  data: FeedItem[];
+  cursor: {
+    next_cursor: string | null;
+    has_more: boolean;
+  };
 }
 
 // Generic API error

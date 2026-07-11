@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { buildImageForm } from "./groups.service";
 import type {
   SessionStatus,
   WorkoutSession,
@@ -36,6 +37,15 @@ export interface UpdateSetInput {
 export const sessionsService = {
   async create(input: CreateSessionInput): Promise<WorkoutSession> {
     const { data } = await api.post<WorkoutSession>("/workout-sessions", input);
+    return data;
+  },
+
+  async attachPhoto(id: string, uri: string): Promise<WorkoutSession> {
+    const { data } = await api.post<WorkoutSession>(
+      `/workout-sessions/${id}/photo`,
+      buildImageForm(uri),
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
     return data;
   },
 

@@ -39,6 +39,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="groups"
+        options={{
+          title: "Grupos",
+          tabBarIcon: ({ color }) => <TabIcon icon="⚔️" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="history"
         options={{
           title: "Histórico",
