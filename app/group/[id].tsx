@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
+  AppState,
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +34,15 @@ function timeLabel(iso: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+const POLL_MS = 15000;
+
+// Lightweight signature to detect real changes: scores + the newest feed item.
+// (Deliberately ignores feed length so paginating older items doesn't count as
+// a change and trigger a reset.)
+function signature(topScore: number, myScore: number, headSessionId: string): string {
+  return `${topScore}-${myScore}-${headSessionId}`;
 }
 
 function FeedRow({ item }: { item: FeedItem }) {
@@ -72,6 +82,7 @@ export default function GroupDetailScreen() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const sigRef = useRef("");
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -83,6 +94,7 @@ export default function GroupDetailScreen() {
       setGroup(detail);
       setFeed(page.data);
       setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
+      sigRef.current = signature(detail.top_score, detail.my_score, page.data[0]?.session_id ?? "");
     } catch {
       showToast("Não foi possível carregar o grupo");
     } finally {
@@ -90,10 +102,33 @@ export default function GroupDetailScreen() {
     }
   }, [id, showToast]);
 
+  // Silent poll: fetches fresh data but only re-renders if the signature moved.
+  const poll = useCallback(async () => {
+    if (!id) return;
+    try {
+      const [detail, page] = await Promise.all([
+        groupsService.get(id),
+        groupsService.feed(id),
+      ]);
+      const sig = signature(detail.top_score, detail.my_score, page.data[0]?.session_id ?? "");
+      if (sig === sigRef.current) return; // nada mudou → nenhum setState/re-render
+      sigRef.current = sig;
+      setGroup(detail);
+      setFeed(page.data);
+      setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
+    } catch {
+      // silencioso: mantém o que já está na tela
+    }
+  }, [id]);
+
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+      const interval = setInterval(() => {
+        if (AppState.currentState === "active") poll();
+      }, POLL_MS);
+      return () => clearInterval(interval);
+    }, [load, poll])
   );
 
   async function loadMore() {

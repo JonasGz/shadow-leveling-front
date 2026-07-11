@@ -8,6 +8,7 @@ import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
+import { registerForPush } from "../../src/lib/push";
 import { useAuthStore } from "../../src/stores/auth.store";
 
 const schema = z
@@ -41,6 +42,7 @@ export default function RegisterScreen() {
       const user = await authService.me();
       setUser(user);
       router.replace("/(tabs)/");
+      registerForPush();
     } catch (err: any) {
       const status = err?.response?.status;
       if (status === 409) showToast("E-mail já cadastrado.", "warning");

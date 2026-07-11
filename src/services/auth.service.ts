@@ -1,5 +1,6 @@
 import { api, TOKEN_KEY } from "./api";
 import * as SecureStore from "expo-secure-store";
+import { unregisterPush } from "../lib/push";
 import type {
   AuthToken,
   User,
@@ -36,6 +37,8 @@ export const authService = {
   },
 
   async logout() {
+    // Remove the push token while the session is still valid.
+    await unregisterPush();
     await api.post("/auth/logout");
     await SecureStore.deleteItemAsync(TOKEN_KEY);
   },
