@@ -148,11 +148,20 @@ export interface TodayMetrics {
       name: string;
       description: string;
       is_completed: boolean;
+      exercise_count: number;
+      estimated_duration_min: number;
     }>;
   };
   tasks: {
     progress: DayProgress;
     items: Task[];
+  };
+}
+
+export interface WeeklySummary {
+  goal: {
+    completed: number;
+    scheduled: number;
   };
 }
 

@@ -11,6 +11,7 @@ import { useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
+import { Swords } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
@@ -121,7 +122,7 @@ export default function GroupsScreen() {
           <ActivityIndicator className="mt-xl" color="#c8a3ff" />
         ) : groups.length === 0 ? (
           <EmptyState
-            icon="⚔️"
+            icon={Swords}
             title="Nenhum grupo ainda"
             description="Crie um grupo ou entre com um código para competir com seus amigos."
           />

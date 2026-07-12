@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { View, Text } from "react-native";
 
-type ToastType = "success" | "error" | "warning";
+type ToastType = "success" | "error" | "warning" | "info";
 
 interface ToastMessage {
   id: number;
@@ -15,10 +15,13 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue>({ showToast: () => {} });
 
+// PULSE semantic colours drive the left border + tint. Container stays on the
+// neutral surface so the toast reads as a system message, not a banner.
 const typeStyles: Record<ToastType, string> = {
-  success: "bg-surface-high border-l-4 border-difficulty-easy",
-  error: "bg-error-container border-l-4 border-error",
-  warning: "bg-surface-high border-l-4 border-tertiary",
+  success: "bg-surface-high border-l-4 border-success",
+  error: "bg-surface-high border-l-4 border-error",
+  warning: "bg-surface-high border-l-4 border-warning",
+  info: "bg-surface-high border-l-4 border-info",
 };
 
 let counter = 0;

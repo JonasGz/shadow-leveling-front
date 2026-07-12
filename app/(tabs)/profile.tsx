@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { TriangleAlert, Lock } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
@@ -226,7 +227,7 @@ export default function ProfileScreen() {
       ) : error ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
-            icon="⚠️"
+            icon={TriangleAlert}
             title="Não foi possível carregar o perfil"
             description="Verifique sua conexão e tente novamente."
           />
@@ -389,7 +390,7 @@ export default function ProfileScreen() {
 
             {sessions.length === 0 ? (
               <EmptyState
-                icon="🔒"
+                icon={Lock}
                 title="Nenhuma sessão ativa"
                 description="Não há outros dispositivos conectados."
               />

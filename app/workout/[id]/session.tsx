@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { TriangleAlert, Dumbbell } from "lucide-react-native";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { workoutsService } from "../../../src/services/workouts.service";
@@ -219,7 +220,7 @@ export default function WorkoutSessionScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
         <EmptyState
-          icon="⚠️"
+          icon={TriangleAlert}
           title="Não foi possível iniciar"
           description="Verifique sua conexão e tente novamente."
         />
@@ -239,7 +240,7 @@ export default function WorkoutSessionScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
         <EmptyState
-          icon="🏋️"
+          icon={Dumbbell}
           title="Treino sem exercícios"
           description="Adicione exercícios antes de iniciar uma sessão."
         />

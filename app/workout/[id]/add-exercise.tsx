@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { Input } from "../../../src/components/ui/Input";
 import { Button } from "../../../src/components/ui/Button";
+import { Search } from "lucide-react-native";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { exercisesService } from "../../../src/services/exercises.service";
@@ -236,7 +237,7 @@ export default function AddExerciseScreen() {
                 !searching ? (
                   <View className="mt-xl">
                     <EmptyState
-                      icon="🔍"
+                      icon={Search}
                       title="Nenhum exercício encontrado"
                       description={
                         query.trim()

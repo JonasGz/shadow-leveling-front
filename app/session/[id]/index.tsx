@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
+import { TriangleAlert, Inbox } from "lucide-react-native";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
@@ -82,7 +83,7 @@ export default function SessionDetailScreen() {
       ) : error || !session ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
-            icon="⚠️"
+            icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
@@ -120,7 +121,7 @@ export default function SessionDetailScreen() {
           {Object.keys(grouped).length === 0 ? (
             <View className="mt-md">
               <EmptyState
-                icon="📭"
+                icon={Inbox}
                 title="Nenhuma série registrada"
                 description="Esta sessão não teve séries registradas."
               />

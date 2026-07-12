@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
+import { TriangleAlert, BookOpen, Shield } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { sessionsService } from "../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
@@ -255,7 +256,7 @@ export default function HistoryScreen() {
         ) : error ? (
           <View className="items-center justify-center py-xl gap-md">
             <EmptyState
-              icon="⚠️"
+              icon={TriangleAlert}
               title="Não foi possível carregar"
               description="Verifique sua conexão e tente novamente."
             />
@@ -283,7 +284,7 @@ export default function HistoryScreen() {
 
               {sessions.length === 0 ? (
                 <EmptyState
-                  icon="📓"
+                  icon={BookOpen}
                   title="Nenhuma sessão no período"
                   description="Treine para registrar seu histórico."
                 />
@@ -359,7 +360,7 @@ export default function HistoryScreen() {
 
               {missed.length === 0 ? (
                 <EmptyState
-                  icon="🛡️"
+                  icon={Shield}
                   title="Nenhum treino perdido"
                   description="Sua disciplina está intacta no período."
                 />

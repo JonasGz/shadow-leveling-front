@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { TriangleAlert, Inbox } from "lucide-react-native";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { authService } from "../../../src/services/auth.service";
@@ -214,7 +215,7 @@ export default function SessionCompleteScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
         <EmptyState
-          icon="⚠️"
+          icon={TriangleAlert}
           title="Não foi possível carregar o resumo"
           description="O treino foi registrado, mas não conseguimos montar o resumo."
         />
@@ -341,7 +342,7 @@ export default function SessionCompleteScreen() {
         {summaries.length === 0 ? (
           <View className="mb-xl">
             <EmptyState
-              icon="📭"
+              icon={Inbox}
               title="Nenhuma série registrada"
               description="Você finalizou sem registrar séries nesta sessão."
             />

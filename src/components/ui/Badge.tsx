@@ -1,6 +1,9 @@
 import { Text, View } from "react-native";
 
-type Tone = "primary" | "secondary" | "tertiary" | "success" | "error" | "neutral";
+// Semantic PULSE tones. `primary`/`secondary` use the accent ramp; the rest use
+// the semantic colours (success/warning/error/info). `neutral` is for status
+// that has no semantic weight.
+type Tone = "primary" | "secondary" | "success" | "warning" | "error" | "info" | "neutral";
 
 interface BadgeProps {
   label: string;
@@ -10,9 +13,10 @@ interface BadgeProps {
 const toneStyles: Record<Tone, { container: string; text: string }> = {
   primary: { container: "bg-primary/15", text: "text-primary" },
   secondary: { container: "bg-secondary/15", text: "text-secondary" },
-  tertiary: { container: "bg-tertiary/15", text: "text-tertiary" },
-  success: { container: "bg-difficulty-easy/15", text: "text-difficulty-easy" },
+  success: { container: "bg-success/15", text: "text-success" },
+  warning: { container: "bg-warning/15", text: "text-warning" },
   error: { container: "bg-error/15", text: "text-error" },
+  info: { container: "bg-info/15", text: "text-info" },
   neutral: { container: "bg-surface-high", text: "text-on-surface-variant" },
 };
 

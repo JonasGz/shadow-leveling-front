@@ -1,16 +1,17 @@
 import { Text, View } from "react-native";
+import { TriangleAlert, type LucideIcon } from "lucide-react-native";
 
 interface EmptyStateProps {
-  icon?: string;
+  icon?: LucideIcon;
   title: string;
   description?: string;
 }
 
-export function EmptyState({ icon = "⚔️", title, description }: EmptyStateProps) {
+export function EmptyState({ icon: Icon = TriangleAlert, title, description }: EmptyStateProps) {
   return (
     <View className="flex-1 items-center justify-center px-lg py-xl gap-2">
-      <Text className="text-5xl mb-2">{icon}</Text>
-      <Text className="text-title-md text-on-surface font-semibold text-center">
+      <Icon size={48} color="#908D94" strokeWidth={1.5} />
+      <Text className="text-title-md text-on-surface font-semibold text-center mt-2">
         {title}
       </Text>
       {description ? (

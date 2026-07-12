@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TriangleAlert, Search, Dumbbell } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useAuthStore } from "../../src/stores/auth.store";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
@@ -279,7 +280,7 @@ export default function WorkoutsScreen() {
       ) : error && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
-            icon="⚠️"
+            icon={TriangleAlert}
             title="Não foi possível carregar"
             description={error}
           />
@@ -343,7 +344,7 @@ export default function WorkoutsScreen() {
 
             {filtered.length === 0 ? (
               <EmptyState
-                icon={search ? "🔍" : "🏋️"}
+                icon={search ? Search : Dumbbell}
                 title={
                   search ? "Nenhum treino encontrado" : "Nenhum treino ainda"
                 }
