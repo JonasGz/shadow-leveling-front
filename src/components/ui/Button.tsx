@@ -52,7 +52,7 @@ export function Button({
       `}
     >
       {loading ? (
-        <ActivityIndicator size="small" color={variant === "primary" ? "#3c0091" : "#d0bcff"} />
+        <ActivityIndicator size="small" color={variant === "primary" ? "#e4d5ff" : "#c8a3ff"} />
       ) : (
         <Text className={`text-label-md tracking-widest uppercase ${styles.text}`}>{label}</Text>
       )}

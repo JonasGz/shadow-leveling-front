@@ -205,7 +205,7 @@ export default function SessionCompleteScreen() {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator size="large" color="#d0bcff" />
+        <ActivityIndicator size="large" color="#c8a3ff" />
       </SafeAreaView>
     );
   }
@@ -245,14 +245,14 @@ export default function SessionCompleteScreen() {
           <View
             className="w-20 h-20 mb-md rounded-full items-center justify-center border-2 border-primary overflow-hidden"
             style={{
-              shadowColor: "#d0bcff",
+              shadowColor: "#c8a3ff",
               shadowOpacity: 0.4,
               shadowRadius: 20,
               shadowOffset: { width: 0, height: 0 },
             }}
           >
             <LinearGradient
-              colors={["#a078ff", "#6d3bd7"]}
+              colors={["#b06cff", "#6c00b2"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ position: "absolute", inset: 0 }}
@@ -272,14 +272,14 @@ export default function SessionCompleteScreen() {
           <View
             className="w-full rounded-xl border border-primary mb-md overflow-hidden"
             style={{
-              shadowColor: "#d0bcff",
+              shadowColor: "#c8a3ff",
               shadowOpacity: 0.45,
               shadowRadius: 20,
               shadowOffset: { width: 0, height: 0 },
             }}
           >
             <LinearGradient
-              colors={["#a078ff", "#6d3bd7"]}
+              colors={["#b06cff", "#6c00b2"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ position: "absolute", inset: 0 }}
@@ -459,7 +459,7 @@ export default function SessionCompleteScreen() {
             style={
               status === "complete"
                 ? {
-                    shadowColor: "#d0bcff",
+                    shadowColor: "#c8a3ff",
                     shadowOpacity: 0.2,
                     shadowRadius: 20,
                     shadowOffset: { width: 0, height: 0 },
@@ -529,14 +529,14 @@ export default function SessionCompleteScreen() {
           disabled={submitting}
           className="w-full bg-primary py-lg rounded-xl items-center justify-center active:opacity-90"
           style={{
-            shadowColor: "#d0bcff",
+            shadowColor: "#c8a3ff",
             shadowOpacity: 0.3,
             shadowRadius: 20,
             shadowOffset: { width: 0, height: 0 },
           }}
         >
           {submitting ? (
-            <ActivityIndicator size="small" color="#3c0091" />
+            <ActivityIndicator size="small" color="#e4d5ff" />
           ) : (
             <Text className="text-on-primary text-title-md uppercase tracking-tight font-bold">
               Finalizar treino

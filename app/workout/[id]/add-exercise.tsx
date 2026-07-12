@@ -188,7 +188,7 @@ export default function AddExerciseScreen() {
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar exercício..."
-              placeholderTextColor="#494454"
+              placeholderTextColor="#3f006c"
               autoFocus
               autoCorrect={false}
               className="w-full rounded px-4 py-4 bg-surface-lowest border border-outline-variant text-on-surface text-body-md"
@@ -197,7 +197,7 @@ export default function AddExerciseScreen() {
 
           {searching && results.length === 0 ? (
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color="#d0bcff" />
+              <ActivityIndicator size="large" color="#c8a3ff" />
             </View>
           ) : (
             <FlatList
@@ -227,7 +227,7 @@ export default function AddExerciseScreen() {
               ListFooterComponent={
                 loadingMore ? (
                   <ActivityIndicator
-                    color="#d0bcff"
+                    color="#c8a3ff"
                     className="py-md"
                   />
                 ) : null

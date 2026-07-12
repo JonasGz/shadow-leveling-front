@@ -80,11 +80,11 @@ export default function TabsLayout() {
             >
               <View
                 style={{
-                  backgroundColor: "#d0bcff",
+                  backgroundColor: "#c8a3ff",
                   borderRadius: 38,
                   paddingHorizontal: 38,
                   paddingVertical: 36,
-                  shadowColor: "#d0bcff",
+                  shadowColor: "#c8a3ff",
                   shadowOffset: { width: 0, height: 0 },
                   shadowOpacity: 0.6,
                   shadowRadius: 8,

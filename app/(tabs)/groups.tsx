@@ -81,7 +81,7 @@ export default function GroupsScreen() {
         className="flex-1 px-md"
         contentContainerClassName="pb-[112px]"
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={load} tintColor="#d0bcff" />
+          <RefreshControl refreshing={false} onRefresh={load} tintColor="#c8a3ff" />
         }
       >
         <Text className="text-headline-mobile text-on-surface font-bold mt-md mb-lg">
@@ -118,7 +118,7 @@ export default function GroupsScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator className="mt-xl" color="#d0bcff" />
+          <ActivityIndicator className="mt-xl" color="#c8a3ff" />
         ) : groups.length === 0 ? (
           <EmptyState
             icon="⚔️"

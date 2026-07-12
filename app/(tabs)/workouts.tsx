@@ -80,7 +80,7 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
           onPress={() => router.push(`/workout/${workout.id}/session`)}
           className="w-full bg-secondary py-md rounded-xl flex-row items-center justify-center gap-2 active:opacity-80"
           style={{
-            shadowColor: "#4cd7f6",
+            shadowColor: "#b06cff",
             shadowOpacity: 0.3,
             shadowRadius: 20,
             shadowOffset: { width: 0, height: 0 },
@@ -105,9 +105,7 @@ function LibraryWorkoutCard({
   onDelete: (workout: Workout) => void;
 }) {
   const count = workout.exercises?.length ?? 0;
-  const daysLabel = workout.days_of_week
-    .map((d) => DAY_SHORT[d])
-    .join(", ");
+  const daysLabel = workout.days_of_week.map((d) => DAY_SHORT[d]).join(", ");
 
   return (
     <Pressable
@@ -188,7 +186,7 @@ export default function WorkoutsScreen() {
   const [search, setSearch] = useState("");
   // Dia da semana lido do relógio local do dispositivo.
   const [today, setToday] = useState<DayOfWeek>(
-    () => DAY_INDEX[new Date().getDay()]
+    () => DAY_INDEX[new Date().getDay()],
   );
 
   useEffect(() => {
@@ -201,7 +199,7 @@ export default function WorkoutsScreen() {
       // e troca de fuso horário com o app aberto em segundo plano.
       setToday(DAY_INDEX[new Date().getDay()]);
       refresh();
-    }, [refresh])
+    }, [refresh]),
   );
 
   const onRefresh = useCallback(async () => {
@@ -229,10 +227,10 @@ export default function WorkoutsScreen() {
               }
             },
           },
-        ]
+        ],
       );
     },
-    [remove]
+    [remove],
   );
 
   const filtered = useMemo(() => {
@@ -243,11 +241,11 @@ export default function WorkoutsScreen() {
 
   const todayWorkouts = useMemo(
     () => filtered.filter((w) => w.active && w.days_of_week.includes(today)),
-    [filtered, today]
+    [filtered, today],
   );
   const libraryWorkouts = useMemo(
     () => filtered.filter((w) => !todayWorkouts.includes(w)),
-    [filtered, todayWorkouts]
+    [filtered, todayWorkouts],
   );
 
   const initial = (user?.email?.[0] ?? "?").toUpperCase();
@@ -276,7 +274,7 @@ export default function WorkoutsScreen() {
 
       {loading && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
@@ -302,7 +300,7 @@ export default function WorkoutsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#d0bcff"
+              tintColor="#c8a3ff"
             />
           }
         >
@@ -313,7 +311,7 @@ export default function WorkoutsScreen() {
               value={search}
               onChangeText={setSearch}
               placeholder="Buscar treino..."
-              placeholderTextColor="#cbc3d7"
+              placeholderTextColor="#c8a3ff"
               className="flex-1 text-body-md text-on-surface"
             />
           </View>
@@ -335,10 +333,6 @@ export default function WorkoutsScreen() {
 
           {/* Sua Biblioteca */}
           <View className="gap-md">
-            <Text className="text-label-md uppercase text-on-surface-variant tracking-[3px]">
-              Sua Biblioteca
-            </Text>
-
             {libraryWorkouts.map((w) => (
               <LibraryWorkoutCard
                 key={w.id}
@@ -351,9 +345,7 @@ export default function WorkoutsScreen() {
               <EmptyState
                 icon={search ? "🔍" : "🏋️"}
                 title={
-                  search
-                    ? "Nenhum treino encontrado"
-                    : "Nenhum treino ainda"
+                  search ? "Nenhum treino encontrado" : "Nenhum treino ainda"
                 }
                 description={
                   search
@@ -369,7 +361,7 @@ export default function WorkoutsScreen() {
               >
                 <Text className="text-outline text-4xl">＋</Text>
                 <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
-                  Novo Modelo de Treino
+                  Novo Treino
                 </Text>
               </Pressable>
             )}

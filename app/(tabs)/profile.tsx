@@ -221,7 +221,7 @@ export default function ProfileScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
@@ -250,7 +250,7 @@ export default function ProfileScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#d0bcff"
+              tintColor="#c8a3ff"
             />
           }
         >
@@ -260,14 +260,14 @@ export default function ProfileScreen() {
               <View
                 className="w-32 h-32 rounded-full p-1"
                 style={{
-                  shadowColor: "#d0bcff",
+                  shadowColor: "#c8a3ff",
                   shadowOpacity: 0.3,
                   shadowRadius: 15,
                   shadowOffset: { width: 0, height: 0 },
                 }}
               >
                 <LinearGradient
-                  colors={["#d0bcff", "#4cd7f6"]}
+                  colors={["#c8a3ff", "#b06cff"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={{
@@ -355,7 +355,7 @@ export default function ProfileScreen() {
                     className="h-full bg-primary rounded-full"
                     style={{
                       width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
-                      shadowColor: "#d0bcff",
+                      shadowColor: "#c8a3ff",
                       shadowOpacity: 0.5,
                       shadowRadius: 10,
                       shadowOffset: { width: 0, height: 0 },
@@ -510,7 +510,7 @@ export default function ProfileScreen() {
                 className="flex-1 rounded-lg bg-primary py-3 items-center active:opacity-80"
               >
                 {savingNick ? (
-                  <ActivityIndicator size="small" color="#3c0091" />
+                  <ActivityIndicator size="small" color="#e4d5ff" />
                 ) : (
                   <Text className="text-on-primary text-label-md uppercase tracking-widest font-semibold">
                     Salvar

@@ -189,7 +189,7 @@ export default function HistoryScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#d0bcff"
+            tintColor="#c8a3ff"
           />
         }
       >
@@ -250,7 +250,7 @@ export default function HistoryScreen() {
 
         {loading ? (
           <View className="items-center justify-center py-xl">
-            <ActivityIndicator size="large" color="#d0bcff" />
+            <ActivityIndicator size="large" color="#c8a3ff" />
           </View>
         ) : error ? (
           <View className="items-center justify-center py-xl gap-md">

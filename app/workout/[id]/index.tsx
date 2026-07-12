@@ -266,7 +266,7 @@ export default function WorkoutDetailScreen() {
             onPress={() => router.push(`/workout/${id}/session`)}
             className="bg-primary px-5 py-2 rounded-lg active:opacity-80"
             style={{
-              shadowColor: "#d0bcff",
+              shadowColor: "#c8a3ff",
               shadowOpacity: 0.3,
               shadowRadius: 15,
               shadowOffset: { width: 0, height: 0 },
@@ -281,7 +281,7 @@ export default function WorkoutDetailScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">

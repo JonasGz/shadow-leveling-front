@@ -187,6 +187,7 @@ export interface Group {
 
 export interface GroupDetail extends Group {
   top_score: number;
+  top_name: string;
   my_score: number;
   member_count: number;
 }

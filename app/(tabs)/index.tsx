@@ -81,7 +81,7 @@ function ProgressRing({
           height: size,
           borderRadius: size / 2,
           borderWidth: stroke,
-          borderColor: "#353436",
+          borderColor: "#6c00b2",
         }}
       />
       {/* Metade direita */}
@@ -102,7 +102,7 @@ function ProgressRing({
             marginLeft: -size / 2,
             borderRadius: size / 2,
             borderWidth: stroke,
-            borderColor: "#d0bcff",
+            borderColor: "#c8a3ff",
             borderLeftColor: "transparent",
             borderBottomColor: "transparent",
             transform: [{ rotate: `${rightRotate + 45}deg` }],
@@ -127,7 +127,7 @@ function ProgressRing({
             marginRight: -size / 2,
             borderRadius: size / 2,
             borderWidth: stroke,
-            borderColor: "#d0bcff",
+            borderColor: "#c8a3ff",
             borderRightColor: "transparent",
             borderTopColor: "transparent",
             transform: [{ rotate: `${leftRotate - 135}deg` }],
@@ -220,7 +220,7 @@ export default function HomeScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
@@ -249,7 +249,7 @@ export default function HomeScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#d0bcff"
+              tintColor="#c8a3ff"
             />
           }
         >
@@ -290,7 +290,7 @@ export default function HomeScreen() {
                         className="h-full bg-secondary rounded-full"
                         style={{
                           width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
-                          shadowColor: "#4cd7f6",
+                          shadowColor: "#b06cff",
                           shadowOpacity: 0.5,
                           shadowRadius: 10,
                           shadowOffset: { width: 0, height: 0 },
@@ -385,7 +385,7 @@ export default function HomeScreen() {
         onPress={() => router.push("/workout/create")}
         className="absolute right-md bottom-[112px] w-14 h-14 bg-primary rounded-xl items-center justify-center active:opacity-80"
         style={{
-          shadowColor: "#d0bcff",
+          shadowColor: "#c8a3ff",
           shadowOpacity: 0.4,
           shadowRadius: 12,
           shadowOffset: { width: 0, height: 0 },

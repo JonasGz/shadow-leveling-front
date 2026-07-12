@@ -77,7 +77,7 @@ export default function SessionDetailScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error || !session ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">

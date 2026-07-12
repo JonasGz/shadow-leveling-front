@@ -20,7 +20,7 @@ export function Input({ label, error, secureToggle = false, secureTextEntry, ...
           textContentType={secureTextEntry ? "oneTimeCode" : props.textContentType}
           autoComplete={secureTextEntry ? "off" : props.autoComplete}
           passwordRules=""
-          placeholderTextColor="#494454"
+          placeholderTextColor="#3f006c"
           className={`
             w-full rounded px-4 py-4
             bg-surface-lowest border

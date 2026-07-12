@@ -207,7 +207,7 @@ export default function WorkoutSessionScreen() {
   if (booting) {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator size="large" color="#d0bcff" />
+        <ActivityIndicator size="large" color="#c8a3ff" />
         <Text className="text-on-surface-variant text-label-md uppercase tracking-widest mt-md">
           Preparando sessão...
         </Text>
@@ -309,7 +309,7 @@ export default function WorkoutSessionScreen() {
               className="h-full bg-primary rounded-full"
               style={{
                 width: `${progressPct}%`,
-                shadowColor: "#d0bcff",
+                shadowColor: "#c8a3ff",
                 shadowOpacity: 0.4,
                 shadowRadius: 10,
                 shadowOffset: { width: 0, height: 0 },
@@ -323,13 +323,13 @@ export default function WorkoutSessionScreen() {
           {/* Header com gradiente roxo (no lugar da imagem) */}
           <View className="relative h-48 w-full">
             <LinearGradient
-              colors={["#a078ff", "#6d3bd7", "#1c1b1c"]}
+              colors={["#b06cff", "#6c00b2", "#1e0037"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ position: "absolute", inset: 0 }}
             />
             <LinearGradient
-              colors={["transparent", "#1c1b1c"]}
+              colors={["transparent", "#1e0037"]}
               style={{ position: "absolute", inset: 0 }}
             />
             <View className="absolute bottom-4 left-4 right-4">
@@ -400,7 +400,7 @@ export default function WorkoutSessionScreen() {
                   style={
                     isActiveRow
                       ? {
-                          shadowColor: "#d0bcff",
+                          shadowColor: "#c8a3ff",
                           shadowOpacity: 0.1,
                           shadowRadius: 15,
                           shadowOffset: { width: 0, height: 0 },
@@ -424,7 +424,7 @@ export default function WorkoutSessionScreen() {
                     editable={!set.done}
                     keyboardType="numeric"
                     placeholder="--"
-                    placeholderTextColor="#494454"
+                    placeholderTextColor="#3f006c"
                     className={`flex-1 bg-background border rounded p-2 text-center text-title-md ${
                       set.done
                         ? "border-outline-variant text-on-surface-variant opacity-50"
@@ -441,7 +441,7 @@ export default function WorkoutSessionScreen() {
                       editable={!set.done}
                       keyboardType="numeric"
                       placeholder="--"
-                      placeholderTextColor="#494454"
+                      placeholderTextColor="#3f006c"
                       className={`flex-1 bg-background border rounded p-2 text-center text-title-md ${
                         set.done
                           ? "border-outline-variant text-on-surface-variant opacity-50"
@@ -494,7 +494,7 @@ export default function WorkoutSessionScreen() {
               onPress={() => setCurrent((c) => c + 1)}
               className="flex-1 bg-primary py-3 rounded-xl flex-row items-center justify-center gap-2 active:opacity-80"
               style={{
-                shadowColor: "#d0bcff",
+                shadowColor: "#c8a3ff",
                 shadowOpacity: 0.3,
                 shadowRadius: 10,
                 shadowOffset: { width: 0, height: 4 },
@@ -510,14 +510,14 @@ export default function WorkoutSessionScreen() {
               disabled={finishing}
               className="flex-1 bg-primary py-3 rounded-xl flex-row items-center justify-center gap-2 active:opacity-80"
               style={{
-                shadowColor: "#d0bcff",
+                shadowColor: "#c8a3ff",
                 shadowOpacity: 0.3,
                 shadowRadius: 10,
                 shadowOffset: { width: 0, height: 4 },
               }}
             >
               {finishing ? (
-                <ActivityIndicator size="small" color="#3c0091" />
+                <ActivityIndicator size="small" color="#e4d5ff" />
               ) : (
                 <Text className="text-on-primary text-label-md font-semibold uppercase tracking-wider">
                   Finalizar treino
