@@ -183,7 +183,7 @@ export default function HistoryScreen() {
       </View>
 
       <ScrollView
-        contentContainerClassName="px-md pt-lg pb-xl"
+        contentContainerClassName="px-md pt-lg pb-[112px]"
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

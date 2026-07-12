@@ -243,7 +243,7 @@ export default function HomeScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-lg gap-xl pb-xl"
+          contentContainerClassName="px-md py-lg gap-xl pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -383,7 +383,7 @@ export default function HomeScreen() {
       {/* FAB contextual */}
       <Pressable
         onPress={() => router.push("/workout/create")}
-        className="absolute right-md bottom-lg w-14 h-14 bg-primary rounded-xl items-center justify-center active:opacity-80"
+        className="absolute right-md bottom-[112px] w-14 h-14 bg-primary rounded-xl items-center justify-center active:opacity-80"
         style={{
           shadowColor: "#d0bcff",
           shadowOpacity: 0.4,

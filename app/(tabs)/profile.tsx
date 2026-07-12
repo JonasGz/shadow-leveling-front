@@ -244,7 +244,7 @@ export default function ProfileScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-xl gap-xl pb-xl"
+          contentContainerClassName="px-md py-xl gap-xl pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl

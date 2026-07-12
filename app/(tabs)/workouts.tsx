@@ -296,7 +296,7 @@ export default function WorkoutsScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-lg gap-lg pb-xl"
+          contentContainerClassName="px-md py-lg gap-lg pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
