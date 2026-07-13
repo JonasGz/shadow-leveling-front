@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
+  Image,
   Pressable,
   ScrollView,
   ActivityIndicator,
@@ -109,18 +110,20 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
 function StatCard({
   icon,
   iconColor,
+  iconFill,
   value,
   label,
 }: {
   icon: typeof Flame;
   iconColor: string;
+  iconFill?: string;
   value: string;
   label: string;
 }) {
   const Icon = icon;
   return (
     <View className="flex-1 bg-surface-low rounded-2xl p-lg border border-card-border">
-      <Icon size={20} color={iconColor} />
+      <Icon size={20} color={iconColor} fill={iconFill ?? "none"} />
       <Text className="text-on-surface text-center font-extrabold text-title-xl mt-2">
         {value}
       </Text>
@@ -207,12 +210,21 @@ export default function HomeScreen() {
             Hey, {name} 👋
           </Text>
         </View>
-        <View
-          className="w-14 h-14 rounded-full items-center justify-center"
+        <Pressable
+          onPress={() => router.navigate("/(tabs)/profile")}
+          className="w-14 h-14 rounded-full items-center justify-center overflow-hidden active:opacity-70"
           style={{ backgroundColor: "#9F1FFF" }}
         >
-          <Text className="text-white font-bold">{initials}</Text>
-        </View>
+          {user?.avatar_url ? (
+            <Image
+              source={{ uri: user.avatar_url }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
+          ) : (
+            <Text className="text-white font-bold">{initials}</Text>
+          )}
+        </Pressable>
       </View>
 
       {loading ? (
@@ -288,6 +300,7 @@ export default function HomeScreen() {
             <StatCard
               icon={Flame}
               iconColor="#F59E0B"
+              iconFill="#F59E0B"
               value={String(streak)}
               label="Dia de streak"
             />

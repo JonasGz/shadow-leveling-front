@@ -1,6 +1,7 @@
 import { api, TOKEN_KEY } from "./api";
 import * as SecureStore from "expo-secure-store";
 import { unregisterPush } from "../lib/push";
+import { buildImageForm } from "./groups.service";
 import type {
   AuthToken,
   User,
@@ -42,6 +43,14 @@ export const authService = {
 
   async updateNickname(nickname: string): Promise<User> {
     const { data } = await api.patch<User>("/auth/me", { nickname });
+    return data;
+  },
+
+  /** Uploads a new profile picture (local URI from expo-image-picker). */
+  async updateAvatar(uri: string): Promise<User> {
+    const { data } = await api.patch<User>("/auth/me/avatar", buildImageForm(uri), {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return data;
   },
 

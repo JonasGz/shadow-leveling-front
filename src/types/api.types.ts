@@ -8,6 +8,7 @@ export interface User {
   id: string;
   email: string;
   nickname: string | null;
+  avatar_url: string | null;
   created_at: string;
 }
 

@@ -38,7 +38,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <View className="absolute top-14 left-4 right-4 gap-2 z-50 pointer-events-none">
+      {/* Acima da tab bar (60px + 32px de margem), fora do caminho da app bar. */}
+      <View
+        pointerEvents="none"
+        className="absolute bottom-[112px] left-4 right-4 gap-2 z-50"
+      >
         {toasts.map((t) => (
           <View key={t.id} className={`rounded-md px-4 py-3 ${typeStyles[t.type]}`}>
             <Text className="text-body-md text-on-surface">{t.message}</Text>

@@ -1,11 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
-import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
-import { TriangleAlert, Inbox, ChevronLeft } from "lucide-react-native";
+import {
+  TriangleAlert,
+  Inbox,
+  ChevronLeft,
+  Check,
+  X,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react-native";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { sessionsService } from "../../../src/services/sessions.service";
+import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
   ExerciseSet,
@@ -13,10 +28,17 @@ import type {
   WorkoutSessionDetail,
 } from "../../../src/types/api.types";
 
-const STATUS_LABEL: Record<SessionStatus, { label: string; cls: string }> = {
-  complete: { label: "Concluído", cls: "text-primary" },
-  incomplete: { label: "Incompleto", cls: "text-tertiary" },
-  skipped: { label: "Pulado", cls: "text-error" },
+// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
+// então o valor do mock vem inline.
+const TRACK = { letterSpacing: 0.5 };
+
+const STATUS_META: Record<
+  SessionStatus,
+  { label: string; Icon: LucideIcon; color: string }
+> = {
+  complete: { label: "Concluído", Icon: Check, color: "#22C55E" },
+  incomplete: { label: "Incompleto", Icon: TriangleAlert, color: "#F59E0B" },
+  skipped: { label: "Pulado", Icon: X, color: "#EF4444" },
 };
 
 function fmtFull(iso: string) {
@@ -28,10 +50,46 @@ function fmtFull(iso: string) {
   });
 }
 
+function fmtSet(set: ExerciseSet) {
+  return set.duration != null
+    ? `${set.duration}s`
+    : `${set.weight ?? 0}kg × ${set.reps ?? 0}`;
+}
+
+// Melhor série = maior carga; empate decidido por mais reps. Exercícios por
+// tempo (sem peso) usam a maior duração.
+function bestSetId(sets: ExerciseSet[]): string | null {
+  const best = sets.reduce<ExerciseSet | null>((acc, s) => {
+    if (!acc) return s;
+    if (s.duration != null || acc.duration != null) {
+      return (s.duration ?? 0) > (acc.duration ?? 0) ? s : acc;
+    }
+    const w = s.weight ?? 0;
+    const bw = acc.weight ?? 0;
+    if (w !== bw) return w > bw ? s : acc;
+    return (s.reps ?? 0) > (acc.reps ?? 0) ? s : acc;
+  }, null);
+  return best?.id ?? null;
+}
+
+function statsOf(sets: ExerciseSet[]) {
+  return sets.reduce(
+    (acc, s) => ({
+      series: acc.series + 1,
+      reps: acc.reps + (s.reps ?? 0),
+      volume: acc.volume + (s.weight ?? 0) * (s.reps ?? 0),
+    }),
+    { series: 0, reps: 0, volume: 0 },
+  );
+}
+
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const workouts = useWorkoutsStore((s) => s.workouts);
   const [session, setSession] = useState<WorkoutSessionDetail | null>(null);
+  const [exerciseNames, setExerciseNames] = useState<Record<string, string>>(
+    {},
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -39,7 +97,16 @@ export default function SessionDetailScreen() {
     if (!id) return;
     setError(false);
     try {
-      setSession(await sessionsService.get(id));
+      const s = await sessionsService.get(id);
+      setSession(s);
+      // Os sets só trazem exercise_id; os nomes vêm do detalhe do treino.
+      // Secundário: se falhar, cada card cai no rótulo genérico.
+      const w = await workoutsService.get(s.workout_id).catch(() => null);
+      setExerciseNames(
+        Object.fromEntries(
+          (w?.exercises ?? []).map((we) => [we.exercise_id, we.exercise.name]),
+        ),
+      );
     } catch {
       setError(true);
     } finally {
@@ -60,8 +127,11 @@ export default function SessionDetailScreen() {
       (acc[set.exercise_id] ??= []).push(set);
       return acc;
     },
-    {}
+    {},
   );
+
+  const totals = statsOf(session?.sets ?? []);
+  const status = session ? STATUS_META[session.status] : null;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -83,7 +153,7 @@ export default function SessionDetailScreen() {
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
-      ) : error || !session ? (
+      ) : error || !session || !status ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
             icon={TriangleAlert}
@@ -101,21 +171,47 @@ export default function SessionDetailScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-md gap-md pb-xl"
+          contentContainerClassName="px-5 py-md gap-3 pb-xl"
           showsVerticalScrollIndicator={false}
         >
-          <View className="bg-surface-low border border-outline-variant rounded-md p-md gap-1">
-            <Text className="text-headline-mobile text-on-surface font-bold">
+          {/* Resumo */}
+          <View className="bg-surface-low border border-card-border rounded-2xl p-[18px]">
+            <Text className="text-title-lg font-bold text-on-surface">
               {workoutName}
             </Text>
-            <Text className="text-body-md text-on-surface-variant">
+            <Text className="text-body-md text-on-surface-variant mt-2">
               {fmtFull(session.date)}
             </Text>
-            <Text
-              className={`text-label-md uppercase tracking-widest mt-1 ${STATUS_LABEL[session.status].cls}`}
-            >
-              {STATUS_LABEL[session.status].label}
-            </Text>
+            <View className="flex-row items-center gap-2 mt-3">
+              <status.Icon size={15} color={status.color} strokeWidth={2.4} />
+              <Text
+                className="text-label-md font-bold uppercase text-secondary"
+                style={TRACK}
+              >
+                {status.label}
+              </Text>
+            </View>
+          </View>
+
+          {/* Estatísticas da sessão */}
+          <View className="flex-row gap-2.5">
+            {[
+              { value: totals.series, label: "Séries" },
+              { value: totals.reps, label: "Reps" },
+              { value: totals.volume, label: "kg vol." },
+            ].map((stat) => (
+              <View
+                key={stat.label}
+                className="flex-1 bg-surface-low border border-card-border rounded-xl p-3 items-center"
+              >
+                <Text className="text-title-xl font-extrabold text-on-surface">
+                  {stat.value}
+                </Text>
+                <Text className="text-label-sm text-on-surface-variant mt-1">
+                  {stat.label}
+                </Text>
+              </View>
+            ))}
           </View>
 
           {Object.keys(grouped).length === 0 ? (
@@ -127,34 +223,81 @@ export default function SessionDetailScreen() {
               />
             </View>
           ) : (
-            Object.entries(grouped).map(([exerciseId, sets]) => (
-              <View
-                key={exerciseId}
-                className="bg-surface-container border border-outline-variant rounded-xl p-md gap-sm"
-              >
-                <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
-                  Exercício
-                </Text>
-                {sets
-                  .slice()
-                  .sort((a, b) => a.set_number - b.set_number)
-                  .map((set) => (
-                    <View
-                      key={set.id}
-                      className="flex-row items-center justify-between bg-surface-lowest rounded-lg px-md py-sm"
+            Object.entries(grouped).map(([exerciseId, sets]) => {
+              const ordered = sets
+                .slice()
+                .sort((a, b) => a.set_number - b.set_number);
+              const bestId = bestSetId(ordered);
+              const best = ordered.find((s) => s.id === bestId);
+              return (
+                <View
+                  key={exerciseId}
+                  className="bg-surface-low border border-card-border rounded-2xl p-4"
+                >
+                  <View className="flex-row items-center justify-between">
+                    <Text
+                      className="text-label-sm font-bold uppercase text-on-surface-variant"
+                      style={TRACK}
                     >
-                      <Text className="text-label-md text-on-surface-variant">
-                        Série {set.set_number}
-                      </Text>
-                      <Text className="text-title-md text-on-surface">
-                        {set.duration != null
-                          ? `${set.duration}s`
-                          : `${set.weight ?? 0}kg × ${set.reps ?? 0}`}
+                      Exercício
+                    </Text>
+                    <Text
+                      className="text-label-md font-semibold text-on-surface flex-1 text-right ml-3"
+                      numberOfLines={1}
+                    >
+                      {exerciseNames[exerciseId] ?? "Exercício"}
+                    </Text>
+                  </View>
+
+                  <View className="gap-2 mt-3.5">
+                    {ordered.map((set) => {
+                      const isBest = set.id === bestId;
+                      return (
+                        <View
+                          key={set.id}
+                          className={`flex-row items-center justify-between rounded-xl px-3.5 py-3 ${
+                            isBest
+                              ? "bg-primary/10 border border-primary/35"
+                              : "bg-background"
+                          }`}
+                        >
+                          <View className="flex-row items-center gap-2">
+                            {isBest ? (
+                              <Trophy
+                                size={14}
+                                color="#CAA4FF"
+                                strokeWidth={2}
+                              />
+                            ) : null}
+                            <Text
+                              className={`text-label-md font-semibold ${
+                                isBest
+                                  ? "text-primary-fixed-dim"
+                                  : "text-on-surface-variant"
+                              }`}
+                            >
+                              Série {set.set_number}
+                            </Text>
+                          </View>
+                          <Text className="text-body-lg font-extrabold text-on-surface">
+                            {fmtSet(set)}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+
+                  {best ? (
+                    <View className="flex-row items-center gap-1.5 mt-3">
+                      <Trophy size={13} color="#B26CFF" strokeWidth={2} />
+                      <Text className="text-label-sm text-outline-variant">
+                        Melhor série: {fmtSet(best)}
                       </Text>
                     </View>
-                  ))}
-              </View>
-            ))
+                  ) : null}
+                </View>
+              );
+            })
           )}
         </ScrollView>
       )}
