@@ -6,17 +6,11 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import {
-  Home,
-  BicepsFlexed,
-  Users,
-  History,
-  UserPen,
-} from "lucide-react-native";
+import { Home, Users, History, UserPen, Dumbbell } from "lucide-react-native";
 
 const TABS = [
   { name: "index", title: "Home", Icon: Home },
-  { name: "workouts", title: "Treinos", Icon: BicepsFlexed },
+  { name: "workouts", title: "Treinos", Icon: Dumbbell },
   { name: "groups", title: "Grupos", Icon: Users },
   { name: "history", title: "Histórico", Icon: History },
   { name: "profile", title: "Perfil", Icon: UserPen },
@@ -80,11 +74,11 @@ export default function TabsLayout() {
             >
               <View
                 style={{
-                  backgroundColor: "#c8a3ff",
+                  backgroundColor: "#9f1fff",
                   borderRadius: 38,
                   paddingHorizontal: 38,
                   paddingVertical: 36,
-                  shadowColor: "#c8a3ff",
+                  shadowColor: "#9f1fff",
                   shadowOffset: { width: 0, height: 0 },
                   shadowOpacity: 0.6,
                   shadowRadius: 8,
@@ -118,7 +112,7 @@ export default function TabsLayout() {
                   justifyContent: "center",
                 }}
               >
-                <Icon size={26} color={colorIndex === i ? "#000" : "#958ea0"} />
+                <Icon size={26} color={colorIndex === i ? "#fff" : "#958ea0"} />
               </Pressable>
             );
           })}

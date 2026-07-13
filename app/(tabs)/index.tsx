@@ -15,8 +15,6 @@ import {
   Calendar,
   Flame,
   TrendingUp,
-  Play,
-  Plus,
 } from "lucide-react-native";
 import Svg, {
   Circle,
@@ -25,7 +23,9 @@ import Svg, {
   Stop,
   Text as SvgText,
 } from "react-native-svg";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
+import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
@@ -59,7 +59,7 @@ function deriveName(nickname: string | null, email: string) {
 }
 
 function WeeklyGoalRing({ pct }: { pct: number }) {
-  const size = 84;
+  const size = 110;
   const stroke = 12;
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
@@ -203,7 +203,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View className="flex-row items-center justify-between px-md py-md">
         <View>
-          <Text className="text-title-xl text-white font-bold">
+          <Text className="text-title-xxl text-white font-bold">
             Hey, {name} 👋
           </Text>
         </View>
@@ -226,17 +226,14 @@ export default function HomeScreen() {
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Pressable
+          <Button
+            label="Tentar novamente"
+            size="sm"
             onPress={() => {
               setLoading(true);
               load();
             }}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
+          />
         </View>
       ) : (
         <ScrollView
@@ -323,7 +320,7 @@ export default function HomeScreen() {
                     style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
                   >
                     <Text className="text-white text-label-sm uppercase">
-                      Próximo
+                      {featured.is_completed ? "Concluído" : "Próximo"}
                     </Text>
                   </View>
                 </View>
@@ -341,27 +338,12 @@ export default function HomeScreen() {
                     {featured.exercise_count === 1 ? "" : "s"}
                   </Text>
 
-                  {featured.is_completed ? (
-                    <View className="w-full py-4 mt-md rounded-xl items-center justify-center bg-surface-highest">
-                      <Text className="text-white font-medium text-title-md">
-                        Concluído ✓
-                      </Text>
-                    </View>
-                  ) : (
-                    <Pressable
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        router.push(`/workout/${featured.id}/session`);
-                      }}
-                      className="w-full py-4 mt-md rounded-xl flex-row items-center justify-center gap-2 active:opacity-80"
-                      style={{ backgroundColor: "#9F1FFF" }}
-                    >
-                      <Play size={24} color="#fff" fill="#fff" />
-                      <Text className="text-white font-medium text-title-md">
-                        Iniciar treino
-                      </Text>
-                    </Pressable>
-                  )}
+                  <View className="w-full mt-md">
+                    <StartWorkoutButton
+                      workoutId={featured.id}
+                      done={featured.is_completed}
+                    />
+                  </View>
                 </View>
               </Pressable>
             ) : (
@@ -378,16 +360,11 @@ export default function HomeScreen() {
                     Aproveite para descansar ou criar um novo treino.
                   </Text>
                 </View>
-                <Pressable
+                <Button
+                  label="Criar treino"
+                  size="sm"
                   onPress={() => router.push("/workout/create")}
-                  className="flex-row items-center gap-2 px-6 h-11 rounded-lg active:opacity-80"
-                  style={{ backgroundColor: "#9F1FFF" }}
-                >
-                  <Plus size={18} color="#fff" />
-                  <Text className="text-on-primary font-semibold">
-                    Criar treino
-                  </Text>
-                </Pressable>
+                />
               </View>
             )}
           </View>

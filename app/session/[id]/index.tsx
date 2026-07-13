@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
-import { TriangleAlert, Inbox } from "lucide-react-native";
+import { TriangleAlert, Inbox, ChevronLeft } from "lucide-react-native";
+import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
@@ -64,16 +65,18 @@ export default function SessionDetailScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="px-md pt-md pb-sm flex-row items-center justify-between">
-        <Pressable onPress={() => router.back()} className="active:opacity-60">
-          <Text className="text-body-md text-secondary font-semibold">
-            ‹ Voltar
-          </Text>
+      {/* Top App Bar (mesma da tela de workout) */}
+      <View className="flex-row justify-between items-center px-md h-16">
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          className="active:opacity-60"
+        >
+          <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
-          Sessão
-        </Text>
-        <View className="w-12" />
+        <Text className="text-title-lg text-white font-bold">Sessão</Text>
+        {/* espaçador para manter o título centralizado */}
+        <View className="w-[22px]" />
       </View>
 
       {loading ? (
@@ -87,17 +90,14 @@ export default function SessionDetailScreen() {
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Pressable
+          <Button
+            label="Tentar novamente"
+            size="sm"
             onPress={() => {
               setLoading(true);
               load();
             }}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
+          />
         </View>
       ) : (
         <ScrollView

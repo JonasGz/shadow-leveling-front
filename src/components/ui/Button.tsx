@@ -1,12 +1,19 @@
-import { Pressable, Text, ActivityIndicator, PressableProps } from "react-native";
+import {
+  Pressable,
+  Text,
+  ActivityIndicator,
+  PressableProps,
+} from "react-native";
+import type { LucideIcon } from "lucide-react-native";
 
-type Variant = "default" | "secondary" | "ghost" | "destructive";
+type Variant = "default" | "tonal" | "ghost" | "destructive";
 type Size = "sm" | "md";
 
 interface ButtonProps extends PressableProps {
   label: string;
   variant?: Variant;
   size?: Size;
+  icon?: LucideIcon;
   loading?: boolean;
   fullWidth?: boolean;
 }
@@ -16,25 +23,32 @@ const sizePad: Record<Size, string> = {
   md: "px-6 py-4",
 };
 
-const variantStyles: Record<Variant, { container: string; text: string; spinner: string }> = {
+const variantStyles: Record<
+  Variant,
+  { container: string; text: string; icon: string; spinner: string }
+> = {
   default: {
     container: "bg-primary active:opacity-80",
     text: "text-on-primary font-semibold",
+    icon: "#FFF",
     spinner: "#DCDCDD", // neutral-50 (on-primary)
   },
-  secondary: {
-    container: "border border-secondary active:opacity-80",
-    text: "text-secondary font-semibold",
-    spinner: "#B26CFF", // purple-200 (secondary)
+  tonal: {
+    container: "bg-[#9F1FFF1F] active:opacity-80",
+    text: "text-[#CAA4FF] font-semibold",
+    icon: "#CAA4FF", // purple-100
+    spinner: "#CAA4FF",
   },
   ghost: {
     container: "active:opacity-60",
     text: "text-on-surface-variant font-semibold",
+    icon: "#908D94",
     spinner: "#908D94", // neutral-200
   },
   destructive: {
     container: "bg-error active:opacity-80",
     text: "text-on-error font-semibold",
+    icon: "#DCDCDD",
     spinner: "#DCDCDD", // neutral-50 (on-error)
   },
 };
@@ -43,6 +57,7 @@ export function Button({
   label,
   variant = "default",
   size = "md",
+  icon: Icon,
   loading = false,
   fullWidth = false,
   disabled,
@@ -56,8 +71,8 @@ export function Button({
       {...props}
       disabled={isDisabled}
       className={`
-        flex-row items-center justify-center
-        rounded ${sizePad[size]}
+        flex-row items-center justify-center gap-2
+        rounded-xl ${sizePad[size]}
         ${styles.container}
         ${fullWidth ? "w-full" : ""}
         ${isDisabled ? "opacity-50" : ""}
@@ -66,7 +81,14 @@ export function Button({
       {loading ? (
         <ActivityIndicator size="small" color={styles.spinner} />
       ) : (
-        <Text className={`text-label-md tracking-widest uppercase ${styles.text}`}>{label}</Text>
+        <>
+          {Icon && <Icon size={20} color={styles.icon} fill={styles.icon} />}
+          <Text
+            className={`text-label-md tracking-widest uppercase ${styles.text}`}
+          >
+            {label}
+          </Text>
+        </>
       )}
     </Pressable>
   );

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +31,11 @@ const DAYS: { value: DayOfWeek; label: string }[] = [
 ];
 
 const schema = z.object({
-  name: z.string().trim().min(1, "Nome obrigatório").max(100, "Máximo 100 caracteres"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Nome obrigatório")
+    .max(100, "Máximo 100 caracteres"),
   description: z.string().trim().max(500, "Máximo 500 caracteres").optional(),
 });
 
@@ -52,7 +57,7 @@ export default function CreateWorkoutScreen() {
   function toggleDay(day: DayOfWeek) {
     setDaysError(null);
     setDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
     );
   }
 
@@ -82,18 +87,18 @@ export default function CreateWorkoutScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="px-md pt-md pb-sm">
-        <Pressable onPress={() => router.back()} className="active:opacity-60 mb-md">
-          <Text className="text-body-md text-secondary font-semibold">
-            ‹ Voltar
-          </Text>
+      {/* Top App Bar (mesma da tela de workout) */}
+      <View className="flex-row justify-between items-center px-md h-16">
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          className="active:opacity-60"
+        >
+          <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
-          Novo
-        </Text>
-        <Text className="text-headline-mobile text-on-surface font-bold">
-          Criar treino
-        </Text>
+        <Text className="text-title-lg text-white font-bold">Criar treino</Text>
+        {/* espaçador para manter o título centralizado */}
+        <View className="w-[22px]" />
       </View>
 
       <KeyboardAvoidingView
@@ -101,7 +106,7 @@ export default function CreateWorkoutScreen() {
         className="flex-1"
       >
         <ScrollView
-          contentContainerClassName="px-md py-md gap-md"
+          contentContainerClassName="px-md py-md gap-lg"
           keyboardShouldPersistTaps="handled"
         >
           <Controller
@@ -110,6 +115,8 @@ export default function CreateWorkoutScreen() {
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
                 label="Nome do treino"
+                centeredLabel
+                labelSize="md"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -125,6 +132,8 @@ export default function CreateWorkoutScreen() {
             render={({ field: { onChange, value, onBlur } }) => (
               <Input
                 label="Descrição (opcional)"
+                centeredLabel
+                labelSize="md"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -136,7 +145,7 @@ export default function CreateWorkoutScreen() {
           />
 
           <View className="gap-1.5">
-            <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
+            <Text className="text-label-md uppercase tracking-widest text-on-surface-variant text-center">
               Dias da semana
             </Text>
             <View className="flex-row flex-wrap gap-sm">
@@ -148,13 +157,13 @@ export default function CreateWorkoutScreen() {
                     onPress={() => toggleDay(d.value)}
                     className={`rounded-full px-4 py-2.5 border active:opacity-70 ${
                       active
-                        ? "bg-primary/15 border-primary"
+                        ? "bg-primary"
                         : "bg-transparent border-outline-variant"
                     }`}
                   >
                     <Text
-                      className={`text-label-sm uppercase tracking-widest ${
-                        active ? "text-primary" : "text-on-surface-variant"
+                      className={`text-label-md uppercase tracking-widest ${
+                        active ? "text-white" : "text-on-surface"
                       }`}
                     >
                       {d.label}
@@ -175,6 +184,9 @@ export default function CreateWorkoutScreen() {
               loading={loading}
               fullWidth
             />
+            <Text className="text-label-sm text-center mt-2 text-outline-variant">
+              Você poderá adicionar exercícios no próximo passo.
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

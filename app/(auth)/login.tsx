@@ -94,7 +94,7 @@ export default function AuthScreen() {
           <Button
             testID="auth-apple"
             label="Continuar com Apple"
-            variant="secondary"
+            variant="tonal"
             onPress={handleApple}
             loading={busy === "apple"}
             disabled={busy !== null}

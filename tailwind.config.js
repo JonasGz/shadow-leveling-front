@@ -134,6 +134,7 @@ module.exports = {
         "title-md": ["20px", { lineHeight: "28px", fontWeight: "600" }], // →title
         "title-lg": ["24px", { lineHeight: "30px", fontWeight: "700" }], // →h3
         "title-xl": ["28px", { lineHeight: "34px", fontWeight: "700" }], // →h2
+        "title-xxl": ["32px", { lineHeight: "40px", fontWeight: "700" }], // →h1
         "body-lg": ["18px", { lineHeight: "26px", fontWeight: "400" }], // →subtitle weight 400-ish
         "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], // →body
         "label-md": ["15px", { lineHeight: "20px", fontWeight: "600" }], // →button

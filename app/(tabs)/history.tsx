@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { TriangleAlert, BookOpen, Shield } from "lucide-react-native";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { sessionsService } from "../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
@@ -260,17 +261,10 @@ export default function HistoryScreen() {
               title="Não foi possível carregar"
               description="Verifique sua conexão e tente novamente."
             />
-            <Pressable
-              onPress={() => {
+            <Button label="Tentar novamente" size="sm" onPress={() => {
                 setLoading(true);
                 load();
-              }}
-              className="rounded bg-primary px-6 py-3 active:opacity-80"
-            >
-              <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-                Tentar novamente
-              </Text>
-            </Pressable>
+              }} />
           </View>
         ) : (
           <>

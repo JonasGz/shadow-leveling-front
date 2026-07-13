@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { TriangleAlert, Lock } from "lucide-react-native";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
@@ -231,17 +232,10 @@ export default function ProfileScreen() {
             title="Não foi possível carregar o perfil"
             description="Verifique sua conexão e tente novamente."
           />
-          <Pressable
-            onPress={() => {
+          <Button label="Tentar novamente" size="sm" onPress={() => {
               setLoading(true);
               load();
-            }}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
+            }} />
         </View>
       ) : (
         <ScrollView
@@ -493,7 +487,7 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="bg-surface-lowest border border-outline-variant rounded-lg px-md py-3 text-on-surface text-body-lg"
+              className="bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3 text-on-surface text-body-lg"
             />
             <View className="flex-row gap-md mt-sm">
               <Pressable
@@ -505,19 +499,15 @@ export default function ProfileScreen() {
                   Cancelar
                 </Text>
               </Pressable>
-              <Pressable
-                onPress={saveNickname}
-                disabled={savingNick}
-                className="flex-1 rounded-lg bg-primary py-3 items-center active:opacity-80"
-              >
-                {savingNick ? (
-                  <ActivityIndicator size="small" color="#e4d5ff" />
-                ) : (
-                  <Text className="text-on-primary text-label-md uppercase tracking-widest font-semibold">
-                    Salvar
-                  </Text>
-                )}
-              </Pressable>
+              <View className="flex-1">
+                <Button
+                  label="Salvar"
+                  size="sm"
+                  fullWidth
+                  loading={savingNick}
+                  onPress={saveNickname}
+                />
+              </View>
             </View>
           </View>
         </KeyboardAvoidingView>

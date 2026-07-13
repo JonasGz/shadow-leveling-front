@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   Pressable,
   ActivityIndicator,
@@ -13,13 +12,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { Input } from "../../../src/components/ui/Input";
 import { Button } from "../../../src/components/ui/Button";
-import { Search } from "lucide-react-native";
+import { Search, ChevronLeft } from "lucide-react-native";
+import { SearchInput } from "../../../src/components/ui/SearchInput";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { exercisesService } from "../../../src/services/exercises.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
-import type { Exercise } from "../../../src/types/api.types";
+import type { Exercise, ExerciseType } from "../../../src/types/api.types";
 
 type Stage = "search" | "configure";
 
@@ -40,19 +40,22 @@ export default function AddExerciseScreen() {
   const [creating, setCreating] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const runSearch = useCallback(async (search: string) => {
-    setSearching(true);
-    try {
-      const res = await exercisesService.list({ search, limit: 20 });
-      setResults(res.data);
-      setCursor(res.cursor.next_cursor);
-      setHasMore(res.cursor.has_more);
-    } catch {
-      showToast("Erro ao buscar exercícios.", "error");
-    } finally {
-      setSearching(false);
-    }
-  }, [showToast]);
+  const runSearch = useCallback(
+    async (search: string) => {
+      setSearching(true);
+      try {
+        const res = await exercisesService.list({ search, limit: 20 });
+        setResults(res.data);
+        setCursor(res.cursor.next_cursor);
+        setHasMore(res.cursor.has_more);
+      } catch {
+        showToast("Erro ao buscar exercícios.", "error");
+      } finally {
+        setSearching(false);
+      }
+    },
+    [showToast],
+  );
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -89,15 +92,15 @@ export default function AddExerciseScreen() {
     setStage("configure");
   }
 
-  async function createAndSelect() {
+  async function createAndSelect(type: ExerciseType) {
     const name = query.trim();
     if (!name) return;
     setCreating(true);
     try {
       const ex = await exercisesService.create({
         name,
-        type: "repetition",
-        unit: "reps",
+        type,
+        unit: type === "time" ? "seconds" : "reps",
       });
       showToast(`Exercício "${ex.name}" criado.`, "success");
       selectExercise(ex);
@@ -106,7 +109,7 @@ export default function AddExerciseScreen() {
         err?.response?.status === 400
           ? "Dados inválidos para criar exercício."
           : "Erro ao criar exercício.",
-        "error"
+        "error",
       );
     } finally {
       setCreating(false);
@@ -158,41 +161,37 @@ export default function AddExerciseScreen() {
   const showCreateOption =
     query.trim().length > 0 &&
     !searching &&
-    !results.some(
-      (e) => e.name.toLowerCase() === query.trim().toLowerCase()
-    );
+    !results.some((e) => e.name.toLowerCase() === query.trim().toLowerCase());
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      {/* Header */}
-      <View className="px-md pt-md pb-sm flex-row items-center justify-between">
+      {/* Top App Bar (mesma da tela de workout) */}
+      <View className="flex-row justify-between items-center px-md h-16">
         <Pressable
           onPress={() =>
             stage === "configure" ? setStage("search") : router.back()
           }
+          hitSlop={8}
           className="active:opacity-60"
         >
-          <Text className="text-body-md text-secondary font-semibold">
-            ‹ Voltar
-          </Text>
+          <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
+        <Text className="text-title-lg text-white font-bold">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
         </Text>
-        <View className="w-12" />
+        {/* espaçador para manter o título centralizado */}
+        <View className="w-[22px]" />
       </View>
 
       {stage === "search" ? (
         <View className="flex-1 px-md">
           <View className="py-sm">
-            <TextInput
+            <SearchInput
               value={query}
               onChangeText={setQuery}
               placeholder="Buscar exercício..."
-              placeholderTextColor="#3f006c"
               autoFocus
               autoCorrect={false}
-              className="w-full rounded px-4 py-4 bg-surface-lowest border border-outline-variant text-on-surface text-body-md"
             />
           </View>
 
@@ -206,31 +205,25 @@ export default function AddExerciseScreen() {
               keyExtractor={(item) => item.id}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              contentContainerClassName="pb-xl gap-sm"
+              contentContainerClassName="pb-xl gap-sm pt-5"
               onEndReached={loadMore}
               onEndReachedThreshold={0.4}
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => selectExercise(item)}
-                  className="bg-surface-low border border-outline-variant rounded-md px-md py-md flex-row items-center justify-between active:opacity-80"
+                  className="bg-surface-low border border-card-border rounded-xl text-on-surface-variant px-md py-md flex-row items-center justify-between active:opacity-80"
                 >
                   <View className="flex-1">
-                    <Text className="text-body-md text-on-surface">
+                    <Text className="text-body-lg font-semibold text-on-surface">
                       {item.name}
                     </Text>
-                    <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-1">
-                      {item.type === "time" ? "Tempo" : "Repetição"} · {item.unit}
-                    </Text>
                   </View>
-                  <Text className="text-secondary text-title-md">+</Text>
+                  <Text className="text-secondary text-title-lg">+</Text>
                 </Pressable>
               )}
               ListFooterComponent={
                 loadingMore ? (
-                  <ActivityIndicator
-                    color="#c8a3ff"
-                    className="py-md"
-                  />
+                  <ActivityIndicator color="#c8a3ff" className="py-md" />
                 ) : null
               }
               ListEmptyComponent={
@@ -252,24 +245,40 @@ export default function AddExerciseScreen() {
           )}
 
           {showCreateOption && (
-            <View className="py-sm border-t border-outline-variant">
-              <Button
-                label={`Criar "${query.trim()}"`}
-                variant="secondary"
-                loading={creating}
-                onPress={createAndSelect}
-                fullWidth
-              />
+            <View className="py-sm gap-sm pb-10">
+              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant text-center">
+                {`Criar "${query.trim()}" como:`}
+              </Text>
+              <View className="flex-row gap-sm">
+                <View className="flex-1">
+                  <Button
+                    label="Repetições"
+                    variant="tonal"
+                    loading={creating}
+                    onPress={() => createAndSelect("repetition")}
+                    fullWidth
+                  />
+                </View>
+                <View className="flex-1">
+                  <Button
+                    label="Tempo"
+                    variant="tonal"
+                    loading={creating}
+                    onPress={() => createAndSelect("time")}
+                    fullWidth
+                  />
+                </View>
+              </View>
             </View>
           )}
         </View>
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="flex-1"
+          className="flex-1 justify-start"
         >
           <View className="flex-1 px-md gap-md">
-            <View className="bg-surface-low border border-outline-variant rounded-md p-md">
+            <View className="bg-surface-low border border-card-border rounded-2xl p-md px-lg">
               <Text className="text-title-md text-on-surface font-semibold">
                 {selected?.name}
               </Text>
@@ -281,6 +290,8 @@ export default function AddExerciseScreen() {
 
             <Input
               label="Séries"
+              centeredLabel
+              labelSize="md"
               value={sets}
               onChangeText={setSets}
               keyboardType="number-pad"
@@ -290,6 +301,8 @@ export default function AddExerciseScreen() {
             {isTimeBased ? (
               <Input
                 label="Duração (segundos)"
+                centeredLabel
+                labelSize="md"
                 value={duration}
                 onChangeText={setDuration}
                 keyboardType="number-pad"
@@ -300,6 +313,8 @@ export default function AddExerciseScreen() {
                 <View className="flex-1">
                   <Input
                     label="Reps mín."
+                    centeredLabel
+                    labelSize="md"
                     value={repsMin}
                     onChangeText={setRepsMin}
                     keyboardType="number-pad"
@@ -309,6 +324,8 @@ export default function AddExerciseScreen() {
                 <View className="flex-1">
                   <Input
                     label="Reps máx."
+                    centeredLabel
+                    labelSize="md"
                     value={repsMax}
                     onChangeText={setRepsMax}
                     keyboardType="number-pad"
@@ -320,14 +337,16 @@ export default function AddExerciseScreen() {
 
             <Input
               label="Observação (opcional)"
+              centeredLabel
+              labelSize="md"
               value={note}
               onChangeText={setNote}
-              placeholder="Ex: descanso de 60s"
+              placeholder="Ex: pegada aberta, descida lenta"
               multiline
             />
           </View>
 
-          <View className="px-md pb-md">
+          <View className="px-md pb-10">
             <Button
               label="Adicionar ao treino"
               onPress={handleAdd}
