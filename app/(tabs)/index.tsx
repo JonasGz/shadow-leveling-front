@@ -1,148 +1,135 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
+  Image,
   Pressable,
   ScrollView,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, router } from "expo-router";
+import {
+  TriangleAlert,
+  Calendar,
+  Flame,
+  TrendingUp,
+} from "lucide-react-native";
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Stop,
+  Text as SvgText,
+} from "react-native-svg";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
+import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
-import type { TodayMetrics, UserLevel } from "../../src/types/api.types";
+import type {
+  TodayMetrics,
+  UserLevel,
+  WeeklySummary,
+} from "../../src/types/api.types";
 
-function greeting(d: Date) {
-  const h = d.getHours();
-  if (h < 12) return "Bom dia";
-  if (h < 18) return "Boa tarde";
-  return "Boa noite";
+function titleCase(s: string) {
+  return s
+    .split(/\s+/)
+    .map((w) => (w.length ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
 }
 
-const WEEKDAYS = [
-  "Domingo",
-  "Segunda",
-  "Terça",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sábado",
-];
-const MONTHS = [
-  "jan",
-  "fev",
-  "mar",
-  "abr",
-  "mai",
-  "jun",
-  "jul",
-  "ago",
-  "set",
-  "out",
-  "nov",
-  "dez",
-];
-
-function fmtToday(d: Date) {
-  return `${WEEKDAYS[d.getDay()]}, ${d.getDate()} de ${MONTHS[d.getMonth()]}`;
+function initialsFromName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/**
- * Anel de progresso em RN puro (sem react-native-svg).
- * Usa duas metades rotacionadas que revelam o arco conforme o percentual.
- */
-function ProgressRing({
-  size = 192,
-  stroke = 12,
-  pct,
-  label,
-  value,
-}: {
-  size?: number;
-  stroke?: number;
-  pct: number;
-  label: string;
-  value: string;
-}) {
+function deriveName(nickname: string | null, email: string) {
+  if (nickname && nickname.trim()) return titleCase(nickname.trim());
+  if (email) {
+    const local = email.split("@")[0].replace(/[._-]/g, " ");
+    if (local) return titleCase(local);
+  }
+  return "Caçador";
+}
+
+function WeeklyGoalRing({ pct }: { pct: number }) {
+  const size = 110;
+  const stroke = 12;
+  const r = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * r;
   const clamped = Math.max(0, Math.min(100, pct));
-  const rightRotate = clamped <= 50 ? (clamped / 50) * 180 : 180;
-  const leftRotate = clamped <= 50 ? 0 : ((clamped - 50) / 50) * 180;
+  const offset = circumference * (1 - clamped / 100);
 
   return (
-    <View style={{ width: size, height: size }} className="items-center justify-center">
-      {/* Trilha de fundo */}
-      <View
-        style={{
-          position: "absolute",
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          borderWidth: stroke,
-          borderColor: "#353436",
-        }}
+    <Svg width={size} height={size}>
+      <Defs>
+        <SvgLinearGradient id="weeklyGoalGrad" x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#6E00B3" />
+          <Stop offset="1" stopColor="#B26CFF" />
+        </SvgLinearGradient>
+      </Defs>
+      <Circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="#29282C"
+        strokeWidth={stroke}
       />
-      {/* Metade direita */}
-      <View
-        style={{
-          position: "absolute",
-          width: size,
-          height: size,
-          overflow: "hidden",
-          left: size / 2,
-          alignItems: "flex-start",
-        }}
-      >
-        <View
-          style={{
-            width: size,
-            height: size,
-            marginLeft: -size / 2,
-            borderRadius: size / 2,
-            borderWidth: stroke,
-            borderColor: "#d0bcff",
-            borderLeftColor: "transparent",
-            borderBottomColor: "transparent",
-            transform: [{ rotate: `${rightRotate + 45}deg` }],
-          }}
-        />
-      </View>
-      {/* Metade esquerda (preenche acima de 50%) */}
-      <View
-        style={{
-          position: "absolute",
-          width: size,
-          height: size,
-          overflow: "hidden",
-          right: size / 2,
-          alignItems: "flex-end",
-        }}
-      >
-        <View
-          style={{
-            width: size,
-            height: size,
-            marginRight: -size / 2,
-            borderRadius: size / 2,
-            borderWidth: stroke,
-            borderColor: "#d0bcff",
-            borderRightColor: "transparent",
-            borderTopColor: "transparent",
-            transform: [{ rotate: `${leftRotate - 135}deg` }],
-          }}
-        />
-      </View>
-      {/* Centro */}
-      <View className="items-center justify-center">
-        <Text className="text-display-md text-primary italic uppercase">
-          {value}
-        </Text>
-        <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
-          {label}
-        </Text>
-      </View>
+      <Circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="url(#weeklyGoalGrad)"
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+      <SvgText
+        fill="#fff"
+        fontSize={22}
+        fontWeight="800"
+        textAnchor="middle"
+        x={size / 2}
+        y={size / 2 + 6}
+      >{`${clamped}%`}</SvgText>
+    </Svg>
+  );
+}
+
+function StatCard({
+  icon,
+  iconColor,
+  iconFill,
+  value,
+  label,
+}: {
+  icon: typeof Flame;
+  iconColor: string;
+  iconFill?: string;
+  value: string;
+  label: string;
+}) {
+  const Icon = icon;
+  return (
+    <View className="flex-1 bg-surface-low rounded-2xl p-lg border border-card-border">
+      <Icon size={20} color={iconColor} fill={iconFill ?? "none"} />
+      <Text className="text-on-surface text-center font-extrabold text-title-xl mt-2">
+        {value}
+      </Text>
+      <Text className="text-center text-label-md text-on-surface-variant mt-1">
+        {label}
+      </Text>
     </View>
   );
 }
@@ -150,6 +137,7 @@ function ProgressRing({
 export default function HomeScreen() {
   const user = useAuthStore((s) => s.user);
   const [metrics, setMetrics] = useState<TodayMetrics | null>(null);
+  const [weekly, setWeekly] = useState<WeeklySummary | null>(null);
   const [level, setLevel] = useState<UserLevel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -159,11 +147,13 @@ export default function HomeScreen() {
   const load = useCallback(async () => {
     setError(false);
     try {
-      const [m, lvl] = await Promise.all([
+      const [m, w, lvl] = await Promise.all([
         metricsService.today(),
+        metricsService.weekly().catch(() => null),
         authService.level().catch(() => null),
       ]);
       setMetrics(m);
+      setWeekly(w);
       setLevel(lvl);
     } catch {
       setError(true);
@@ -177,7 +167,7 @@ export default function HomeScreen() {
       setNow(new Date());
       setLoading(true);
       load();
-    }, [load])
+    }, [load]),
   );
 
   const onRefresh = useCallback(async () => {
@@ -188,211 +178,211 @@ export default function HomeScreen() {
   }, [load]);
 
   const email = user?.email ?? "";
-  const generatedName = email ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
-  const name = user?.nickname?.trim() || generatedName;
-  const initial = (email[0] ?? "?").toUpperCase();
+  const name = deriveName(user?.nickname ?? null, email);
+  const initials = initialsFromName(name || email);
 
-  const wp = metrics?.workouts.progress;
-  const workoutPct =
-    wp && wp.total > 0 ? Math.round((wp.completed / wp.total) * 100) : 0;
+  const goal = weekly?.goal;
+  const goalCompleted = goal?.completed ?? 0;
+  const goalScheduled = goal?.scheduled ?? 0;
+  const goalPct =
+    goalScheduled > 0
+      ? Math.min(100, Math.round((goalCompleted / goalScheduled) * 100))
+      : 0;
+
+  const streak = level?.current_streak ?? 0;
+  const rank = level?.rank ?? "E-Rank";
+  const lvlNumber = level?.level ?? 0;
+
+  const featured = useMemo(() => {
+    const items = metrics?.workouts.items ?? [];
+    if (items.length === 0) return null;
+    const pending = items.find((w) => !w.is_completed);
+    if (pending) return pending;
+    return items[items.length - 1];
+  }, [metrics]);
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-20 border-b border-outline-variant">
-        <View className="flex-row items-center gap-3">
-          <View className="w-10 h-10 rounded-full border-2 border-primary bg-primary-container items-center justify-center">
-            <Text className="text-on-primary font-bold">{initial}</Text>
-          </View>
-          <View>
-            <Text className="text-title-md text-on-surface capitalize">
-              {greeting(now)}, {name}!
-            </Text>
-            <Text className="text-label-md text-on-surface-variant">
-              {fmtToday(now)}
-            </Text>
-          </View>
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-md py-md">
+        <View>
+          <Text className="text-title-xxl text-white font-bold">
+            Hey, {name} 👋
+          </Text>
         </View>
-        <Pressable className="w-10 h-10 items-center justify-center rounded-full active:opacity-60">
-          <Text className="text-primary text-xl">◔</Text>
+        <Pressable
+          onPress={() => router.navigate("/(tabs)/profile")}
+          className="w-14 h-14 rounded-full items-center justify-center overflow-hidden active:opacity-70"
+          style={{ backgroundColor: "#9F1FFF" }}
+        >
+          {user?.avatar_url ? (
+            <Image
+              source={{ uri: user.avatar_url }}
+              style={{ width: "100%", height: "100%" }}
+              resizeMode="cover"
+            />
+          ) : (
+            <Text className="text-white font-bold">{initials}</Text>
+          )}
         </Pressable>
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
-            icon="⚠️"
+            icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Pressable
+          <Button
+            label="Tentar novamente"
+            size="sm"
             onPress={() => {
               setLoading(true);
               load();
             }}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
+          />
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-lg gap-xl pb-[112px]"
+          contentContainerClassName="px-md py-md gap-lg pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#d0bcff"
+              tintColor="#c8a3ff"
             />
           }
         >
-          {/* Progresso de treino + nível */}
-          <View className="bg-surface-low rounded-xl p-lg border border-outline-variant overflow-hidden">
-            <View className="absolute top-0 left-0 w-1 h-full bg-primary" />
-            <View className="items-center gap-lg">
-              <ProgressRing
-                pct={workoutPct}
-                value={`${wp?.completed ?? 0} / ${wp?.total ?? 0}`}
-                label="Treinos"
-              />
-
-              <View className="w-full gap-md">
-                <View>
-                  <Text className="text-headline-mobile italic uppercase text-primary">
-                    {level ? `Nível ${level.level}` : "Próximo Nível"}
-                  </Text>
-                  <Text className="text-body-md text-on-surface-variant mt-1">
-                    {wp && wp.pending > 0
-                      ? `Conclua ${wp.pending} treino${wp.pending > 1 ? "s" : ""} de hoje para evoluir.`
-                      : "Treinos de hoje concluídos. Excelente!"}
-                  </Text>
-                </View>
-
-                {level ? (
-                  <View className="gap-sm">
-                    <View className="flex-row justify-between">
-                      <Text className="text-label-md text-on-surface uppercase">
-                        Rank: {level.rank}
-                      </Text>
-                      <Text className="text-label-md text-on-surface">
-                        {level.xp_into_level} / {level.xp_for_next_level} XP
-                      </Text>
-                    </View>
-                    <View className="w-full h-3 bg-surface-highest rounded-full overflow-hidden">
-                      <View
-                        className="h-full bg-secondary rounded-full"
-                        style={{
-                          width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
-                          shadowColor: "#4cd7f6",
-                          shadowOpacity: 0.5,
-                          shadowRadius: 10,
-                          shadowOffset: { width: 0, height: 0 },
-                        }}
-                      />
-                    </View>
-                  </View>
-                ) : null}
+          {/* Weekly goal card */}
+          {weekly ? (
+            <LinearGradient
+              colors={["rgb(42, 23, 48)", "rgb(26, 25, 28)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 12,
+                borderRadius: 20,
+                padding: 16,
+                borderWidth: 1,
+                borderColor: "#9F1FFF4D",
+              }}
+            >
+              <WeeklyGoalRing pct={goalPct} />
+              <View className="flex-1">
+                <Text className="text-title-lg text-on-surface font-bold text-center">
+                  Meta semanal
+                </Text>
+                <Text
+                  className="text-body-sm mt-1 text-center"
+                  style={{ color: "#B5B4B8" }}
+                >
+                  {goalCompleted >= goalScheduled && goalScheduled > 0
+                    ? "Meta da semana concluída. Excelente!"
+                    : `${goalCompleted} de ${goalScheduled} treinos feitos. Faltam ${Math.max(
+                        0,
+                        goalScheduled - goalCompleted,
+                      )} pra completar!`}
+                </Text>
               </View>
-            </View>
+            </LinearGradient>
+          ) : null}
+
+          {/* Stat cards */}
+          <View className="flex-row gap-md">
+            <StatCard
+              icon={Flame}
+              iconColor="#F59E0B"
+              iconFill="#F59E0B"
+              value={String(streak)}
+              label="Dia de streak"
+            />
+            <StatCard
+              icon={TrendingUp}
+              iconColor="#B26CFF"
+              value={rank}
+              label={`Nível ${lvlNumber}`}
+            />
           </View>
 
-          {/* Treinos do Dia */}
-          <View className="gap-md">
-            <View className="flex-row justify-between items-end">
-              <Text className="text-label-md uppercase tracking-widest text-primary">
-                Treinos do Dia
-              </Text>
-              <Pressable onPress={() => router.push("/(tabs)/workouts")}>
-                <Text className="text-label-sm text-secondary uppercase">
-                  Ver tudo
-                </Text>
-              </Pressable>
-            </View>
+          {/* Today's workout */}
+          <View>
+            <Text className="text-title-lg text-white text-center font-bold mb-md">
+              Treino de hoje
+            </Text>
 
-            {!metrics || metrics.workouts.items.length === 0 ? (
-              <EmptyState
-                icon="🗓️"
-                title="Nenhum treino para hoje"
-                description="Aproveite para descansar ou criar um novo treino."
-              />
-            ) : (
-              <View className="gap-md">
-                {metrics.workouts.items.map((w) => (
-                  <Pressable
-                    key={w.id}
-                    onPress={() => router.push(`/workout/${w.id}`)}
-                    className={`bg-surface-container rounded-xl p-md flex-row items-center gap-md border border-outline-variant active:opacity-80 ${
-                      w.is_completed ? "opacity-70" : ""
-                    }`}
+            {featured ? (
+              <Pressable
+                onPress={() => router.push(`/workout/${featured.id}`)}
+                className="rounded-2xl overflow-hidden border border-card-border active:opacity-80"
+                style={{ backgroundColor: "#1A191C" }}
+              >
+                <View
+                  className="px-md py-md"
+                  style={{ backgroundColor: "#6E00B3" }}
+                >
+                  <View
+                    className="self-start px-2 py-1 mt-6 rounded-full"
+                    style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
                   >
-                    <View className="w-16 h-16 rounded-lg bg-surface-highest items-center justify-center">
-                      <Text className="text-2xl">
-                        {w.is_completed ? "✅" : "🏋️"}
-                      </Text>
-                    </View>
-                    <View className="flex-1">
-                      <Text
-                        className="text-title-md text-on-surface"
-                        numberOfLines={1}
-                      >
-                        {w.name}
-                      </Text>
-                      <View className="flex-row gap-sm items-center mt-1">
-                        {w.is_completed ? (
-                          <View className="bg-secondary/10 px-2 py-0.5 rounded">
-                            <Text className="text-secondary text-label-sm uppercase">
-                              Concluído
-                            </Text>
-                          </View>
-                        ) : (
-                          <View className="bg-error-container/20 px-2 py-0.5 rounded">
-                            <Text className="text-error text-label-sm uppercase">
-                              Pendente
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                    {w.is_completed ? (
-                      <Text className="text-secondary text-2xl">✓</Text>
-                    ) : (
-                      <Pressable
-                        onPress={() =>
-                          router.push(`/workout/${w.id}/session`)
-                        }
-                        className="w-10 h-10 rounded-full border border-outline-variant items-center justify-center active:bg-secondary"
-                      >
-                        <Text className="text-on-surface text-lg">▶</Text>
-                      </Pressable>
-                    )}
-                  </Pressable>
-                ))}
+                    <Text className="text-white text-label-sm uppercase">
+                      {featured.is_completed ? "Concluído" : "Próximo"}
+                    </Text>
+                  </View>
+                </View>
+
+                <View className="p-lg items-center">
+                  <Text
+                    className="text-title-xl text-on-surface font-bold"
+                    numberOfLines={1}
+                  >
+                    {featured.name}
+                  </Text>
+                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                    {featured.estimated_duration_min} min ·{" "}
+                    {featured.exercise_count} exercício
+                    {featured.exercise_count === 1 ? "" : "s"}
+                  </Text>
+
+                  <View className="w-full mt-md">
+                    <StartWorkoutButton
+                      workoutId={featured.id}
+                      done={featured.is_completed}
+                    />
+                  </View>
+                </View>
+              </Pressable>
+            ) : (
+              <View
+                className="rounded-2xl p-lg items-center gap-md border border-card-border"
+                style={{ backgroundColor: "#1A191C" }}
+              >
+                <Calendar size={36} color="#908D94" strokeWidth={1.5} />
+                <View className="items-center">
+                  <Text className="text-title-md text-on-surface font-semibold">
+                    Nenhum treino para hoje
+                  </Text>
+                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                    Aproveite para descansar ou criar um novo treino.
+                  </Text>
+                </View>
+                <Button
+                  label="Criar treino"
+                  size="sm"
+                  onPress={() => router.push("/workout/create")}
+                />
               </View>
             )}
           </View>
         </ScrollView>
       )}
-
-      {/* FAB contextual */}
-      <Pressable
-        onPress={() => router.push("/workout/create")}
-        className="absolute right-md bottom-[112px] w-14 h-14 bg-primary rounded-xl items-center justify-center active:opacity-80"
-        style={{
-          shadowColor: "#d0bcff",
-          shadowOpacity: 0.4,
-          shadowRadius: 12,
-          shadowOffset: { width: 0, height: 0 },
-        }}
-      >
-        <Text className="text-on-primary text-3xl -mt-1">＋</Text>
-      </Pressable>
     </SafeAreaView>
   );
 }

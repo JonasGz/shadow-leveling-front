@@ -10,16 +10,21 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  TriangleAlert,
+  Inbox,
+  Trophy,
+  Dumbbell,
+  Camera,
+} from "lucide-react-native";
+import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
-import { authService } from "../../../src/services/auth.service";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { pickImage } from "../../../src/lib/pickImage";
-import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
   ExerciseSet,
-  SessionStatus,
   WorkoutSessionDetail,
 } from "../../../src/types/api.types";
 
@@ -36,7 +41,7 @@ interface ExerciseSummary {
 function buildSummary(
   sets: ExerciseSet[],
   nameOf: (id: string) => string,
-  isTimeOf: (id: string) => boolean
+  isTimeOf: (id: string) => boolean,
 ): { summaries: ExerciseSummary[]; totalVolume: number } {
   const byEx: Record<string, ExerciseSet[]> = {};
   for (const s of sets) (byEx[s.exercise_id] ??= []).push(s);
@@ -64,18 +69,20 @@ function buildSummary(
         bestReps: best?.reps ?? null,
         bestDuration: best?.duration ?? null,
       };
-    }
+    },
   );
   return { summaries, totalVolume };
 }
 
 export default function SessionCompleteScreen() {
-  const { id, workoutId } = useLocalSearchParams<{
+  // A sessão já foi finalizada na tela de treino — aqui é só o resumo.
+  // `xp` vem de lá (vazio quando o treino saiu como incompleto).
+  const { id, workoutId, xp } = useLocalSearchParams<{
     id: string;
     workoutId?: string;
+    xp?: string;
   }>();
   const { showToast } = useToast();
-  const refreshWorkouts = useWorkoutsStore((s) => s.refresh);
 
   const [session, setSession] = useState<WorkoutSessionDetail | null>(null);
   const [exerciseMeta, setExerciseMeta] = useState<
@@ -83,11 +90,10 @@ export default function SessionCompleteScreen() {
   >({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [status, setStatus] = useState<SessionStatus>("complete");
-  const [submitting, setSubmitting] = useState(false);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
-  // XP previsto ao concluir (fórmula backend: 50 + min(streak * 5, 50))
-  const [projectedXp, setProjectedXp] = useState<number | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const earnedXp = xp ? Number(xp) : null;
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -95,15 +101,6 @@ export default function SessionCompleteScreen() {
     try {
       const s = await sessionsService.get(id);
       setSession(s);
-
-      // XP previsto ao concluir: streak atual + fórmula do backend.
-      try {
-        const lvl = await authService.level();
-        setProjectedXp(50 + Math.min(lvl.current_streak * 5, 50));
-      } catch {
-        // sem /me/level: usa o XP base (sem bônus de streak)
-        setProjectedXp(50);
-      }
 
       // Resolve nome/tipo de cada exercício pelo workout da sessão
       const wId = workoutId || s.workout_id;
@@ -135,11 +132,11 @@ export default function SessionCompleteScreen() {
 
   const nameOf = useCallback(
     (exId: string) => exerciseMeta[exId]?.name ?? "Exercício",
-    [exerciseMeta]
+    [exerciseMeta],
   );
   const isTimeOf = useCallback(
     (exId: string) => exerciseMeta[exId]?.isTime ?? false,
-    [exerciseMeta]
+    [exerciseMeta],
   );
 
   const { summaries, totalVolume } = useMemo(
@@ -147,65 +144,38 @@ export default function SessionCompleteScreen() {
       session
         ? buildSummary(session.sets ?? [], nameOf, isTimeOf)
         : { summaries: [], totalVolume: 0 },
-    [session, nameOf, isTimeOf]
+    [session, nameOf, isTimeOf],
   );
 
   const hasSets = (session?.sets?.length ?? 0) > 0;
 
-  // Sem séries registradas, "Completo" não é uma opção válida:
-  // rebaixa a seleção para "Incompleto" automaticamente.
-  useEffect(() => {
-    if (session && !hasSets && status === "complete") {
-      setStatus("incomplete");
-    }
-  }, [session, hasSets, status]);
-
-  async function handleConfirm() {
+  // A foto é enviada assim que escolhida — cada envio sobrescreve a anterior
+  // no backend (SetSessionPhoto), então trocar é só escolher outra.
+  async function handlePickPhoto() {
     if (!session) return;
+    const uri = await pickImage();
+    if (!uri) return;
 
-    // Sem nenhuma série registrada não há treino de fato — não pode
-    // ser concluído como "complete" (evita XP indevido no backend).
-    if (status === "complete" && !hasSets) {
-      showToast(
-        "Registre ao menos uma série para concluir como completo.",
-        "warning"
-      );
-      return;
-    }
-
-    setSubmitting(true);
+    setUploadingPhoto(true);
     try {
-      await sessionsService.updateStatus(session.id, status);
-      // Foto é opcional e não bloqueia a conclusão do treino.
-      if (photoUri) {
-        try {
-          await sessionsService.attachPhoto(session.id, photoUri);
-        } catch {
-          showToast("Treino salvo, mas a foto falhou ao enviar.", "warning");
-        }
-      }
-      await refreshWorkouts();
-
-      // XP só é concedido pelo backend quando o status é "complete".
-      if (status === "complete" && projectedXp != null) {
-        showToast(`Treino finalizado!  +${projectedXp} XP`, "success");
-      } else {
-        showToast("Treino finalizado!", "success");
-      }
-
-      if (workoutId) router.replace(`/workout/${workoutId}`);
-      else router.replace("/(tabs)/workouts");
+      await sessionsService.attachPhoto(session.id, uri);
+      setPhotoUri(uri);
+      showToast("Foto salva.", "success");
     } catch {
-      showToast("Erro ao finalizar o treino.", "error");
+      showToast("Não foi possível enviar a foto.", "error");
     } finally {
-      setSubmitting(false);
+      setUploadingPhoto(false);
     }
+  }
+
+  function handleDone() {
+    router.replace("/(tabs)");
   }
 
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator size="large" color="#d0bcff" />
+        <ActivityIndicator size="large" color="#c8a3ff" />
       </SafeAreaView>
     );
   }
@@ -214,22 +184,19 @@ export default function SessionCompleteScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
         <EmptyState
-          icon="⚠️"
+          icon={TriangleAlert}
           title="Não foi possível carregar o resumo"
           description="O treino foi registrado, mas não conseguimos montar o resumo."
         />
-        <Pressable
+        <Button
+          label="Voltar"
+          size="sm"
           onPress={() =>
             workoutId
               ? router.replace(`/workout/${workoutId}`)
               : router.replace("/(tabs)/workouts")
           }
-          className="rounded bg-primary px-6 py-3 active:opacity-80"
-        >
-          <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-            Voltar
-          </Text>
-        </Pressable>
+        />
       </SafeAreaView>
     );
   }
@@ -241,127 +208,159 @@ export default function SessionCompleteScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Header de celebração */}
-        <View className="items-center mb-xl">
-          <View
-            className="w-20 h-20 mb-md rounded-full items-center justify-center border-2 border-primary overflow-hidden"
+        <View className="items-center mb-lg">
+          <LinearGradient
+            colors={["#B26CFF", "#6E00B3"]}
+            start={{ x: 0.32, y: 0.26 }}
+            end={{ x: 1, y: 1 }}
             style={{
-              shadowColor: "#d0bcff",
-              shadowOpacity: 0.4,
-              shadowRadius: 20,
-              shadowOffset: { width: 0, height: 0 },
+              width: 54,
+              height: 54,
+              borderRadius: 27,
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0px 0px 22px rgba(159, 31, 255, 0.55)",
             }}
           >
-            <LinearGradient
-              colors={["#a078ff", "#6d3bd7"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ position: "absolute", inset: 0 }}
-            />
-            <Text className="text-on-primary-container text-4xl">🏆</Text>
-          </View>
-          <Text className="text-display-md text-primary italic uppercase font-black tracking-tight text-center">
-            Treino Concluído!
+            <Trophy size={28} color="#FFF" strokeWidth={1.7} />
+          </LinearGradient>
+          <Text className="text-title-xl text-secondary uppercase font-extrabold text-center mt-3">
+            {hasSets ? "Treino Concluído!" : "Treino registrado"}
           </Text>
-          <Text className="text-label-md text-on-surface-variant uppercase tracking-widest mt-1">
-            Sessão finalizada com sucesso
+          <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest text-center mt-2">
+            {hasSets
+              ? "Sessão finalizada com sucesso"
+              : "Nenhuma série registrada nesta sessão"}
           </Text>
         </View>
 
-        {/* XP ganho — card destacado, largura total */}
-        {status === "complete" && projectedXp != null ? (
-          <View
-            className="w-full rounded-xl border border-primary mb-md overflow-hidden"
+        {/* XP ganho */}
+        {hasSets && earnedXp != null ? (
+          <LinearGradient
+            colors={["#B26CFF", "#7A00C9"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0.87, y: 0.5 }} // ≈ 120deg
             style={{
-              shadowColor: "#d0bcff",
-              shadowOpacity: 0.45,
-              shadowRadius: 20,
-              shadowOffset: { width: 0, height: 0 },
+              borderRadius: 22,
+              padding: 14,
+              alignItems: "center",
+              boxShadow: "0px 8px 22px rgba(159, 31, 255, 0.4)",
             }}
           >
-            <LinearGradient
-              colors={["#a078ff", "#6d3bd7"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ position: "absolute", inset: 0 }}
-            />
-            <View className="p-lg items-center">
-              <Text className="text-label-sm text-on-primary-container uppercase tracking-widest mb-1">
-                XP Conquistado
+            <Text className="text-label-sm text-white/85 uppercase tracking-widest font-bold">
+              XP Conquistado
+            </Text>
+            <View className="flex-row items-end gap-1 mt-2">
+              <Text className="text-title-xxl text-white font-extrabold">
+                +{earnedXp}
               </Text>
-              <View className="flex-row items-end gap-1">
-                <Text className="text-display-lg text-on-primary font-black">
-                  +{projectedXp}
-                </Text>
-                <Text className="text-headline-mobile text-on-primary font-bold mb-2">
-                  XP
-                </Text>
-              </View>
+              <Text className="text-title-md text-white font-bold mb-0.5">
+                XP
+              </Text>
             </View>
-          </View>
+          </LinearGradient>
+        ) : null}
+
+        {/* Foto do treino (opcional) — em destaque: é ela que vai para o grupo */}
+        <Pressable
+          onPress={handlePickPhoto}
+          disabled={uploadingPhoto}
+          className="rounded-2xl border border-dashed border-[#FFFFFF1F] bg-surface-low items-center justify-center overflow-hidden active:opacity-70 mt-md"
+          style={{ height: 140 }}
+        >
+          {photoUri ? (
+            <Image
+              source={{ uri: photoUri }}
+              style={{ width: "100%", height: "100%" }}
+            />
+          ) : (
+            <View className="items-center gap-2 px-md">
+              <Camera size={26} color="#6C6971" strokeWidth={1.6} />
+              <Text className="text-label-md text-on-surface-variant uppercase tracking-widest">
+                Adicionar foto do treino
+              </Text>
+              <Text className="text-label-sm text-outline-variant text-center">
+                Aparece para o seu grupo
+              </Text>
+            </View>
+          )}
+          {uploadingPhoto ? (
+            <View className="absolute inset-0 bg-black/50 items-center justify-center">
+              <ActivityIndicator color="#c8a3ff" />
+            </View>
+          ) : null}
+        </Pressable>
+        {photoUri && !uploadingPhoto ? (
+          <Pressable onPress={handlePickPhoto} className="items-center mt-sm">
+            <Text className="text-label-sm text-secondary uppercase tracking-widest">
+              Trocar foto
+            </Text>
+          </Pressable>
         ) : null}
 
         {/* Stats */}
-        <View className="flex-row gap-md mb-xl">
-          <View className="flex-1 bg-surface-low p-lg rounded-xl border border-outline-variant overflow-hidden">
-            <View className="absolute top-0 left-0 w-1 h-full bg-secondary" />
-            <Text className="text-label-sm text-on-surface-variant uppercase mb-2">
-              Volume Total
+        <View className="flex-row gap-2.5 mt-md">
+          <View className="flex-1 bg-surface-low border border-card-border border-l-[3px] border-l-primary rounded-xl p-md">
+            <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+              Volume total
             </Text>
-            <View className="flex-row items-end gap-1">
-              <Text className="text-display-md text-secondary">
-                {totalVolume > 0
-                  ? totalVolume.toLocaleString("pt-BR")
-                  : "—"}
+            <View className="flex-row items-end gap-1 mt-2">
+              <Text className="text-title-xl text-secondary font-extrabold">
+                {totalVolume > 0 ? totalVolume.toLocaleString("pt-BR") : "—"}
               </Text>
               {totalVolume > 0 ? (
-                <Text className="text-title-md text-secondary mb-1.5">kg</Text>
+                <Text className="text-label-md text-outline-variant font-semibold mb-0.5">
+                  kg
+                </Text>
               ) : null}
             </View>
           </View>
 
-          <View className="flex-1 bg-surface-low p-lg rounded-xl border border-outline-variant overflow-hidden">
-            <View className="absolute top-0 left-0 w-1 h-full bg-tertiary" />
-            <Text className="text-label-sm text-on-surface-variant uppercase mb-2">
+          <View className="flex-1 bg-surface-low border border-card-border border-l-[3px] border-l-primary rounded-xl p-md">
+            <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
               Séries
             </Text>
-            <View className="flex-row items-end gap-1">
-              <Text className="text-display-md text-tertiary">
+            <View className="flex-row items-end gap-1 mt-2">
+              <Text className="text-title-xl text-secondary font-extrabold">
                 {session.sets?.length ?? 0}
               </Text>
-              <Text className="text-title-md text-tertiary mb-1.5">total</Text>
+              <Text className="text-label-md text-outline-variant font-semibold mb-0.5">
+                total
+              </Text>
             </View>
           </View>
         </View>
 
         {/* Resumo de performance */}
-        <Text className="text-label-md text-primary uppercase tracking-widest mb-md">
-          Resumo de Performance
+        <Text className="text-label-sm text-center text-secondary uppercase tracking-widest mt-lg mb-md font-bold">
+          Resumo de performance
         </Text>
 
         {summaries.length === 0 ? (
-          <View className="mb-xl">
-            <EmptyState
-              icon="📭"
-              title="Nenhuma série registrada"
-              description="Você finalizou sem registrar séries nesta sessão."
-            />
-          </View>
+          <EmptyState
+            icon={Inbox}
+            title="Nenhuma série registrada"
+            description="Você finalizou sem registrar séries nesta sessão."
+          />
         ) : (
-          <View className="gap-md mb-xl">
+          <View className="gap-sm">
             {summaries.map((ex) => (
               <View
                 key={ex.exerciseId}
-                className="bg-surface-container p-md rounded-xl border border-outline-variant gap-md"
+                className="bg-surface-low border border-card-border rounded-xl p-3.5"
               >
-                <View className="flex-row items-center gap-md">
-                  <View className="w-12 h-12 rounded-lg bg-surface-high border border-outline-variant items-center justify-center">
-                    <Text className="text-secondary text-xl">🏋</Text>
+                <View className="flex-row items-center gap-3">
+                  <View className="w-[38px] h-[38px] rounded-[9px] bg-surface-highest items-center justify-center">
+                    <Dumbbell size={22} color="#B26CFF" strokeWidth={1.8} />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-title-md text-on-surface uppercase">
+                    <Text
+                      className="text-title-md text-white font-bold"
+                      numberOfLines={1}
+                    >
                       {ex.name}
                     </Text>
-                    <Text className="text-label-sm text-on-surface-variant">
+                    <Text className="text-label-md text-outline-variant mt-1">
                       {ex.setsCount}{" "}
                       {ex.setsCount === 1
                         ? "série realizada"
@@ -370,40 +369,35 @@ export default function SessionCompleteScreen() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center gap-md bg-surface-low p-sm rounded-lg border border-dashed border-outline-variant">
-                  <Text className="text-label-sm text-secondary uppercase px-1">
-                    Melhor Série
+                <View className="flex-row items-center justify-between border border-dashed border-[#FFFFFF1F] rounded-lg px-3 py-2.5 mt-3">
+                  <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
+                    Melhor série
                   </Text>
                   {ex.isTime ? (
-                    <View className="flex-1 items-end">
-                      <Text className="text-title-md text-on-surface">
-                        {ex.bestDuration ?? 0}
-                        <Text className="text-label-sm"> s</Text>
+                    <Text className="text-title-md text-white font-extrabold">
+                      {ex.bestDuration ?? 0}
+                      <Text className="text-label-sm text-outline-variant font-semibold">
+                        {" "}
+                        s
                       </Text>
-                      <Text className="text-label-sm text-on-surface-variant opacity-60">
-                        Duração
-                      </Text>
-                    </View>
+                    </Text>
                   ) : (
-                    <View className="flex-1 flex-row items-center justify-end gap-md">
-                      <View className="items-end">
-                        <Text className="text-title-md text-on-surface">
-                          {ex.bestWeight ?? 0}
-                          <Text className="text-label-sm"> kg</Text>
+                    <View className="flex-row items-center gap-3">
+                      <Text className="text-title-md text-white font-extrabold">
+                        {ex.bestWeight ?? 0}
+                        <Text className="text-label-sm text-outline-variant font-semibold">
+                          {" "}
+                          kg
                         </Text>
-                        <Text className="text-label-sm text-on-surface-variant opacity-60">
-                          Peso
+                      </Text>
+                      <View className="w-px h-[18px] bg-[#FFFFFF1F]" />
+                      <Text className="text-title-md text-white font-extrabold">
+                        {ex.bestReps ?? 0}
+                        <Text className="text-label-sm text-outline-variant font-semibold">
+                          {" "}
+                          reps
                         </Text>
-                      </View>
-                      <View className="w-[1px] h-8 bg-outline-variant" />
-                      <View className="items-end">
-                        <Text className="text-title-md text-on-surface">
-                          {ex.bestReps ?? 0}
-                        </Text>
-                        <Text className="text-label-sm text-on-surface-variant opacity-60">
-                          Reps
-                        </Text>
-                      </View>
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -412,137 +406,17 @@ export default function SessionCompleteScreen() {
           </View>
         )}
 
-        {/* Foto do treino (opcional) */}
-        <Text className="text-label-md text-on-surface-variant uppercase tracking-widest mb-md text-center">
-          Foto do treino (opcional)
-        </Text>
-        <Pressable
-          onPress={async () => {
-            const uri = await pickImage();
-            if (uri) setPhotoUri(uri);
-          }}
-          className="mb-xl rounded-xl border-2 border-dashed border-outline-variant bg-surface-container items-center justify-center overflow-hidden"
-          style={{ height: 160 }}
-        >
-          {photoUri ? (
-            <Image source={{ uri: photoUri }} style={{ width: "100%", height: "100%" }} />
-          ) : (
-            <View className="items-center gap-1">
-              <Text className="text-3xl">📸</Text>
-              <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
-                Adicionar foto
-              </Text>
-            </View>
-          )}
-        </Pressable>
-        {photoUri ? (
-          <Pressable onPress={() => setPhotoUri(null)} className="items-center -mt-lg mb-xl">
-            <Text className="text-label-sm text-error uppercase tracking-widest">
-              Remover foto
-            </Text>
-          </Pressable>
-        ) : null}
-
-        {/* Seletor de status */}
-        <Text className="text-label-md text-on-surface-variant uppercase tracking-widest mb-md text-center">
-          Como você avalia este treino?
-        </Text>
-        <View className="flex-row gap-md">
-          <Pressable
-            onPress={() => setStatus("complete")}
-            disabled={!hasSets}
-            className={`flex-1 rounded-xl p-md items-center gap-1 border-2 ${
-              status === "complete"
-                ? "bg-surface-high border-primary"
-                : "bg-surface-container border-outline-variant"
-            } ${!hasSets ? "opacity-40" : ""}`}
-            style={
-              status === "complete"
-                ? {
-                    shadowColor: "#d0bcff",
-                    shadowOpacity: 0.2,
-                    shadowRadius: 20,
-                    shadowOffset: { width: 0, height: 0 },
-                  }
-                : undefined
-            }
-          >
-            <Text
-              className={
-                status === "complete" ? "text-primary text-2xl" : "text-on-surface-variant text-2xl"
-              }
-            >
-              ✓
-            </Text>
-            <Text
-              className={`text-label-sm uppercase ${
-                status === "complete"
-                  ? "text-primary"
-                  : "text-on-surface-variant"
-              }`}
-            >
-              Completo
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={() => setStatus("incomplete")}
-            className={`flex-1 rounded-xl p-md items-center gap-1 border-2 ${
-              status === "incomplete"
-                ? "bg-surface-high border-tertiary"
-                : "bg-surface-container border-outline-variant"
-            }`}
-          >
-            <Text
-              className={
-                status === "incomplete"
-                  ? "text-tertiary text-2xl"
-                  : "text-on-surface-variant text-2xl"
-              }
-            >
-              ⚠
-            </Text>
-            <Text
-              className={`text-label-sm uppercase ${
-                status === "incomplete"
-                  ? "text-tertiary"
-                  : "text-on-surface-variant"
-              }`}
-            >
-              Incompleto
-            </Text>
-          </Pressable>
-        </View>
-
-        {!hasSets ? (
-          <Text className="text-label-sm text-on-surface-variant text-center mt-md px-lg">
-            Nenhuma série registrada — registre ao menos uma para concluir
-            como completo e ganhar XP.
-          </Text>
-        ) : null}
       </ScrollView>
 
       {/* Barra de ação fixa */}
       <View className="absolute bottom-0 left-0 right-0 p-md bg-surface-low border-t border-outline-variant">
-        <Pressable
-          onPress={handleConfirm}
-          disabled={submitting}
-          className="w-full bg-primary py-lg rounded-xl items-center justify-center active:opacity-90"
-          style={{
-            shadowColor: "#d0bcff",
-            shadowOpacity: 0.3,
-            shadowRadius: 20,
-            shadowOffset: { width: 0, height: 0 },
-          }}
-        >
-          {submitting ? (
-            <ActivityIndicator size="small" color="#3c0091" />
-          ) : (
-            <Text className="text-on-primary text-title-md uppercase tracking-tight font-bold">
-              Finalizar treino
-            </Text>
-          )}
-        </Pressable>
+        <Button
+          label="Concluir"
+          fullWidth
+          disabled={uploadingPhoto}
+          style={{ boxShadow: "0px 8px 22px rgba(159, 31, 255, 0.45)" }}
+          onPress={handleDone}
+        />
       </View>
     </SafeAreaView>
   );

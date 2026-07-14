@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import {
   View,
   Text,
+  Image,
   Pressable,
   ScrollView,
   ActivityIndicator,
@@ -15,45 +16,31 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  TriangleAlert,
+  Pencil,
+  Flame,
+  Trophy,
+  ChevronRight,
+  LogOut,
+} from "lucide-react-native";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
+import { pickImage } from "../../src/lib/pickImage";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
-import type { Session, User, UserLevel } from "../../src/types/api.types";
+import type { User, UserLevel } from "../../src/types/api.types";
+
+// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
+// então o valor do mock vem inline.
+const TRACK = { letterSpacing: 0.5 };
 
 function fmtSince(iso: string) {
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2, "0")}/${String(
-    d.getMonth() + 1
+    d.getMonth() + 1,
   ).padStart(2, "0")}/${d.getFullYear()}`;
-}
-
-function fmtSessionDate(iso: string) {
-  const d = new Date(iso);
-  const today = new Date();
-  const sameDay =
-    d.getDate() === today.getDate() &&
-    d.getMonth() === today.getMonth() &&
-    d.getFullYear() === today.getFullYear();
-  const time = `${String(d.getHours()).padStart(2, "0")}:${String(
-    d.getMinutes()
-  ).padStart(2, "0")}`;
-  return sameDay ? `Hoje, ${time}` : `${fmtSince(iso)} • ${time}`;
-}
-
-function deviceIcon(ua: string) {
-  const s = ua.toLowerCase();
-  if (/iphone|android|mobile|okhttp|expo/.test(s)) return "📱";
-  if (/ipad|tablet/.test(s)) return "🖥";
-  if (/windows|mac|linux|chrome|firefox|edge|safari/.test(s)) return "💻";
-  return "🔑";
-}
-
-function deviceLabel(ua: string) {
-  if (!ua || ua.trim() === "") return "Dispositivo desconhecido";
-  // user-agents de app costumam ser curtos (okhttp/expo); navegadores são longos
-  if (ua.length > 80) return ua.slice(0, 80) + "…";
-  return ua;
 }
 
 export default function ProfileScreen() {
@@ -63,36 +50,27 @@ export default function ProfileScreen() {
   const clearAuth = useAuthStore((s) => s.clear);
 
   const [user, setLocalUser] = useState<User | null>(storeUser);
-  const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [revoking, setRevoking] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [level, setLevel] = useState<UserLevel | null>(null);
   const [editing, setEditing] = useState(false);
   const [nicknameInput, setNicknameInput] = useState("");
   const [savingNick, setSavingNick] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const load = useCallback(async () => {
     setError(false);
     try {
-      const [me, sess, lvl] = await Promise.all([
+      const [me, lvl] = await Promise.all([
         authService.me(),
-        authService.sessions(),
         // /me/level é secundário: se falhar, perfil ainda carrega
         authService.level().catch(() => null),
       ]);
       setLocalUser(me);
       setUser(me);
       setLevel(lvl);
-      setSessions(
-        [...sess].sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime()
-        )
-      );
     } catch {
       setError(true);
     } finally {
@@ -104,7 +82,7 @@ export default function ProfileScreen() {
     useCallback(() => {
       setLoading(true);
       load();
-    }, [load])
+    }, [load]),
   );
 
   const onRefresh = useCallback(async () => {
@@ -112,40 +90,6 @@ export default function ProfileScreen() {
     await load();
     setRefreshing(false);
   }, [load]);
-
-  function confirmRevoke(session: Session) {
-    Alert.alert(
-      "Revogar sessão?",
-      "Esse dispositivo será desconectado e precisará entrar novamente.",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Revogar",
-          style: "destructive",
-          onPress: async () => {
-            setRevoking(session.id);
-            try {
-              await authService.revokeSession(session.id);
-              setSessions((prev) =>
-                prev.filter((s) => s.id !== session.id)
-              );
-              showToast("Sessão revogada.", "success");
-            } catch (err: any) {
-              const st = err?.response?.status;
-              showToast(
-                st === 404
-                  ? "Sessão não encontrada."
-                  : "Erro ao revogar sessão.",
-                "error"
-              );
-            } finally {
-              setRevoking(null);
-            }
-          },
-        },
-      ]
-    );
-  }
 
   function confirmLogout() {
     Alert.alert("Sair da conta?", "Você precisará entrar novamente.", [
@@ -176,6 +120,30 @@ export default function ProfileScreen() {
     email !== "—" ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
   const displayName = user?.nickname?.trim() || generatedName;
 
+  async function changeAvatar() {
+    const uri = await pickImage();
+    if (!uri) return;
+    setUploadingAvatar(true);
+    try {
+      const updated = await authService.updateAvatar(uri);
+      setLocalUser(updated);
+      setUser(updated);
+      showToast("Foto de perfil atualizada.", "success");
+    } catch (err: any) {
+      const st = err?.response?.status;
+      showToast(
+        st === 400
+          ? "Imagem inválida. Use JPEG ou PNG de até 5MB."
+          : st === 429
+            ? "Muitos uploads. Tente novamente em instantes."
+            : "Erro ao enviar a foto.",
+        "error",
+      );
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
+
   function openNicknameEditor() {
     setNicknameInput(user?.nickname ?? "");
     setEditing(true);
@@ -200,7 +168,7 @@ export default function ProfileScreen() {
         st === 400
           ? "Nick inválido. Use entre 2 e 30 caracteres."
           : "Erro ao atualizar o nick.",
-        "error"
+        "error",
       );
     } finally {
       setSavingNick(false);
@@ -209,261 +177,228 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16 border-b border-outline-variant">
-        <Text className="text-headline-mobile font-black text-primary uppercase">
-          Shadow Leveling
-        </Text>
-        <Pressable className="w-10 h-10 items-center justify-center rounded-full active:opacity-60">
-          <Text className="text-primary text-xl">◔</Text>
-        </Pressable>
-      </View>
-
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
-        </View>
-      ) : error ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
-          <EmptyState
-            icon="⚠️"
-            title="Não foi possível carregar o perfil"
-            description="Verifique sua conexão e tente novamente."
+      <ScrollView
+        contentContainerClassName="px-5 pt-2 pb-[112px]"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#c8a3ff"
           />
-          <Pressable
-            onPress={() => {
-              setLoading(true);
-              load();
-            }}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
-        </View>
-      ) : (
-        <ScrollView
-          contentContainerClassName="px-md py-xl gap-xl pb-[112px]"
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="#d0bcff"
-            />
-          }
-        >
-          {/* Info do usuário */}
-          <View className="items-center gap-md">
-            <View className="relative">
-              <View
-                className="w-32 h-32 rounded-full p-1"
-                style={{
-                  shadowColor: "#d0bcff",
-                  shadowOpacity: 0.3,
-                  shadowRadius: 15,
-                  shadowOffset: { width: 0, height: 0 },
-                }}
-              >
-                <LinearGradient
-                  colors={["#d0bcff", "#4cd7f6"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: 9999,
-                  }}
-                />
-                <View className="w-full h-full rounded-full bg-surface-high items-center justify-center border-4 border-background">
-                  <Text className="text-primary text-5xl font-black">
-                    {initial}
-                  </Text>
-                </View>
-              </View>
-              {/* Botão editar avatar (UI pronta; back ainda sem endpoint) */}
-              <Pressable
-                onPress={() =>
-                  showToast(
-                    "Edição de foto de perfil — em breve.",
-                    "warning"
-                  )
-                }
-                className="absolute -bottom-1 -right-1 bg-primary w-9 h-9 rounded-full items-center justify-center border-2 border-background active:opacity-80"
-              >
-                <Text className="text-on-primary text-base">✎</Text>
-              </Pressable>
-            </View>
+        }
+      >
+        {/* Header */}
+        <Text className="text-title-xxl font-bold text-on-surface mt-2">
+          Perfil
+        </Text>
 
-            <View className="items-center gap-1">
+        {loading ? (
+          <View className="items-center justify-center py-xl">
+            <ActivityIndicator size="large" color="#c8a3ff" />
+          </View>
+        ) : error ? (
+          <View className="items-center justify-center py-xl gap-md">
+            <EmptyState
+              icon={TriangleAlert}
+              title="Não foi possível carregar o perfil"
+              description="Verifique sua conexão e tente novamente."
+            />
+            <Button
+              label="Tentar novamente"
+              size="sm"
+              onPress={() => {
+                setLoading(true);
+                load();
+              }}
+            />
+          </View>
+        ) : (
+          <>
+            {/* Avatar + identidade */}
+            <View className="items-center mt-5">
+              <View className="relative">
+                <View
+                  className="w-[88px] h-[88px] rounded-full p-[3px]"
+                  style={{
+                    shadowColor: "#9F1FFF",
+                    shadowOpacity: 0.45,
+                    shadowRadius: 22,
+                    shadowOffset: { width: 0, height: 0 },
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#9F1FFF", "#6E00B3"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      borderRadius: 9999,
+                    }}
+                  />
+                  <View className="w-full h-full rounded-full bg-surface-high items-center justify-center overflow-hidden">
+                    {user?.avatar_url ? (
+                      <Image
+                        source={{ uri: user.avatar_url }}
+                        style={{ width: "100%", height: "100%" }}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <Text className="text-title-xxl font-extrabold text-on-surface">
+                        {initial}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+
+                <Pressable
+                  onPress={changeAvatar}
+                  disabled={uploadingAvatar}
+                  className="absolute -right-0.5 -bottom-0.5 w-[30px] h-[30px] rounded-full bg-primary border-[3px] border-background items-center justify-center active:opacity-80"
+                >
+                  {uploadingAvatar ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Pencil size={14} color="#fff" strokeWidth={2} />
+                  )}
+                </Pressable>
+              </View>
+
               <Pressable
                 onPress={openNicknameEditor}
-                className="flex-row items-center gap-2 active:opacity-70"
+                className="flex-row items-center gap-2 mt-3.5 active:opacity-70"
               >
-                <Text className="text-headline-mobile text-on-surface capitalize">
+                <Text className="text-title-lg font-bold text-on-surface capitalize">
                   {displayName}
                 </Text>
-                <Text className="text-primary text-base">✎</Text>
+                <Pencil size={14} color="#B26CFF" strokeWidth={2} />
               </Pressable>
-              <Text className="text-body-lg text-on-surface-variant">
+
+              <Text className="text-body-md text-on-surface-variant mt-1.5">
                 {email}
               </Text>
+
               {user?.created_at ? (
-                <View className="mt-2 px-3 py-1 rounded-full bg-surface-highest border border-outline-variant">
-                  <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+                <View className="mt-3 px-3.5 py-1.5 rounded-full border border-white/10">
+                  <Text
+                    className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                    style={TRACK}
+                  >
                     Caçador desde {fmtSince(user.created_at)}
                   </Text>
                 </View>
               ) : null}
             </View>
-          </View>
 
-          {/* Nível / XP / Rank / Streak */}
-          {level ? (
-            <View className="gap-md">
-              <View className="flex-row gap-md">
-                <View className="flex-1 bg-surface-low p-md rounded-xl border border-outline-variant items-center">
-                  <Text className="text-label-sm text-outline uppercase tracking-widest">
-                    Rank
-                  </Text>
-                  <Text className="text-display-md text-secondary">
-                    {level.rank}
-                  </Text>
-                </View>
-                <View className="flex-1 bg-surface-low p-md rounded-xl border border-outline-variant items-center">
-                  <Text className="text-label-sm text-outline uppercase tracking-widest">
-                    Nível
-                  </Text>
-                  <Text className="text-display-md text-primary">
-                    {level.level}
-                  </Text>
-                </View>
-              </View>
-
-              <View className="bg-surface-low p-md rounded-xl border border-outline-variant gap-sm">
-                <View className="flex-row justify-between items-end">
-                  <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
-                    Progresso do nível
-                  </Text>
-                  <Text className="text-label-sm text-primary">
-                    {level.xp_into_level} / {level.xp_for_next_level} XP
-                  </Text>
-                </View>
-                <View className="h-2 w-full bg-surface-highest rounded-full overflow-hidden">
-                  <View
-                    className="h-full bg-primary rounded-full"
-                    style={{
-                      width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
-                      shadowColor: "#d0bcff",
-                      shadowOpacity: 0.5,
-                      shadowRadius: 10,
-                      shadowOffset: { width: 0, height: 0 },
-                    }}
-                  />
-                </View>
-                <View className="flex-row justify-between items-center">
-                  <Text className="text-label-sm text-outline uppercase tracking-widest">
-                    {level.total_xp.toLocaleString("pt-BR")} XP total
-                  </Text>
-                  <Text className="text-label-sm text-tertiary uppercase tracking-widest">
-                    🔥 {level.current_streak}{" "}
-                    {level.current_streak === 1 ? "dia" : "dias"} de streak
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ) : null}
-
-          {/* Sessões ativas */}
-          <View className="gap-md">
-            <View className="flex-row items-center justify-between border-b border-outline-variant pb-sm">
-              <Text className="text-label-md text-primary uppercase tracking-widest">
-                🔑 Sessões Ativas
-              </Text>
-              <Text className="text-label-sm text-outline">
-                {sessions.length}{" "}
-                {sessions.length === 1 ? "conectado" : "conectados"}
-              </Text>
-            </View>
-
-            {sessions.length === 0 ? (
-              <EmptyState
-                icon="🔒"
-                title="Nenhuma sessão ativa"
-                description="Não há outros dispositivos conectados."
-              />
-            ) : (
-              <View className="gap-sm">
-                {sessions.map((s) => (
-                  <View
-                    key={s.id}
-                    className="bg-surface-low p-md rounded-xl border border-outline-variant flex-row items-center justify-between gap-md"
-                  >
-                    <View className="flex-row items-center gap-md flex-1">
-                      <View className="w-10 h-10 rounded-lg bg-surface-highest items-center justify-center">
-                        <Text className="text-primary text-lg">
-                          {deviceIcon(s.user_agent ?? "")}
-                        </Text>
-                      </View>
-                      <View className="flex-1">
-                        <Text
-                          className="text-title-md text-on-surface"
-                          numberOfLines={1}
-                        >
-                          {deviceLabel(s.user_agent ?? "")}
-                        </Text>
-                        <Text className="text-label-sm text-outline">
-                          {fmtSessionDate(s.created_at)}
-                        </Text>
-                      </View>
-                    </View>
-                    <Pressable
-                      onPress={() => confirmRevoke(s)}
-                      disabled={revoking === s.id}
-                      className="px-3 py-2 rounded-lg border border-error/50 active:bg-error/10"
+            {level ? (
+              <>
+                {/* Rank / Nível */}
+                <View className="flex-row gap-3 mt-5">
+                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
+                    <Text
+                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      style={TRACK}
                     >
-                      {revoking === s.id ? (
-                        <ActivityIndicator size="small" color="#ffb4ab" />
-                      ) : (
-                        <Text className="text-error text-label-sm uppercase">
-                          Revogar
-                        </Text>
-                      )}
-                    </Pressable>
+                      Rank
+                    </Text>
+                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                      {level.rank}
+                    </Text>
                   </View>
-                ))}
-              </View>
-            )}
-          </View>
+                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
+                    <Text
+                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      style={TRACK}
+                    >
+                      Nível
+                    </Text>
+                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                      {level.level}
+                    </Text>
+                  </View>
+                </View>
 
-          {/* Ações da conta */}
-          <View className="gap-md pt-lg">
+                {/* Progresso do nível */}
+                <View className="bg-surface-low border border-card-border rounded-2xl p-6 mt-3">
+                  <View className="flex-row items-center justify-between">
+                    <Text
+                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      style={TRACK}
+                    >
+                      Progresso do nível
+                    </Text>
+                    <Text className="text-label-md font-bold text-secondary">
+                      {level.xp_into_level} / {level.xp_for_next_level} XP
+                    </Text>
+                  </View>
+
+                  <View className="h-3 w-full bg-surface-high rounded-full overflow-hidden mt-3">
+                    <LinearGradient
+                      colors={["#6E00B3", "#9F1FFF"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{
+                        height: "100%",
+                        width: `${Math.max(0, Math.min(100, level.progress_pct))}%`,
+                        borderRadius: 9999,
+                      }}
+                    />
+                  </View>
+
+                  <View className="flex-row items-center justify-between mt-3">
+                    <Text className="text-label-md text-outline-variant">
+                      {level.total_xp.toLocaleString("pt-BR")} XP total
+                    </Text>
+                    <View className="flex-row items-center gap-1.5">
+                      <Flame size={14} color="#F59E0B" fill="#F59E0B" />
+                      <Text className="text-label-md font-bold text-warning">
+                        {level.current_streak}{" "}
+                        {level.current_streak === 1 ? "dia" : "dias"} de streak
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </>
+            ) : null}
+
+            {/* Menu */}
+            <View className="bg-surface-low border border-card-border rounded-xl mt-3 overflow-hidden">
+              <Pressable
+                onPress={() => showToast("Conquistas — em breve.", "info")}
+                className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
+              >
+                <Trophy size={18} color="#B26CFF" strokeWidth={1.9} />
+                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                  Conquistas
+                </Text>
+                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+              </Pressable>
+            </View>
+
+            {/* Sair */}
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
-              className="w-full h-14 bg-error rounded-xl flex-row items-center justify-center gap-2 active:opacity-90"
-              style={{
-                shadowColor: "#ffb4ab",
-                shadowOpacity: 0.2,
-                shadowRadius: 15,
-                shadowOffset: { width: 0, height: 0 },
-              }}
+              className="w-full h-[50px] mt-4 rounded-xl border border-error/40 bg-error/10 flex-row items-center justify-center gap-2.5 active:opacity-80"
             >
               {loggingOut ? (
-                <ActivityIndicator size="small" color="#690005" />
+                <ActivityIndicator size="small" color="#EF4444" />
               ) : (
-                <Text className="text-on-error text-label-md uppercase tracking-widest font-semibold">
-                  ⎋ Sair
-                </Text>
+                <>
+                  <LogOut size={18} color="#EF4444" strokeWidth={2} />
+                  <Text
+                    className="text-label-md font-semibold text-error"
+                    style={TRACK}
+                  >
+                    Sair
+                  </Text>
+                </>
               )}
             </Pressable>
-            <Text className="text-center text-label-sm text-outline px-lg">
-              Sua sessão neste dispositivo será encerrada.
-            </Text>
-          </View>
-        </ScrollView>
-      )}
+          </>
+        )}
+      </ScrollView>
 
       {/* Modal de edição do nick */}
       <Modal
@@ -492,7 +427,7 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="bg-surface-lowest border border-outline-variant rounded-lg px-md py-3 text-on-surface text-body-lg"
+              className="bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3 text-on-surface text-body-lg"
             />
             <View className="flex-row gap-md mt-sm">
               <Pressable
@@ -500,23 +435,19 @@ export default function ProfileScreen() {
                 disabled={savingNick}
                 className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase tracking-widest">
+                <Text className="text-on-surface-variant text-label-md uppercase">
                   Cancelar
                 </Text>
               </Pressable>
-              <Pressable
-                onPress={saveNickname}
-                disabled={savingNick}
-                className="flex-1 rounded-lg bg-primary py-3 items-center active:opacity-80"
-              >
-                {savingNick ? (
-                  <ActivityIndicator size="small" color="#3c0091" />
-                ) : (
-                  <Text className="text-on-primary text-label-md uppercase tracking-widest font-semibold">
-                    Salvar
-                  </Text>
-                )}
-              </Pressable>
+              <View className="flex-1">
+                <Button
+                  label="Salvar"
+                  size="sm"
+                  fullWidth
+                  loading={savingNick}
+                  onPress={saveNickname}
+                />
+              </View>
             </View>
           </View>
         </KeyboardAvoidingView>

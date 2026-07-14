@@ -16,7 +16,7 @@ export default function LandingScreen() {
       className="flex-1"
     >
       <LinearGradient
-        colors={["rgba(5,7,10,0.2)", "rgba(5,7,10,0.9)", "#05070a"]}
+        colors={["rgba(5,7,10,0.2)", "rgba(5,7,10,0.9)", "#1e0037"]}
         locations={[0, 0.7, 1]}
         style={{ flex: 1 }}
       >

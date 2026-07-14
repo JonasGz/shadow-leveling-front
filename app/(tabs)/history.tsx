@@ -9,6 +9,18 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
+import {
+  TriangleAlert,
+  BookOpen,
+  Shield,
+  RefreshCw,
+  Check,
+  X,
+  ChevronRight,
+  Skull,
+  type LucideIcon,
+} from "lucide-react-native";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { sessionsService } from "../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
@@ -42,35 +54,42 @@ function fmtDate(iso: string) {
 function fmtShort(iso: string) {
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2, "0")}/${String(
-    d.getMonth() + 1
-  ).padStart(2, "0")}/${d.getFullYear()}`;
+    d.getMonth() + 1,
+  ).padStart(2, "0")}`;
 }
 
 function toISODate(d: Date) {
   return d.toISOString().slice(0, 10);
 }
 
+// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
+// então o valor do mock vem inline.
+const TRACK = { letterSpacing: 0.5 };
+
 const STATUS_META: Record<
   SessionStatus,
-  { label: string; box: string; text: string; border: string }
+  { label: string; badge: string; text: string; Icon: LucideIcon; icon: string }
 > = {
   complete: {
     label: "Concluído",
-    box: "bg-primary/10",
-    text: "text-primary",
-    border: "border-primary/20",
+    badge: "bg-primary/15",
+    text: "text-primary-fixed-dim",
+    Icon: Check,
+    icon: "#22C55E",
   },
   incomplete: {
     label: "Incompleto",
-    box: "bg-tertiary/10",
-    text: "text-tertiary",
-    border: "border-tertiary/20",
+    badge: "bg-warning/15",
+    text: "text-warning",
+    Icon: TriangleAlert,
+    icon: "#F59E0B",
   },
   skipped: {
     label: "Pulado",
-    box: "bg-error/10",
+    badge: "bg-error/15",
     text: "text-error",
-    border: "border-error/20",
+    Icon: X,
+    icon: "#EF4444",
   },
 };
 
@@ -115,9 +134,8 @@ export default function HistoryScreen() {
   const { from, to } = useMemo(() => rangeFor(preset), [preset]);
 
   const workoutName = useCallback(
-    (id: string) =>
-      workouts.find((w) => w.id === id)?.name ?? "Treino",
-    [workouts]
+    (id: string) => workouts.find((w) => w.id === id)?.name ?? "Treino",
+    [workouts],
   );
 
   const load = useCallback(async () => {
@@ -133,13 +151,13 @@ export default function HistoryScreen() {
       // mais recentes primeiro
       setSessions(
         [...s].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        ),
       );
       setMissed(
         [...m].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        ),
       );
     } catch {
       setError(true);
@@ -156,7 +174,7 @@ export default function HistoryScreen() {
     useCallback(() => {
       setLoading(true);
       load();
-    }, [load])
+    }, [load]),
   );
 
   const onRefresh = useCallback(async () => {
@@ -167,52 +185,56 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16 border-b border-outline-variant">
-        <View className="flex-row items-center gap-3">
-          <View className="w-10 h-10 rounded-full bg-surface-highest border border-primary items-center justify-center">
-            <Text className="text-primary text-base">⚡</Text>
-          </View>
-          <Text className="text-headline-mobile uppercase tracking-tight text-primary font-bold">
-            Shadow Leveling
-          </Text>
-        </View>
-        <Pressable className="w-10 h-10 items-center justify-center rounded-full active:opacity-60">
-          <Text className="text-primary text-xl">◔</Text>
-        </Pressable>
-      </View>
-
       <ScrollView
-        contentContainerClassName="px-md pt-lg pb-[112px]"
+        contentContainerClassName="px-5 pt-2 pb-[112px]"
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#d0bcff"
+            tintColor="#c8a3ff"
           />
         }
       >
-        {/* Título */}
-        <Text className="text-display-md text-primary italic font-black tracking-tight mb-md">
-          HISTÓRICO
-        </Text>
+        {/* Header */}
+        <View className="flex-row items-center justify-between mt-2">
+          <Text className="text-title-xxl font-bold text-on-surface">
+            Histórico
+          </Text>
+          <Pressable
+            onPress={onRefresh}
+            disabled={refreshing}
+            className="w-10 h-10 rounded-full border border-white/10 bg-surface-low items-center justify-center active:opacity-70"
+          >
+            {refreshing ? (
+              <ActivityIndicator size="small" color="#B26CFF" />
+            ) : (
+              <RefreshCw size={19} color="#B26CFF" />
+            )}
+          </Pressable>
+        </View>
 
-        {/* Filtro DE / ATÉ */}
-        <View className="flex-row gap-2 mb-md">
-          <View className="flex-1 bg-surface-low border border-outline-variant rounded-lg p-3">
-            <Text className="text-label-sm uppercase text-outline mb-1">
+        {/* De / Até */}
+        <View className="flex-row gap-2.5 mt-4">
+          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
+            <Text
+              className="text-label-sm font-bold uppercase text-outline-variant"
+              style={TRACK}
+            >
               De
             </Text>
-            <Text className="text-title-md text-on-surface">
+            <Text className="text-body-lg font-bold text-on-surface mt-2">
               {fmtDate(from.toISOString())}
             </Text>
           </View>
-          <View className="flex-1 bg-surface-low border border-outline-variant rounded-lg p-3">
-            <Text className="text-label-sm uppercase text-outline mb-1">
+          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
+            <Text
+              className="text-label-sm font-bold uppercase text-outline-variant"
+              style={TRACK}
+            >
               Até
             </Text>
-            <Text className="text-title-md text-on-surface">
+            <Text className="text-body-lg font-bold text-on-surface mt-2">
               {fmtDate(to.toISOString())}
             </Text>
           </View>
@@ -222,7 +244,7 @@ export default function HistoryScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerClassName="gap-2 mb-lg"
+          contentContainerClassName="gap-2 mt-3"
         >
           {PRESETS.map((p) => {
             const active = p.key === preset;
@@ -230,15 +252,13 @@ export default function HistoryScreen() {
               <Pressable
                 key={p.key}
                 onPress={() => setPreset(p.key)}
-                className={`rounded-full px-4 py-2 border ${
-                  active
-                    ? "bg-primary/15 border-primary"
-                    : "bg-transparent border-outline-variant"
+                className={`rounded-full px-3.5 py-2 border ${
+                  active ? "bg-primary" : "bg-transparent border-white/10"
                 }`}
               >
                 <Text
-                  className={`text-label-sm uppercase tracking-widest ${
-                    active ? "text-primary" : "text-on-surface-variant"
+                  className={`text-label-md font-semibold ${
+                    active ? "text-on-surface" : "text-on-surface-variant"
                   }`}
                 >
                   {p.label}
@@ -250,147 +270,153 @@ export default function HistoryScreen() {
 
         {loading ? (
           <View className="items-center justify-center py-xl">
-            <ActivityIndicator size="large" color="#d0bcff" />
+            <ActivityIndicator size="large" color="#c8a3ff" />
           </View>
         ) : error ? (
           <View className="items-center justify-center py-xl gap-md">
             <EmptyState
-              icon="⚠️"
+              icon={TriangleAlert}
               title="Não foi possível carregar"
               description="Verifique sua conexão e tente novamente."
             />
-            <Pressable
+            <Button
+              label="Tentar novamente"
+              size="sm"
               onPress={() => {
                 setLoading(true);
                 load();
               }}
-              className="rounded bg-primary px-6 py-3 active:opacity-80"
-            >
-              <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-                Tentar novamente
-              </Text>
-            </Pressable>
+            />
           </View>
         ) : (
           <>
-            {/* Sessões Realizadas */}
-            <View className="mb-xl">
-              <View className="flex-row justify-between items-center mb-md">
-                <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
-                  Sessões Realizadas
-                </Text>
-              </View>
+            {/* Sessões realizadas */}
+            <Text
+              className="text-label-sm font-bold uppercase text-on-surface-variant mt-6 mb-3"
+              style={TRACK}
+            >
+              Treinos realizados
+            </Text>
 
-              {sessions.length === 0 ? (
-                <EmptyState
-                  icon="📓"
-                  title="Nenhuma sessão no período"
-                  description="Treine para registrar seu histórico."
-                />
-              ) : (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerClassName="gap-md pb-1"
-                >
-                  {sessions.map((s) => {
-                    const meta = STATUS_META[s.status];
-                    return (
-                      <Pressable
-                        key={s.id}
-                        onPress={() =>
-                          router.push(`/session/${s.id}`)
-                        }
-                        className="w-[280px] bg-surface-container border border-outline-variant rounded-xl p-md gap-2 active:opacity-80"
-                      >
-                        <View className="flex-row justify-between items-start">
-                          <View
-                            className={`px-2 py-0.5 rounded border ${meta.box} ${meta.border}`}
-                          >
-                            <Text
-                              className={`text-label-sm uppercase tracking-tight font-bold ${meta.text}`}
-                            >
-                              {meta.label}
-                            </Text>
-                          </View>
-                          <Text className="text-label-sm text-outline">
-                            {fmtShort(s.date)}
-                          </Text>
-                        </View>
-
-                        <View className="mt-2">
-                          <Text
-                            className="text-headline-mobile text-on-surface leading-tight"
-                            numberOfLines={2}
-                          >
-                            {workoutName(s.workout_id)}
-                          </Text>
-                        </View>
-
-                        <View className="mt-4 pt-4 border-t border-outline-variant/30 flex-row justify-between items-center">
-                          <Text className={`text-base ${meta.text}`}>
-                            {s.status === "complete"
-                              ? "✓"
-                              : s.status === "incomplete"
-                                ? "⚠"
-                                : "✕"}
-                          </Text>
-                          <Text
-                            className={`text-label-md uppercase ${meta.text}`}
-                          >
-                            Ver detalhes ›
-                          </Text>
-                        </View>
-                      </Pressable>
-                    );
-                  })}
-                </ScrollView>
-              )}
-            </View>
-
-            {/* Treinos Perdidos */}
-            <View className="mb-xl">
-              <View className="flex-row items-center gap-2 mb-md">
-                <Text className="text-error text-base">☠</Text>
-                <Text className="text-label-md uppercase tracking-widest text-error">
-                  Treinos Perdidos
-                </Text>
-              </View>
-
-              {missed.length === 0 ? (
-                <EmptyState
-                  icon="🛡️"
-                  title="Nenhum treino perdido"
-                  description="Sua disciplina está intacta no período."
-                />
-              ) : (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerClassName="gap-md pb-1"
-                >
-                  {missed.map((m, i) => (
-                    <View
-                      key={`${m.workout_id}-${m.date}-${i}`}
-                      className="w-[240px] bg-error-container/10 border border-error/30 rounded-xl p-md overflow-hidden"
+            {sessions.length === 0 ? (
+              <EmptyState
+                icon={BookOpen}
+                title="Nenhuma sessão no período"
+                description="Treine para registrar seu histórico."
+              />
+            ) : (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="gap-3 pb-1"
+              >
+                {sessions.map((s) => {
+                  const meta = STATUS_META[s.status];
+                  const StatusIcon = meta.Icon;
+                  return (
+                    <Pressable
+                      key={s.id}
+                      onPress={() => router.push(`/session/${s.id}`)}
+                      className="w-[200px] bg-surface-low border border-card-border rounded-2xl p-4 active:opacity-80"
                     >
-                      <Text className="text-label-sm text-error/80 mb-1">
-                        {fmtDate(m.date)}
-                      </Text>
+                      <View className="flex-row items-center justify-between">
+                        <View
+                          className={`px-2.5 py-1 rounded-full ${meta.badge}`}
+                        >
+                          <Text
+                            className={`text-label-sm font-bold uppercase ${meta.text}`}
+                            style={TRACK}
+                          >
+                            {meta.label}
+                          </Text>
+                        </View>
+                        <Text className="text-label-sm text-outline-variant">
+                          {fmtShort(s.date)}
+                        </Text>
+                      </View>
+
                       <Text
-                        className="text-title-md text-on-surface font-bold"
-                        numberOfLines={2}
+                        className="text-title-lg font-bold text-on-surface mt-3.5"
+                        numberOfLines={1}
                       >
-                        {m.workout_name}
+                        {workoutName(s.workout_id)}
                       </Text>
-                      <Text className="text-label-sm text-error mt-4 uppercase tracking-widest">
-                        Missão falhada
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
+
+                      <View className="h-px bg-white/10 my-3.5" />
+
+                      <View className="flex-row items-center justify-between">
+                        <StatusIcon
+                          size={16}
+                          color={meta.icon}
+                          strokeWidth={2.4}
+                        />
+                        <View className="flex-row items-center gap-1">
+                          <Text
+                            className="text-label-sm font-bold text-secondary"
+                            style={TRACK}
+                          >
+                            VER DETALHES
+                          </Text>
+                          <ChevronRight
+                            size={13}
+                            color="#B26CFF"
+                            strokeWidth={2.2}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            )}
+
+            {/* Treinos perdidos */}
+            <View className="flex-row items-center gap-2 mt-6 mb-3">
+              <Skull size={16} color="#6c6971" strokeWidth={1.9} />
+              <Text
+                className="text-label-sm font-bold uppercase text-outline-variant"
+                style={TRACK}
+              >
+                Treinos perdidos
+              </Text>
             </View>
+
+            {missed.length === 0 ? (
+              <EmptyState
+                icon={Shield}
+                title="Nenhum treino perdido"
+                description="Sua disciplina está intacta no período."
+              />
+            ) : (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerClassName="gap-3 pb-1"
+              >
+                {missed.map((m, i) => (
+                  <View
+                    key={`${m.workout_id}-${m.date}-${i}`}
+                    className="w-[170px] bg-error/5 border border-card-border rounded-xl p-4"
+                  >
+                    <Text className="text-label-sm font-semibold text-outline-variant">
+                      {fmtDate(m.date)}
+                    </Text>
+                    <Text
+                      className="text-title-lg font-bold text-on-surface mt-2"
+                      numberOfLines={1}
+                    >
+                      {m.workout_name}
+                    </Text>
+                    <Text
+                      className="text-label-sm font-semibold uppercase text-error/80 mt-2.5"
+                      style={TRACK}
+                    >
+                      Missão falhada
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
           </>
         )}
       </ScrollView>

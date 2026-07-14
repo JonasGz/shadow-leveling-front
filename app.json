@@ -11,19 +11,18 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#131314"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.jonasgz.shadowleveling",
-      "usesAppleSignIn": true
+      "bundleIdentifier": "com.jonasgz.shadowleveling"
     },
     "android": {
       "package": "com.jonasgz.shadowleveling",
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#131314"
+        "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
@@ -34,20 +33,36 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-notifications",
       [
         "expo-secure-store",
         {
           "faceIDPermission": "Allow Shadow Leveling to access Face ID"
         }
       ],
-      "@react-native-google-signin/google-signin",
-      "expo-apple-authentication"
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.895232327106-ggl4ao0gvti9ddph7t0sbf4m2gt3054o"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "extra": {
       "router": {},
       "eas": {
         "projectId": "bda9751d-bd11-450f-99bb-a12b5dd60c97"
+      },
+      "_disabledForFreeSigning": {
+        "_note": "Removidos temporariamente p/ buildar iOS com Apple Developer grátis (Sign in with Apple + Push exigem conta paga). Quando a conta paga ativar, restaurar: ios.usesAppleSignIn=true, e os plugins 'expo-notifications' e 'expo-apple-authentication'. Depois: npx expo prebuild --clean -p ios.",
+        "ios.usesAppleSignIn": true,
+        "plugins": ["expo-notifications", "expo-apple-authentication"]
       }
     },
     "owner": "jonasgz"

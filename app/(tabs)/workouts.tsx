@@ -3,15 +3,26 @@ import {
   View,
   Text,
   ScrollView,
-  TextInput,
   RefreshControl,
   ActivityIndicator,
   Pressable,
   Alert,
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  TriangleAlert,
+  Search,
+  Dumbbell,
+  CalendarRange,
+  Plus,
+} from "lucide-react-native";
+import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
+import { IconButton } from "../../src/components/ui/IconButton";
+import { SearchInput } from "../../src/components/ui/SearchInput";
+import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
 import { useAuthStore } from "../../src/stores/auth.store";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import type { DayOfWeek, Workout } from "../../src/types/api.types";
@@ -44,7 +55,21 @@ function exerciseCountLabel(w: Workout) {
 /** Card destacado da seção "Programado para Hoje" */
 function TodayWorkoutCard({ workout }: { workout: Workout }) {
   return (
-    <View className="bg-surface-container rounded-xl border-l-4 border-secondary overflow-hidden">
+    <LinearGradient
+      colors={["rgb(35, 21, 41)", "rgb(26, 25, 28)"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0.5, y: 0.87 }} // ≈ 150deg
+      // LinearGradient não aceita className (não é wrapped pelo NativeWind)
+      style={{
+        borderRadius: 20, // rounded-xl
+        borderLeftWidth: 4,
+        borderLeftColor: "#9F1FFF", // secondary
+        overflow: "hidden",
+        borderWidth: 1,
+        borderColor:
+          "rgba(159, 31, 255, 0.35) rgba(159, 31, 255, 0.35) rgba(159, 31, 255, 0.35) rgb(159, 31, 255)",
+      }}
+    >
       <View className="p-md gap-lg">
         <Pressable onPress={() => router.push(`/workout/${workout.id}`)}>
           <View className="flex-row justify-between items-start mb-1">
@@ -62,37 +87,23 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
           ) : null}
           <View className="flex-row gap-xl">
             <View className="flex-row items-center gap-1">
-              <Text className="text-outline text-base">🏋</Text>
-              <Text className="text-label-sm text-on-surface">
+              <Dumbbell size={16} color="#6C6971" />
+              <Text className="text-label-sm text-on-surface-variant">
                 {exerciseCountLabel(workout)}
               </Text>
             </View>
             <View className="flex-row items-center gap-1">
-              <Text className="text-outline text-base">◷</Text>
-              <Text className="text-label-sm text-on-surface">
+              <CalendarRange size={16} color="#6C6971" />
+              <Text className="text-label-sm text-on-surface-variant">
                 {workout.days_of_week.length}x / sem
               </Text>
             </View>
           </View>
         </Pressable>
 
-        <Pressable
-          onPress={() => router.push(`/workout/${workout.id}/session`)}
-          className="w-full bg-secondary py-md rounded-xl flex-row items-center justify-center gap-2 active:opacity-80"
-          style={{
-            shadowColor: "#4cd7f6",
-            shadowOpacity: 0.3,
-            shadowRadius: 20,
-            shadowOffset: { width: 0, height: 0 },
-          }}
-        >
-          <Text className="text-on-secondary text-base">▶</Text>
-          <Text className="text-on-secondary text-label-md uppercase tracking-wider font-semibold">
-            Iniciar
-          </Text>
-        </Pressable>
+        <StartWorkoutButton workoutId={workout.id} done={workout.done_today} />
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -105,23 +116,21 @@ function LibraryWorkoutCard({
   onDelete: (workout: Workout) => void;
 }) {
   const count = workout.exercises?.length ?? 0;
-  const daysLabel = workout.days_of_week
-    .map((d) => DAY_SHORT[d])
-    .join(", ");
+  const daysLabel = workout.days_of_week.map((d) => DAY_SHORT[d]).join(", ");
 
   return (
     <Pressable
       onPress={() => router.push(`/workout/${workout.id}`)}
-      className={`bg-surface-container border border-outline-variant rounded-xl p-md active:bg-surface-high ${
+      className={`bg-surface-container border border-card-border rounded-xl p-md active:bg-surface-high ${
         workout.active ? "" : "opacity-60"
       }`}
     >
       <View className="flex-row justify-between items-start mb-md">
         <View className="flex-1 pr-2">
-          <Text className="text-title-md text-on-surface font-semibold">
+          <Text className="text-title-md text-on-surface font-bold">
             {workout.name}
           </Text>
-          <Text className="text-label-sm text-on-surface-variant mt-1">
+          <Text className="text-label-sm ps-5 text-on-surface-variant mt-1">
             {daysLabel || "Sem dias definidos"}
           </Text>
         </View>
@@ -139,7 +148,7 @@ function LibraryWorkoutCard({
           <Text className="text-label-sm uppercase tracking-widest text-outline">
             Exercícios
           </Text>
-          <Text className="text-title-md text-on-surface font-semibold">
+          <Text className="text-title-lg text-center text-on-surface font-semibold">
             {count}
           </Text>
         </View>
@@ -147,7 +156,7 @@ function LibraryWorkoutCard({
           <Text className="text-label-sm uppercase tracking-widest text-outline">
             Frequência
           </Text>
-          <Text className="text-title-md text-on-surface font-semibold">
+          <Text className="text-title-lg text-center text-on-surface font-semibold">
             {workout.days_of_week.length}x / sem
           </Text>
         </View>
@@ -168,13 +177,6 @@ function LibraryWorkoutCard({
             </Text>
           </View>
         ) : null}
-        {workout.days_of_week.map((d) => (
-          <View key={d} className="bg-surface-variant px-2 py-1 rounded">
-            <Text className="text-label-sm text-on-surface-variant">
-              {DAY_SHORT[d]}
-            </Text>
-          </View>
-        ))}
       </View>
     </Pressable>
   );
@@ -188,7 +190,7 @@ export default function WorkoutsScreen() {
   const [search, setSearch] = useState("");
   // Dia da semana lido do relógio local do dispositivo.
   const [today, setToday] = useState<DayOfWeek>(
-    () => DAY_INDEX[new Date().getDay()]
+    () => DAY_INDEX[new Date().getDay()],
   );
 
   useEffect(() => {
@@ -201,7 +203,7 @@ export default function WorkoutsScreen() {
       // e troca de fuso horário com o app aberto em segundo plano.
       setToday(DAY_INDEX[new Date().getDay()]);
       refresh();
-    }, [refresh])
+    }, [refresh]),
   );
 
   const onRefresh = useCallback(async () => {
@@ -229,10 +231,10 @@ export default function WorkoutsScreen() {
               }
             },
           },
-        ]
+        ],
       );
     },
-    [remove]
+    [remove],
   );
 
   const filtered = useMemo(() => {
@@ -243,11 +245,11 @@ export default function WorkoutsScreen() {
 
   const todayWorkouts = useMemo(
     () => filtered.filter((w) => w.active && w.days_of_week.includes(today)),
-    [filtered, today]
+    [filtered, today],
   );
   const libraryWorkouts = useMemo(
     () => filtered.filter((w) => !todayWorkouts.includes(w)),
-    [filtered, todayWorkouts]
+    [filtered, todayWorkouts],
   );
 
   const initial = (user?.email?.[0] ?? "?").toUpperCase();
@@ -255,44 +257,32 @@ export default function WorkoutsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16 border-b border-outline-variant">
+      <View className="flex-row justify-between items-center px-md h-16">
         <View className="flex-row items-center gap-3">
-          <View className="w-8 h-8 rounded-full bg-primary-container border border-primary items-center justify-center">
-            <Text className="text-on-primary font-bold text-label-md">
-              {initial}
-            </Text>
-          </View>
-          <Text className="text-title-md uppercase tracking-tight text-primary font-semibold">
+          <Text className="text-title-xxl text-white font-bold">
             Meus Treinos
           </Text>
         </View>
         <Pressable
           onPress={() => router.push("/workout/create")}
-          className="w-10 h-10 items-center justify-center rounded-full bg-surface-high active:bg-primary"
+          className="w-14 h-14 items-center justify-center rounded-full border border-card-border active:bg-primary"
         >
-          <Text className="text-primary text-2xl">＋</Text>
+          <Text className="text-primary text-3xl">＋</Text>
         </Pressable>
       </View>
 
       {loading && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#d0bcff" />
+          <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center px-lg gap-md">
           <EmptyState
-            icon="⚠️"
+            icon={TriangleAlert}
             title="Não foi possível carregar"
             description={error}
           />
-          <Pressable
-            onPress={() => fetch()}
-            className="rounded bg-primary px-6 py-3 active:opacity-80"
-          >
-            <Text className="text-label-md uppercase tracking-widest text-on-primary font-semibold">
-              Tentar novamente
-            </Text>
-          </Pressable>
+          <Button label="Tentar novamente" size="sm" onPress={() => fetch()} />
         </View>
       ) : (
         <ScrollView
@@ -302,28 +292,23 @@ export default function WorkoutsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#d0bcff"
+              tintColor="#c8a3ff"
             />
           }
         >
           {/* Busca */}
-          <View className="bg-surface-lowest border border-outline-variant rounded-xl px-md py-sm flex-row items-center gap-sm">
-            <Text className="text-on-surface-variant text-base">⌕</Text>
-            <TextInput
-              value={search}
-              onChangeText={setSearch}
-              placeholder="Buscar treino..."
-              placeholderTextColor="#cbc3d7"
-              className="flex-1 text-body-md text-on-surface"
-            />
-          </View>
+          <SearchInput
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Buscar treino..."
+          />
 
           {/* Programado para Hoje */}
           {todayWorkouts.length > 0 && (
             <View className="gap-md">
               <View className="flex-row items-center justify-between">
-                <Text className="text-label-md uppercase text-secondary tracking-[3px]">
-                  Programado para Hoje
+                <Text className="text-label-md text-on-surface font-bold">
+                  Hoje
                 </Text>
                 <View className="w-2 h-2 rounded-full bg-secondary" />
               </View>
@@ -334,11 +319,12 @@ export default function WorkoutsScreen() {
           )}
 
           {/* Sua Biblioteca */}
-          <View className="gap-md">
-            <Text className="text-label-md uppercase text-on-surface-variant tracking-[3px]">
-              Sua Biblioteca
+          <View className="flex justify-between items-center">
+            <Text className="text-label-md text-on-surface font-bold">
+              Outros treinos
             </Text>
-
+          </View>
+          <View className="gap-md">
             {libraryWorkouts.map((w) => (
               <LibraryWorkoutCard
                 key={w.id}
@@ -349,11 +335,9 @@ export default function WorkoutsScreen() {
 
             {filtered.length === 0 ? (
               <EmptyState
-                icon={search ? "🔍" : "🏋️"}
+                icon={search ? Search : Dumbbell}
                 title={
-                  search
-                    ? "Nenhum treino encontrado"
-                    : "Nenhum treino ainda"
+                  search ? "Nenhum treino encontrado" : "Nenhum treino ainda"
                 }
                 description={
                   search
@@ -362,16 +346,16 @@ export default function WorkoutsScreen() {
                 }
               />
             ) : (
-              /* Card tracejado "Novo Modelo de Treino" */
-              <Pressable
-                onPress={() => router.push("/workout/create")}
-                className="border-2 border-dashed border-outline-variant rounded-xl p-md items-center justify-center min-h-[140px] gap-sm active:border-primary"
-              >
-                <Text className="text-outline text-4xl">＋</Text>
-                <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
-                  Novo Modelo de Treino
+              /* Novo treino */
+              <View className="items-center gap-sm pt-5">
+                <IconButton
+                  icon={Plus}
+                  onPress={() => router.push("/workout/create")}
+                />
+                <Text className="text-label-md text-on-surface-variant">
+                  Novo treino
                 </Text>
-              </Pressable>
+              </View>
             )}
           </View>
         </ScrollView>

@@ -11,6 +11,7 @@ import { useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
+import { Swords } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
@@ -37,7 +38,7 @@ export default function GroupsScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   async function handleCreate() {
@@ -68,7 +69,7 @@ export default function GroupsScreen() {
           ? "Código inválido"
           : status === 409
             ? "Você já está nesse grupo"
-            : "Erro ao entrar no grupo"
+            : "Erro ao entrar no grupo",
       );
     } finally {
       setBusy(false);
@@ -76,15 +77,19 @@ export default function GroupsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <ScrollView
         className="flex-1 px-md"
         contentContainerClassName="pb-[112px]"
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={load} tintColor="#d0bcff" />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={load}
+            tintColor="#c8a3ff"
+          />
         }
       >
-        <Text className="text-headline-mobile text-on-surface font-bold mt-md mb-lg">
+        <Text className="text-title-xxl text-on-surface font-bold mt-md mb-lg">
           Grupos
         </Text>
 
@@ -96,7 +101,12 @@ export default function GroupsScreen() {
             onChangeText={setName}
             maxLength={100}
           />
-          <Button label="Criar grupo" onPress={handleCreate} loading={busy} fullWidth />
+          <Button
+            label="Criar grupo"
+            onPress={handleCreate}
+            loading={busy}
+            fullWidth
+          />
         </View>
 
         <View className="bg-surface-container rounded-xl p-md gap-md mb-lg">
@@ -110,7 +120,7 @@ export default function GroupsScreen() {
           />
           <Button
             label="Entrar"
-            variant="secondary"
+            variant="tonal"
             onPress={handleJoin}
             loading={busy}
             fullWidth
@@ -118,10 +128,10 @@ export default function GroupsScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator className="mt-xl" color="#d0bcff" />
+          <ActivityIndicator className="mt-xl" color="#c8a3ff" />
         ) : groups.length === 0 ? (
           <EmptyState
-            icon="⚔️"
+            icon={Swords}
             title="Nenhum grupo ainda"
             description="Crie um grupo ou entre com um código para competir com seus amigos."
           />

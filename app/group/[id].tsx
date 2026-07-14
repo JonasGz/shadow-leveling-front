@@ -11,18 +11,23 @@ import {
   AppState,
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useAuthStore } from "../../src/stores/auth.store";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
 import { pickImage } from "../../src/lib/pickImage";
+import { ArrowLeft, LogOut, Medal } from "lucide-react-native";
 import type { GroupDetail, FeedItem } from "../../src/types/api.types";
 
 /** Buckets an ISO timestamp into "Hoje" / "Ontem" / "DD/MM". */
 function dayLabel(iso: string): string {
   const d = new Date(iso);
   const today = new Date();
-  const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const startOf = (x: Date) =>
+    new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   const diffDays = Math.round((startOf(today) - startOf(d)) / 86_400_000);
   if (diffDays <= 0) return "Hoje";
   if (diffDays === 1) return "Ontem";
@@ -41,7 +46,11 @@ const POLL_MS = 15000;
 // Lightweight signature to detect real changes: scores + the newest feed item.
 // (Deliberately ignores feed length so paginating older items doesn't count as
 // a change and trigger a reset.)
-function signature(topScore: number, myScore: number, headSessionId: string): string {
+function signature(
+  topScore: number,
+  myScore: number,
+  headSessionId: string,
+): string {
   return `${topScore}-${myScore}-${headSessionId}`;
 }
 
@@ -56,14 +65,18 @@ function FeedRow({ item }: { item: FeedItem }) {
         />
       ) : (
         <View className="w-12 h-12 rounded-full bg-surface-high items-center justify-center">
-          <Text className="text-title-md text-secondary font-bold">{initial}</Text>
+          <Text className="text-title-md text-secondary font-bold">
+            {initial}
+          </Text>
         </View>
       )}
       <View className="flex-1">
         <Text className="text-label-md text-on-surface font-semibold">
           {item.workout_name}
         </Text>
-        <Text className="text-label-sm text-on-surface-variant">{item.name}</Text>
+        <Text className="text-label-sm text-on-surface-variant">
+          {item.name}
+        </Text>
       </View>
       <Text className="text-label-sm text-on-surface-variant">
         {timeLabel(item.created_at)}
@@ -72,10 +85,47 @@ function FeedRow({ item }: { item: FeedItem }) {
   );
 }
 
+// A score card: circular avatar (initial) on the left, the person's name with a
+// role badge below it, and the week's "idas" count on the right.
+function PersonScore({
+  name,
+  score,
+  badge,
+}: {
+  name: string;
+  score: number;
+  badge: "leader" | "you";
+}) {
+  const initial = (name || "?").charAt(0).toUpperCase();
+  return (
+    <View className="flex-row items-center gap-md bg-surface-container rounded-xl p-md">
+      <View className="w-12 h-12 rounded-full bg-surface-high items-center justify-center">
+        <Text className="text-title-md text-secondary font-bold">
+          {initial}
+        </Text>
+      </View>
+      <View className="flex-col justify-center items-center gap-1">
+        <View className="">
+          <Text className="text-title-sm text-secondary">{score}</Text>
+        </View>
+        <View className="flex-1">
+          {badge === "leader" ? (
+            <Medal size={16} color="#c8a3ff" />
+          ) : (
+            <Text className="text-label-sm text-on-surface-variant">Você</Text>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { showToast } = useToast();
-  const currentUserId = useAuthStore((s) => s.user?.id);
+  const insets = useSafeAreaInsets();
+  const user = useAuthStore((s) => s.user);
+  const currentUserId = user?.id;
 
   const [group, setGroup] = useState<GroupDetail | null>(null);
   const [feed, setFeed] = useState<FeedItem[]>([]);
@@ -94,7 +144,11 @@ export default function GroupDetailScreen() {
       setGroup(detail);
       setFeed(page.data);
       setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
-      sigRef.current = signature(detail.top_score, detail.my_score, page.data[0]?.session_id ?? "");
+      sigRef.current = signature(
+        detail.top_score,
+        detail.my_score,
+        page.data[0]?.session_id ?? "",
+      );
     } catch {
       showToast("Não foi possível carregar o grupo");
     } finally {
@@ -110,7 +164,11 @@ export default function GroupDetailScreen() {
         groupsService.get(id),
         groupsService.feed(id),
       ]);
-      const sig = signature(detail.top_score, detail.my_score, page.data[0]?.session_id ?? "");
+      const sig = signature(
+        detail.top_score,
+        detail.my_score,
+        page.data[0]?.session_id ?? "",
+      );
       if (sig === sigRef.current) return; // nada mudou → nenhum setState/re-render
       sigRef.current = sig;
       setGroup(detail);
@@ -128,7 +186,7 @@ export default function GroupDetailScreen() {
         if (AppState.currentState === "active") poll();
       }, POLL_MS);
       return () => clearInterval(interval);
-    }, [load, poll])
+    }, [load, poll]),
   );
 
   async function loadMore() {
@@ -193,7 +251,7 @@ export default function GroupDetailScreen() {
   if (loading) {
     return (
       <SafeAreaView className="flex-1 bg-surface items-center justify-center">
-        <ActivityIndicator color="#d0bcff" />
+        <ActivityIndicator color="#c8a3ff" />
       </SafeAreaView>
     );
   }
@@ -206,12 +264,18 @@ export default function GroupDetailScreen() {
     );
   }
 
+  const myName = user?.nickname ?? user?.email?.split("@")[0] ?? "Você";
+
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       <ScrollView
         className="flex-1"
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={load} tintColor="#d0bcff" />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={load}
+            tintColor="#c8a3ff"
+          />
         }
         onScrollEndDrag={loadMore}
       >
@@ -221,7 +285,10 @@ export default function GroupDetailScreen() {
           className="h-40 bg-surface-high items-center justify-center overflow-hidden"
         >
           {group.cover_url ? (
-            <Image source={{ uri: group.cover_url }} className="w-full h-full" />
+            <Image
+              source={{ uri: group.cover_url }}
+              className="w-full h-full"
+            />
           ) : (
             <Text className="text-on-surface-variant text-label-sm uppercase tracking-widest">
               {isOwner ? "Toque para definir a capa" : "Sem capa"}
@@ -229,7 +296,7 @@ export default function GroupDetailScreen() {
           )}
           {uploadingCover && (
             <View className="absolute inset-0 bg-black/40 items-center justify-center">
-              <ActivityIndicator color="#d0bcff" />
+              <ActivityIndicator color="#c8a3ff" />
             </View>
           )}
         </Pressable>
@@ -239,52 +306,32 @@ export default function GroupDetailScreen() {
             <Text className="flex-1 text-headline-mobile text-on-surface font-bold pr-2">
               {group.name}
             </Text>
-            <Pressable onPress={confirmLeave}>
-              <Text className="text-label-sm uppercase tracking-widest text-error">
-                Sair
-              </Text>
+            <Pressable onPress={confirmLeave} hitSlop={8}>
+              <LogOut size={22} color="#ffb4ab" />
             </Pressable>
           </View>
-          <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-1">
-            Código: {group.invite_code} · {group.member_count} membros
-          </Text>
 
-          {/* Score header */}
-          <View className="flex-row gap-md mt-lg">
-            <View className="flex-1 bg-surface-container rounded-xl p-md items-center">
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
-                Líder
-              </Text>
-              <Text className="text-headline-mobile text-secondary font-bold">
-                {group.top_score}
-              </Text>
-              <Text className="text-label-sm text-on-surface-variant">pts / semana</Text>
-            </View>
-            <View className="flex-1 bg-surface-container rounded-xl p-md items-center">
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
-                Você
-              </Text>
-              <Text className="text-headline-mobile text-on-surface font-bold">
-                {group.my_score}
-              </Text>
-              <Text className="text-label-sm text-on-surface-variant">pts / semana</Text>
-            </View>
+          {/* Score header: leader + you */}
+          <View className="justify-center flex-row gap-md mt-lg d-fl">
+            <PersonScore
+              name={group.top_name}
+              score={group.top_score}
+              badge="leader"
+            />
+            <PersonScore name={myName} score={group.my_score} badge="you" />
           </View>
 
           {/* Feed grouped by day */}
-          <Text className="text-title-md text-on-surface font-bold mt-xl mb-sm">
-            Feed
-          </Text>
           {sections.length === 0 ? (
-            <Text className="text-on-surface-variant py-lg">
+            <Text className="text-on-surface-variant py-lg mt-lg">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
-            <View className="pb-xl">
+            <View className="pb-xl mt-lg">
               {sections.map(([label, items]) => (
                 <View key={label}>
                   <Text className="text-label-sm uppercase tracking-widest text-outline my-sm">
-                    ─── {label} ───
+                    {label}
                   </Text>
                   {items.map((it) => (
                     <FeedRow key={it.session_id} item={it} />
@@ -295,6 +342,27 @@ export default function GroupDetailScreen() {
           )}
         </View>
       </ScrollView>
+
+      {/* Back button over the cover */}
+      <Pressable
+        onPress={() => router.back()}
+        style={{
+          position: "absolute",
+          top: insets.top + 8,
+          left: 12,
+          zIndex: 10,
+          elevation: 10,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        hitSlop={8}
+      >
+        <ArrowLeft size={24} color="#fff" />
+      </Pressable>
     </SafeAreaView>
   );
 }

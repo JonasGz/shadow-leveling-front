@@ -8,6 +8,7 @@ export interface User {
   id: string;
   email: string;
   nickname: string | null;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -148,11 +149,20 @@ export interface TodayMetrics {
       name: string;
       description: string;
       is_completed: boolean;
+      exercise_count: number;
+      estimated_duration_min: number;
     }>;
   };
   tasks: {
     progress: DayProgress;
     items: Task[];
+  };
+}
+
+export interface WeeklySummary {
+  goal: {
+    completed: number;
+    scheduled: number;
   };
 }
 
@@ -187,6 +197,7 @@ export interface Group {
 
 export interface GroupDetail extends Group {
   top_score: number;
+  top_name: string;
   my_score: number;
   member_count: number;
 }
