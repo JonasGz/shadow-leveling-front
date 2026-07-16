@@ -14,13 +14,13 @@ import {
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { useAuthStore } from "../../src/stores/auth.store";
-import { useToast } from "../../src/components/ui/Toast";
-import { groupsService } from "../../src/services/groups.service";
-import { pickImage } from "../../src/lib/pickImage";
-import { inviteUrl } from "../../src/lib/invite";
+import { useAuthStore } from "../../../src/stores/auth.store";
+import { useToast } from "../../../src/components/ui/Toast";
+import { groupsService } from "../../../src/services/groups.service";
+import { pickImage } from "../../../src/lib/pickImage";
+import { inviteUrl } from "../../../src/lib/invite";
 import { ChevronLeft, LogOut, Award, Share2 } from "lucide-react-native";
-import type { GroupDetail, FeedItem } from "../../src/types/api.types";
+import type { GroupDetail, FeedItem } from "../../../src/types/api.types";
 
 /** Buckets an ISO timestamp into "Hoje" / "Ontem" / "DD/MM". */
 function dayLabel(iso: string): string {
@@ -54,11 +54,21 @@ function signature(
   return `${topScore}-${myScore}-${headSessionId}`;
 }
 
-function FeedRow({ item, first }: { item: FeedItem; first: boolean }) {
+function FeedRow({
+  item,
+  first,
+  groupId,
+}: {
+  item: FeedItem;
+  first: boolean;
+  groupId: string;
+}) {
   const initial = item.name.charAt(0).toUpperCase();
+  const hasSocial = item.reaction_count > 0 || item.comment_count > 0;
   return (
-    <View
-      className={`flex-row items-center bg-surface-container rounded-lg px-3 gap-3 py-3 ${
+    <Pressable
+      onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
+      className={`flex-row items-center bg-surface-container rounded-lg px-3 gap-3 py-3 active:opacity-70 ${
         first ? "" : "border-t border-white/5"
       }`}
     >
@@ -81,11 +91,19 @@ function FeedRow({ item, first }: { item: FeedItem; first: boolean }) {
         <Text className="text-label-sm text-on-surface-variant mt-0.5">
           {item.name}
         </Text>
+        {hasSocial && (
+          <Text className="text-label-sm text-on-surface-variant mt-1">
+            {item.reaction_count > 0 &&
+              `${item.top_emoji ?? "🔥"} ${item.reaction_count}`}
+            {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
+            {item.comment_count > 0 && `💬 ${item.comment_count}`}
+          </Text>
+        )}
       </View>
       <Text className="text-label-sm text-on-surface-variant font-semibold">
         {timeLabel(item.created_at)}
       </Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -107,9 +125,11 @@ function PodiumItem({
   return (
     <View className="flex-row items-center gap-2">
       <View
-        className="w-[60px] h-[60px] rounded-full bg-surface-container items-center justify-center overflow-hidden"
+        className={`rounded-full bg-surface-container items-center justify-center overflow-hidden ${
+          badge === "you" ? "w-[52px] h-[52px]" : "w-[60px] h-[60px]"
+        }`}
         style={
-          badge === "you"
+          badge === "leader"
             ? {
                 borderWidth: 1,
                 borderColor: "#9F1FFF",
@@ -410,7 +430,12 @@ export default function GroupDetailScreen() {
                   </Text>
                   <View className="flex flex-col gap-2">
                     {items.map((it, i) => (
-                      <FeedRow key={it.session_id} item={it} first={i === 0} />
+                      <FeedRow
+                        key={it.session_id}
+                        item={it}
+                        first={i === 0}
+                        groupId={id}
+                      />
                     ))}
                   </View>
                 </View>

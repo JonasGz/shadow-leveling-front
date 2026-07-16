@@ -224,14 +224,54 @@ export interface FeedItem {
   workout_name: string;
   photo_url: string | null;
   created_at: string;
+  reaction_count: number;
+  comment_count: number;
+  my_reaction: string | null; // this viewer's emoji on this session, or null
+  top_emoji: string | null; // most-used emoji on this session (tie: earliest), or null
+}
+
+export interface CursorMeta {
+  next_cursor: string | null;
+  has_more: boolean;
 }
 
 export interface FeedPage {
   data: FeedItem[];
-  cursor: {
-    next_cursor: string | null;
-    has_more: boolean;
-  };
+  cursor: CursorMeta;
+}
+
+export interface ReactionCount {
+  emoji: string;
+  count: number;
+}
+
+// SessionSocialDetail is a completed workout viewed inside a group as a post.
+export interface SessionSocialDetail {
+  session_id: string;
+  user_id: string;
+  name: string;
+  avatar_url: string | null;
+  workout_name: string;
+  photo_url: string | null;
+  created_at: string;
+  reactions: ReactionCount[];
+  my_reaction: string | null;
+  comment_count: number;
+}
+
+export interface SessionComment {
+  id: string;
+  user_id: string;
+  name: string;
+  avatar_url: string | null;
+  body: string;
+  created_at: string;
+  is_mine: boolean;
+}
+
+export interface CommentPage {
+  data: SessionComment[];
+  cursor: CursorMeta;
 }
 
 // Generic API error

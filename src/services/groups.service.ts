@@ -5,6 +5,9 @@ import type {
   GroupDetail,
   RankingEntry,
   FeedPage,
+  SessionSocialDetail,
+  SessionComment,
+  CommentPage,
 } from "../types/api.types";
 
 // buildImageForm wraps a local image URI (from expo-image-picker) into the
@@ -67,5 +70,72 @@ export const groupsService = {
 
   async leave(id: string): Promise<void> {
     await api.delete(`/groups/${id}/leave`);
+  },
+
+  async sessionDetail(
+    groupId: string,
+    sessionId: string
+  ): Promise<SessionSocialDetail> {
+    const { data } = await api.get<SessionSocialDetail>(
+      `/groups/${groupId}/sessions/${sessionId}`
+    );
+    return data;
+  },
+
+  // setReaction sets/toggles the viewer's emoji; returns the updated detail.
+  async setReaction(
+    groupId: string,
+    sessionId: string,
+    emoji: string
+  ): Promise<SessionSocialDetail> {
+    const { data } = await api.put<SessionSocialDetail>(
+      `/groups/${groupId}/sessions/${sessionId}/reaction`,
+      { emoji }
+    );
+    return data;
+  },
+
+  async removeReaction(
+    groupId: string,
+    sessionId: string
+  ): Promise<SessionSocialDetail> {
+    const { data } = await api.delete<SessionSocialDetail>(
+      `/groups/${groupId}/sessions/${sessionId}/reaction`
+    );
+    return data;
+  },
+
+  async comments(
+    groupId: string,
+    sessionId: string,
+    cursor?: string
+  ): Promise<CommentPage> {
+    const { data } = await api.get<CommentPage>(
+      `/groups/${groupId}/sessions/${sessionId}/comments`,
+      { params: cursor ? { cursor } : {} }
+    );
+    return data;
+  },
+
+  async addComment(
+    groupId: string,
+    sessionId: string,
+    body: string
+  ): Promise<SessionComment> {
+    const { data } = await api.post<SessionComment>(
+      `/groups/${groupId}/sessions/${sessionId}/comments`,
+      { body }
+    );
+    return data;
+  },
+
+  async deleteComment(
+    groupId: string,
+    sessionId: string,
+    commentId: string
+  ): Promise<void> {
+    await api.delete(
+      `/groups/${groupId}/sessions/${sessionId}/comments/${commentId}`
+    );
   },
 };
