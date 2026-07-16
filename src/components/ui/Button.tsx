@@ -16,11 +16,16 @@ interface ButtonProps extends PressableProps {
   icon?: LucideIcon;
   loading?: boolean;
   fullWidth?: boolean;
+  labelClassName?: string;
+  // Text-casing of the label. Defaults to uppercase (existing behavior). Pass
+  // "capitalize"/"none" to opt out. Weight is controlled via labelClassName
+  // (e.g. labelClassName="font-bold").
+  transform?: "uppercase" | "capitalize" | "none";
 }
 
 const sizePad: Record<Size, string> = {
   sm: "px-5 py-2.5",
-  md: "px-6 py-4",
+  md: "px-6 py-5",
 };
 
 const variantStyles: Record<
@@ -60,11 +65,21 @@ export function Button({
   icon: Icon,
   loading = false,
   fullWidth = false,
+  labelClassName = "",
+  transform = "uppercase",
   disabled,
   ...props
 }: ButtonProps) {
+  const transformClass = transform === "none" ? "" : transform;
   const styles = variantStyles[variant];
   const isDisabled = disabled || loading;
+  // NativeWind doesn't reliably last-wins two conflicting text-<size> classes,
+  // so only apply the default size when labelClassName doesn't set its own.
+  const sizeClass = /(^|\s)text-(label|body|title|display|subtitle|button|caption|h[123])/.test(
+    labelClassName,
+  )
+    ? ""
+    : "text-label-md";
 
   return (
     <Pressable
@@ -72,7 +87,7 @@ export function Button({
       disabled={isDisabled}
       className={`
         flex-row items-center justify-center gap-2
-        rounded-xl ${sizePad[size]}
+        rounded-lg ${sizePad[size]}
         ${styles.container}
         ${fullWidth ? "w-full" : ""}
         ${isDisabled ? "opacity-50" : ""}
@@ -84,7 +99,7 @@ export function Button({
         <>
           {Icon && <Icon size={20} color={styles.icon} fill={styles.icon} />}
           <Text
-            className={`text-label-md tracking-widest uppercase ${styles.text}`}
+            className={`${sizeClass} ${transformClass} ${styles.text} ${labelClassName}`}
           >
             {label}
           </Text>

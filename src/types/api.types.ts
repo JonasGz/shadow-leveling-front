@@ -195,9 +195,17 @@ export interface Group {
   created_at: string;
 }
 
+// A group as returned by GET /groups (the list), with member data for the
+// avatar stack. Distinct from GroupDetail (the group page header).
+export interface GroupListItem extends Group {
+  member_count: number;
+  member_avatars: string[]; // up to 3 non-null avatar URLs
+}
+
 export interface GroupDetail extends Group {
   top_score: number;
   top_name: string;
+  top_avatar_url: string | null;
   my_score: number;
   member_count: number;
 }
@@ -205,6 +213,7 @@ export interface GroupDetail extends Group {
 export interface RankingEntry {
   user_id: string;
   name: string;
+  avatar_url: string | null;
   points: number;
 }
 

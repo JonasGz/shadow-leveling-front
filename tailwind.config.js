@@ -126,6 +126,9 @@ module.exports = {
         "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
         button: ["15px", { lineHeight: "20px", fontWeight: "600" }],
         caption: ["12px", { lineHeight: "16px", fontWeight: "500" }],
+        // Oversized display tokens for hero titles (above the base 40px scale).
+        "display-xxl": ["56px", { lineHeight: "58px", fontWeight: "800" }],
+        "display-xl": ["48px", { lineHeight: "52px", fontWeight: "800" }],
         // Aliases for legacy names → closest PULSE value.
         "display-lg": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display
         "display-md": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display

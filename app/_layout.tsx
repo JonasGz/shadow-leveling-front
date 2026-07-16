@@ -1,7 +1,12 @@
 import "../global.css";
 import { useEffect } from "react";
+import { LogBox } from "react-native";
+import * as Linking from "expo-linking";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+// Benign RN/reanimated warning fired during screen transitions — not a real bug.
+LogBox.ignoreLogs(["Sending `onAnimatedValueUpdate`"]);
 import {
   useFonts,
   OpenSans_300Light,
@@ -19,6 +24,7 @@ import {
   addNotificationResponseListener,
 } from "../src/lib/push";
 import { installOpenSans } from "../src/lib/fonts";
+import { parseInviteCode, setPendingInvite } from "../src/lib/invite";
 
 installOpenSans();
 
@@ -34,15 +40,20 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function bootstrap() {
+      // Cold-start invite deep-link (shadowleveling://join/<CODE>): the redirects
+      // below would otherwise clobber it, so capture the code first.
+      const inviteCode = parseInviteCode(await Linking.getInitialURL());
+
       const token = await authService.getStoredToken();
       if (!token) {
-        router.replace("/(auth)");
+        if (inviteCode) await setPendingInvite(inviteCode); // resumed after login
+        router.replace("/(auth)/welcome");
         return;
       }
       try {
         const user = await authService.me();
         setUser(user);
-        router.replace("/(tabs)/");
+        router.replace(inviteCode ? `/join/${inviteCode}` : "/(tabs)/");
         // Register for push once authenticated (best-effort, never blocks login).
         registerForPush();
       } catch {

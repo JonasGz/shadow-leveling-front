@@ -34,6 +34,14 @@ import type {
   WorkoutSession,
 } from "../../../src/types/api.types";
 
+// Data (dia local) da sessão como meio-dia UTC daquele dia, para a coluna DATE
+// do backend gravar o dia do calendário do usuário e não escorregar de fuso.
+function localCalendarDate(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T12:00:00.000Z`;
+}
+
 // Mesma correção de métrica usada em Input/SearchInput: sem isso o número
 // fica caído dentro da caixa no Android.
 const SET_FIELD_TEXT = {
@@ -106,7 +114,12 @@ export default function WorkoutSessionScreen() {
 
       const s = await sessionsService.create({
         workout_id: workoutId,
-        date: new Date().toISOString(),
+        // A sessão é datada pelo DIA LOCAL, não pelo instante UTC: um treino às
+        // 22:31 (UTC-3) vira 01:31Z do dia seguinte, e `toISOString()` gravaria
+        // a data errada na coluna DATE — fazendo `done_today` acender no dia
+        // seguinte. Enviamos meio-dia UTC do dia local (margem de ±12h contra o
+        // fuso do banco) para a data truncada bater com o calendário do usuário.
+        date: localCalendarDate(),
         status: "incomplete",
       });
       setSession(s);
@@ -371,16 +384,7 @@ export default function WorkoutSessionScreen() {
           {/* Card do exercício ativo */}
           <View className="bg-surface-low border border-card-border rounded-2xl overflow-hidden mb-lg">
             {/* Faixa em gradiente com o nome do exercício */}
-            <LinearGradient
-              colors={["#9F1FFF", "#41006C"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0.34, y: 0.94 }} // ≈ 160deg
-              style={{
-                paddingHorizontal: 16,
-                paddingTop: 18,
-                paddingBottom: 15,
-              }}
-            >
+            <View className="p-lg bg-primary/20">
               <Text
                 className="text-title-xxl text-white font-extrabold"
                 numberOfLines={2}
@@ -409,7 +413,7 @@ export default function WorkoutSessionScreen() {
                       : ""}
                 </Text>
               </View>
-            </LinearGradient>
+            </View>
 
             {/* Grid de séries */}
             <View className="p-3.5">
@@ -438,7 +442,7 @@ export default function WorkoutSessionScreen() {
                 // altura vem do padding: h-[..] + py-* juntos zeram a área do texto
                 const fieldClass = `py-3 rounded-lg border text-center ${
                   isActiveRow && !set.done
-                    ? "bg-background border-primary/60 text-primary"
+                    ? "bg-background border-primary/60 text-[#fff]"
                     : "bg-[#151417] border-[#FFFFFF14] text-on-surface-variant"
                 } ${set.done ? "opacity-50" : ""}`;
 

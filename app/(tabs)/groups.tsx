@@ -2,27 +2,67 @@ import { useCallback, useState } from "react";
 import {
   View,
   Text,
+  Image,
   ScrollView,
   Pressable,
   RefreshControl,
   ActivityIndicator,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
-import { Swords } from "lucide-react-native";
+import { Swords, ChevronRight } from "lucide-react-native";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
-import type { Group } from "../../src/types/api.types";
+import type { GroupListItem } from "../../src/types/api.types";
+
+// Overlapping member avatars for a group card. Shows up to 3 real avatars and a
+// "+N" bubble for the remaining members. Falls back to a plain purple circle
+// when a slot has no photo (mirrors the profile screen's avatar fallback).
+function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
+  const shown = avatars.slice(0, 3);
+  const rest = count - shown.length;
+  return (
+    <View className="flex-row items-center">
+      {shown.map((url, i) => (
+        <View
+          key={i}
+          className={`w-6 h-6 rounded-full overflow-hidden border-[1.5px] border-surface-container bg-surface-high ${
+            i > 0 ? "-ml-2" : ""
+          }`}
+        >
+          <Image
+            source={{ uri: url }}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
+        </View>
+      ))}
+      {rest > 0 && (
+        <View
+          className={`w-6 h-6 rounded-full border-[1.5px] border-surface-container bg-primary/25 items-center justify-center ${
+            shown.length > 0 ? "-ml-2" : ""
+          }`}
+        >
+          <Text className="text-[9px] font-bold text-secondary">+{rest}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
 
 export default function GroupsScreen() {
   const { showToast } = useToast();
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<GroupListItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
-  const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
@@ -47,6 +87,7 @@ export default function GroupsScreen() {
     try {
       const g = await groupsService.create(name.trim());
       setName("");
+      setCreating(false);
       router.push(`/group/${g.id}`);
     } catch {
       showToast("Erro ao criar grupo");
@@ -55,32 +96,22 @@ export default function GroupsScreen() {
     }
   }
 
-  async function handleJoin() {
-    if (code.trim().length === 0) return;
-    setBusy(true);
-    try {
-      const g = await groupsService.join(code.trim().toUpperCase());
-      setCode("");
-      router.push(`/group/${g.id}`);
-    } catch (e: any) {
-      const status = e?.response?.status;
-      showToast(
-        status === 404
-          ? "Código inválido"
-          : status === 409
-            ? "Você já está nesse grupo"
-            : "Erro ao entrar no grupo",
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+      {/* TopAppBar */}
+      <View className="flex-row justify-between items-center px-md h-16">
+        <Text className="text-title-xxl text-white font-bold">Grupos</Text>
+        <Pressable
+          onPress={() => setCreating(true)}
+          className="w-14 h-14 items-center justify-center rounded-full border bg-surface-container border-card-border active:bg-primary"
+        >
+          <Text className="text-primary text-3xl">＋</Text>
+        </Pressable>
+      </View>
+
       <ScrollView
         className="flex-1 px-md"
-        contentContainerClassName="pb-[112px]"
+        contentContainerClassName="pb-[112px] pt-md"
         refreshControl={
           <RefreshControl
             refreshing={false}
@@ -89,71 +120,107 @@ export default function GroupsScreen() {
           />
         }
       >
-        <Text className="text-title-xxl text-on-surface font-bold mt-md mb-lg">
-          Grupos
-        </Text>
-
-        <View className="bg-surface-container rounded-xl p-md gap-md mb-lg">
-          <Input
-            label="Criar novo grupo"
-            placeholder="Nome do grupo"
-            value={name}
-            onChangeText={setName}
-            maxLength={100}
-          />
-          <Button
-            label="Criar grupo"
-            onPress={handleCreate}
-            loading={busy}
-            fullWidth
-          />
-        </View>
-
-        <View className="bg-surface-container rounded-xl p-md gap-md mb-lg">
-          <Input
-            label="Entrar por código"
-            placeholder="Ex: K7M2PQ"
-            autoCapitalize="characters"
-            value={code}
-            onChangeText={setCode}
-            maxLength={12}
-          />
-          <Button
-            label="Entrar"
-            variant="tonal"
-            onPress={handleJoin}
-            loading={busy}
-            fullWidth
-          />
-        </View>
-
         {loading ? (
           <ActivityIndicator className="mt-xl" color="#c8a3ff" />
         ) : groups.length === 0 ? (
           <EmptyState
             icon={Swords}
             title="Nenhum grupo ainda"
-            description="Crie um grupo ou entre com um código para competir com seus amigos."
+            description="Crie um grupo no + ou entre pelo link de convite de um amigo."
           />
         ) : (
-          <View className="gap-md pb-xl">
-            {groups.map((g) => (
-              <Pressable
-                key={g.id}
-                onPress={() => router.push(`/group/${g.id}`)}
-                className="bg-surface-container rounded-xl border-l-4 border-secondary p-md"
-              >
-                <Text className="text-title-md text-on-surface font-bold">
-                  {g.name}
-                </Text>
-                <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-1">
-                  Código: {g.invite_code}
-                </Text>
-              </Pressable>
-            ))}
+          <View className="pb-xl">
+            <View className="gap-md">
+              {groups.map((g) => (
+                <Pressable
+                  key={g.id}
+                  onPress={() => router.push(`/group/${g.id}`)}
+                  className="relative bg-surface-container rounded-xl overflow-hidden pl-5 pr-md py-md flex-row items-center justify-between gap-3 active:opacity-80"
+                >
+                  <LinearGradient
+                    colors={["#B26CFF", "#9F1FFF"]}
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 4,
+                    }}
+                  />
+                  <View className="flex-1">
+                    <Text className="text-title-md text-on-surface font-bold">
+                      {g.name}
+                    </Text>
+                    <Text className="text-label-sm text-on-surface-variant mt-1">
+                      Código:{" "}
+                      <Text className="font-semibold text-on-surface">
+                        {g.invite_code}
+                      </Text>
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center gap-2">
+                    <AvatarStack
+                      avatars={g.member_avatars}
+                      count={g.member_count}
+                    />
+                    <ChevronRight size={18} color="#6C6971" />
+                  </View>
+                </Pressable>
+              ))}
+            </View>
           </View>
         )}
       </ScrollView>
+
+      {/* Modal de criação de grupo */}
+      <Modal
+        visible={creating}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setCreating(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          className="flex-1 bg-black/70 items-center justify-center px-lg"
+        >
+          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
+            <Text className="text-title-md text-on-surface font-bold">
+              Criar novo grupo
+            </Text>
+            <Input
+              label="Nome do grupo"
+              placeholder="Ex: Botinhas"
+              value={name}
+              onChangeText={setName}
+              maxLength={100}
+              autoFocus
+            />
+            <View className="flex-row gap-md mt-sm">
+              <Pressable
+                onPress={() => {
+                  setName("");
+                  setCreating(false);
+                }}
+                disabled={busy}
+                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+              >
+                <Text className="text-on-surface-variant text-label-md uppercase">
+                  Cancelar
+                </Text>
+              </Pressable>
+              <View className="flex-1">
+                <Button
+                  label="Criar"
+                  size="sm"
+                  fullWidth
+                  loading={busy}
+                  onPress={handleCreate}
+                />
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </SafeAreaView>
   );
 }

@@ -11,13 +11,13 @@ interface BadgeProps {
 }
 
 const toneStyles: Record<Tone, { container: string; text: string }> = {
-  primary: { container: "bg-primary/15", text: "text-primary" },
-  secondary: { container: "bg-secondary/15", text: "text-secondary" },
-  success: { container: "bg-success/15", text: "text-success" },
-  warning: { container: "bg-warning/15", text: "text-warning" },
-  error: { container: "bg-error/15", text: "text-error" },
-  info: { container: "bg-info/15", text: "text-info" },
-  neutral: { container: "bg-surface-high", text: "text-on-surface-variant" },
+  primary: { container: "bg-primary/15 border border-primary/35", text: "text-primary" },
+  secondary: { container: "bg-secondary/15 border border-secondary/35", text: "text-secondary" },
+  success: { container: "bg-success/15 border border-success/35", text: "text-success" },
+  warning: { container: "bg-warning/15 border border-warning/35", text: "text-warning" },
+  error: { container: "bg-error/15 border border-error/35", text: "text-error" },
+  info: { container: "bg-info/15 border border-info/35", text: "text-info" },
+  neutral: { container: "bg-surface-high border border-outline/40", text: "text-on-surface-variant" },
 };
 
 export function Badge({ label, tone = "neutral" }: BadgeProps) {

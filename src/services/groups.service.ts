@@ -1,6 +1,7 @@
 import { api } from "./api";
 import type {
   Group,
+  GroupListItem,
   GroupDetail,
   RankingEntry,
   FeedPage,
@@ -21,8 +22,8 @@ export function buildImageForm(uri: string): FormData {
 const multipartHeaders = { "Content-Type": "multipart/form-data" };
 
 export const groupsService = {
-  async list(): Promise<Group[]> {
-    const { data } = await api.get<Group[]>("/groups");
+  async list(): Promise<GroupListItem[]> {
+    const { data } = await api.get<GroupListItem[]>("/groups");
     return data;
   },
 

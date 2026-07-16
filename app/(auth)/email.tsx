@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { View, Text, Pressable, KeyboardAvoidingView, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
@@ -46,7 +53,8 @@ export default function EmailAuthScreen() {
       await authService.verifyEmailCode(email.trim(), code);
       await finishAuth();
     } catch (err: any) {
-      if (err?.response?.status === 422) showToast("Código inválido ou expirado.", "error");
+      if (err?.response?.status === 422)
+        showToast("Código inválido ou expirado.", "error");
       else showToast("Não foi possível entrar. Tente novamente.", "error");
     } finally {
       setLoading(false);
@@ -56,13 +64,23 @@ export default function EmailAuthScreen() {
   return (
     <KeyboardAvoidingView behavior="padding" className="flex-1 bg-background">
       <SafeAreaView className="flex-1">
+        <Pressable
+          testID="email-back"
+          onPress={() => (step === "code" ? setStep("email") : router.back())}
+          hitSlop={12}
+          className="absolute left-md top-20 z-10 p-1"
+        >
+          <ChevronLeft size={28} color="#fff" />
+        </Pressable>
         <ScrollView
           contentContainerClassName="flex-grow justify-center px-lg"
           keyboardShouldPersistTaps="handled"
         >
           {step === "email" ? (
             <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">Entrar com e-mail</Text>
+              <Text className="text-headline-mobile text-on-surface font-bold">
+                Entrar com e-mail
+              </Text>
               <Text className="text-body-md text-on-surface-variant">
                 Enviaremos um código de acesso para o seu e-mail.
               </Text>
@@ -86,7 +104,9 @@ export default function EmailAuthScreen() {
             </View>
           ) : (
             <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">Digite o código</Text>
+              <Text className="text-headline-mobile text-on-surface font-bold">
+                Digite o código
+              </Text>
               <Text className="text-body-md text-on-surface-variant">
                 Enviamos um código de 6 dígitos para {email}.
               </Text>
@@ -106,13 +126,22 @@ export default function EmailAuthScreen() {
                 fullWidth
               />
               <View className="flex-row justify-center gap-1 mt-1">
-                <Text className="text-body-md text-on-surface-variant">Não recebeu?</Text>
+                <Text className="text-body-md text-on-surface-variant">
+                  Não recebeu?
+                </Text>
                 <Pressable onPress={sendCode} disabled={loading}>
-                  <Text className="text-body-md text-secondary font-semibold">Reenviar</Text>
+                  <Text className="text-body-md text-secondary font-semibold">
+                    Reenviar
+                  </Text>
                 </Pressable>
               </View>
-              <Pressable onPress={() => setStep("email")} className="items-center">
-                <Text className="text-body-md text-on-surface-variant">Usar outro e-mail</Text>
+              <Pressable
+                onPress={() => setStep("email")}
+                className="items-center"
+              >
+                <Text className="text-body-md text-on-surface-variant">
+                  Usar outro e-mail
+                </Text>
               </Pressable>
             </View>
           )}

@@ -9,17 +9,17 @@ import {
   ActivityIndicator,
   Alert,
   AppState,
+  Share,
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { useAuthStore } from "../../src/stores/auth.store";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
 import { pickImage } from "../../src/lib/pickImage";
-import { ArrowLeft, LogOut, Medal } from "lucide-react-native";
+import { inviteUrl } from "../../src/lib/invite";
+import { ChevronLeft, LogOut, Award, Share2 } from "lucide-react-native";
 import type { GroupDetail, FeedItem } from "../../src/types/api.types";
 
 /** Buckets an ISO timestamp into "Hoje" / "Ontem" / "DD/MM". */
@@ -54,67 +54,91 @@ function signature(
   return `${topScore}-${myScore}-${headSessionId}`;
 }
 
-function FeedRow({ item }: { item: FeedItem }) {
+function FeedRow({ item, first }: { item: FeedItem; first: boolean }) {
   const initial = item.name.charAt(0).toUpperCase();
   return (
-    <View className="flex-row items-center gap-md py-sm">
+    <View
+      className={`flex-row items-center bg-surface-container rounded-lg px-3 gap-3 py-3 ${
+        first ? "" : "border-t border-white/5"
+      }`}
+    >
       {item.photo_url ? (
         <Image
           source={{ uri: item.photo_url }}
           className="w-12 h-12 rounded-full"
         />
       ) : (
-        <View className="w-12 h-12 rounded-full bg-surface-high items-center justify-center">
-          <Text className="text-title-md text-secondary font-bold">
+        <View className="w-12 h-12 rounded-full bg-surface-container border border-white/[0.07] items-center justify-center">
+          <Text className="text-label-md text-secondary font-bold">
             {initial}
           </Text>
         </View>
       )}
       <View className="flex-1">
-        <Text className="text-label-md text-on-surface font-semibold">
+        <Text className="text-body-lg text-on-surface font-bold">
           {item.workout_name}
         </Text>
-        <Text className="text-label-sm text-on-surface-variant">
+        <Text className="text-label-sm text-on-surface-variant mt-0.5">
           {item.name}
         </Text>
       </View>
-      <Text className="text-label-sm text-on-surface-variant">
+      <Text className="text-label-sm text-on-surface-variant font-semibold">
         {timeLabel(item.created_at)}
       </Text>
     </View>
   );
 }
 
-// A score card: circular avatar (initial) on the left, the person's name with a
-// role badge below it, and the week's "idas" count on the right.
-function PersonScore({
+// A compact podium item: circular avatar (initial), then the week's score with a
+// trophy (leader) or a "Você" label (current user) beneath it. The current
+// user's avatar gets a purple highlight ring.
+function PodiumItem({
   name,
   score,
   badge,
+  avatarUrl,
 }: {
   name: string;
   score: number;
   badge: "leader" | "you";
+  avatarUrl?: string | null;
 }) {
   const initial = (name || "?").charAt(0).toUpperCase();
   return (
-    <View className="flex-row items-center gap-md bg-surface-container rounded-xl p-md">
-      <View className="w-12 h-12 rounded-full bg-surface-high items-center justify-center">
-        <Text className="text-title-md text-secondary font-bold">
-          {initial}
-        </Text>
+    <View className="flex-row items-center gap-2">
+      <View
+        className="w-[60px] h-[60px] rounded-full bg-surface-container items-center justify-center overflow-hidden"
+        style={
+          badge === "you"
+            ? {
+                borderWidth: 1,
+                borderColor: "#9F1FFF",
+                boxShadow: "0px 0px 0px 3px rgba(159,31,255,0.2)",
+              }
+            : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }
+        }
+      >
+        {avatarUrl ? (
+          <Image
+            source={{ uri: avatarUrl }}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
+        ) : (
+          <Text className="text-title-md text-secondary font-bold">
+            {initial}
+          </Text>
+        )}
       </View>
-      <View className="flex-col justify-center items-center gap-1">
-        <View className="">
-          <Text className="text-title-sm text-secondary">{score}</Text>
-        </View>
-        <View className="flex-1">
-          {badge === "leader" ? (
-            <Medal size={16} color="#c8a3ff" />
-          ) : (
-            <Text className="text-label-sm text-on-surface-variant">Você</Text>
-          )}
-        </View>
+      <View className="justify-center items-center">
+        <Text className="text-body-lg text-on-surface font-bold">{score}</Text>
+        {badge === "leader" ? (
+          <Award size={20} color="#B26CFF" style={{ marginTop: 3 }} />
+        ) : (
+          <Text className="text-label-sm text-on-surface-variant mt-0.5">
+            Você
+          </Text>
+        )}
       </View>
     </View>
   );
@@ -123,7 +147,6 @@ function PersonScore({
 export default function GroupDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { showToast } = useToast();
-  const insets = useSafeAreaInsets();
   const user = useAuthStore((s) => s.user);
   const currentUserId = user?.id;
 
@@ -217,6 +240,18 @@ export default function GroupDetailScreen() {
     }
   }
 
+  async function shareInvite() {
+    if (!group) return;
+    const url = inviteUrl(group.invite_code);
+    try {
+      await Share.share({
+        message: `Entra no meu grupo "${group.name}" no Shadow Leveling: ${url}`,
+      });
+    } catch {
+      /* user dismissed the share sheet */
+    }
+  }
+
   function confirmLeave() {
     if (!id) return;
     Alert.alert("Sair do grupo", "Tem certeza que deseja sair?", [
@@ -250,7 +285,7 @@ export default function GroupDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-surface items-center justify-center">
+      <SafeAreaView className="flex-1 bg-background items-center justify-center">
         <ActivityIndicator color="#c8a3ff" />
       </SafeAreaView>
     );
@@ -258,7 +293,7 @@ export default function GroupDetailScreen() {
 
   if (!group) {
     return (
-      <SafeAreaView className="flex-1 bg-surface items-center justify-center px-md">
+      <SafeAreaView className="flex-1 bg-background items-center justify-center px-md">
         <Text className="text-on-surface-variant">Grupo indisponível.</Text>
       </SafeAreaView>
     );
@@ -267,7 +302,17 @@ export default function GroupDetailScreen() {
   const myName = user?.nickname ?? user?.email?.split("@")[0] ?? "Você";
 
   return (
-    <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+      {/* Top App Bar (mesma das outras telas) */}
+      <View className="flex-row items-center px-md h-16">
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={8}
+          className="active:opacity-60"
+        >
+          <ChevronLeft size={22} color="#DCDCDD" />
+        </Pressable>
+      </View>
       <ScrollView
         className="flex-1"
         refreshControl={
@@ -282,7 +327,7 @@ export default function GroupDetailScreen() {
         {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
-          className="h-40 bg-surface-high items-center justify-center overflow-hidden"
+          className="h-[140px] px-md items-center justify-center overflow-hidden"
         >
           {group.cover_url ? (
             <Image
@@ -290,9 +335,13 @@ export default function GroupDetailScreen() {
               className="w-full h-full"
             />
           ) : (
-            <Text className="text-on-surface-variant text-label-sm uppercase tracking-widest">
-              {isOwner ? "Toque para definir a capa" : "Sem capa"}
-            </Text>
+            // ponytail: the mockup's radial purple glow isn't expressible with
+            // expo-linear-gradient — approximated by the diagonal purple stops.
+            <View className="w-full h-full bg-surface-container rounded-lg items-center justify-center">
+              <Text className="text-label-sm uppercase text-on-surface-variant">
+                {isOwner ? "Toque para definir a capa" : "Sem capa"}
+              </Text>
+            </View>
           )}
           {uploadingCover && (
             <View className="absolute inset-0 bg-black/40 items-center justify-center">
@@ -301,68 +350,75 @@ export default function GroupDetailScreen() {
           )}
         </Pressable>
 
-        <View className="px-md">
-          <View className="flex-row justify-between items-start mt-md">
-            <Text className="flex-1 text-headline-mobile text-on-surface font-bold pr-2">
+        {/* Title row */}
+        <View className="px-md pt-md pb-1 flex-row items-center justify-between">
+          <View className="flex-1 pr-2">
+            <Text className="text-title-xxl text-on-surface font-bold">
               {group.name}
             </Text>
-            <Pressable onPress={confirmLeave} hitSlop={8}>
-              <LogOut size={22} color="#ffb4ab" />
+            <Text className="text-label-sm text-on-surface-variant mt-1">
+              {group.member_count}{" "}
+              {group.member_count === 1 ? "membro" : "membros"}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-2">
+            <Pressable
+              onPress={shareInvite}
+              hitSlop={8}
+              className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/30 items-center justify-center active:opacity-70"
+            >
+              <Share2 size={17} color="#CAA4FF" />
+            </Pressable>
+            <Pressable
+              onPress={confirmLeave}
+              hitSlop={8}
+              className="w-12 h-12 rounded-lg bg-error/10 border border-error/30 items-center justify-center active:opacity-70"
+            >
+              <LogOut size={17} color="#FF5C74" />
             </Pressable>
           </View>
+        </View>
 
-          {/* Score header: leader + you */}
-          <View className="justify-center flex-row gap-md mt-lg d-fl">
-            <PersonScore
-              name={group.top_name}
-              score={group.top_score}
-              badge="leader"
-            />
-            <PersonScore name={myName} score={group.my_score} badge="you" />
-          </View>
+        {/* Podium: leader + you */}
+        <View className="flex-row justify-center gap-6 py-4">
+          <PodiumItem
+            name={group.top_name}
+            score={group.top_score}
+            badge="leader"
+            avatarUrl={group.top_avatar_url}
+          />
+          <PodiumItem
+            name={myName}
+            score={group.my_score}
+            badge="you"
+            avatarUrl={user?.avatar_url}
+          />
+        </View>
 
-          {/* Feed grouped by day */}
+        {/* Feed grouped by day */}
+        <View className="px-md">
           {sections.length === 0 ? (
-            <Text className="text-on-surface-variant py-lg mt-lg">
+            <Text className="text-on-surface-variant py-lg">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
-            <View className="pb-xl mt-lg">
+            <View className="pb-xl">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="text-label-sm uppercase tracking-widest text-outline my-sm">
+                  <Text className="text-label-sm text-center uppercase tracking-widest text-on-surface-variant mt-md mb-2 ml-1">
                     {label}
                   </Text>
-                  {items.map((it) => (
-                    <FeedRow key={it.session_id} item={it} />
-                  ))}
+                  <View className="flex flex-col gap-2">
+                    {items.map((it, i) => (
+                      <FeedRow key={it.session_id} item={it} first={i === 0} />
+                    ))}
+                  </View>
                 </View>
               ))}
             </View>
           )}
         </View>
       </ScrollView>
-
-      {/* Back button over the cover */}
-      <Pressable
-        onPress={() => router.back()}
-        style={{
-          position: "absolute",
-          top: insets.top + 8,
-          left: 12,
-          zIndex: 10,
-          elevation: 10,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        hitSlop={8}
-      >
-        <ArrowLeft size={24} color="#fff" />
-      </Pressable>
     </SafeAreaView>
   );
 }

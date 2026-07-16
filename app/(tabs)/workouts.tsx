@@ -127,7 +127,7 @@ function LibraryWorkoutCard({
     >
       <View className="flex-row justify-between items-start mb-md">
         <View className="flex-1 pr-2">
-          <Text className="text-title-md text-on-surface font-bold">
+          <Text className="text-title-lg text-on-surface font-bold">
             {workout.name}
           </Text>
           <Text className="text-label-sm ps-5 text-on-surface-variant mt-1">
@@ -265,7 +265,7 @@ export default function WorkoutsScreen() {
         </View>
         <Pressable
           onPress={() => router.push("/workout/create")}
-          className="w-14 h-14 items-center justify-center rounded-full border border-card-border active:bg-primary"
+          className="w-14 h-14 items-center justify-center rounded-full border bg-surface-container border-card-border active:bg-primary"
         >
           <Text className="text-primary text-3xl">＋</Text>
         </Pressable>
@@ -307,7 +307,7 @@ export default function WorkoutsScreen() {
           {todayWorkouts.length > 0 && (
             <View className="gap-md">
               <View className="flex-row items-center justify-between">
-                <Text className="text-label-md text-on-surface font-bold">
+                <Text className="text-title-md text-on-surface font-bold">
                   Hoje
                 </Text>
                 <View className="w-2 h-2 rounded-full bg-secondary" />
@@ -320,7 +320,7 @@ export default function WorkoutsScreen() {
 
           {/* Sua Biblioteca */}
           <View className="flex justify-between items-center">
-            <Text className="text-label-md text-on-surface font-bold">
+            <Text className="text-title-md text-on-surface font-bold">
               Outros treinos
             </Text>
           </View>

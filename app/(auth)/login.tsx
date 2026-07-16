@@ -4,10 +4,37 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { Apple, type LucideIcon } from "lucide-react-native";
+import Svg, { Path } from "react-native-svg";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
 import { finishAuth } from "../../src/lib/finishAuth";
+
+// Monochrome Google glyph from the mockup — lucide has no Google brand icon.
+function GoogleGlyph({
+  size = 20,
+  color = "#fff",
+}: {
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <Path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 6.32 2.26" />
+      <Path d="M22 12h-9" />
+    </Svg>
+  );
+}
 
 GoogleSignin.configure({
   iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
@@ -35,7 +62,8 @@ export default function AuthScreen() {
       await GoogleSignin.hasPlayServices();
       const result = await GoogleSignin.signIn();
       // google-signin returns { data: { idToken } } on recent versions.
-      const idToken = (result as any)?.data?.idToken ?? (result as any)?.idToken;
+      const idToken =
+        (result as any)?.data?.idToken ?? (result as any)?.idToken;
       if (!idToken) throw new Error("no id token");
       await authService.socialLogin("google", idToken);
       await finishAuth();
@@ -72,43 +100,70 @@ export default function AuthScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-background px-lg justify-center">
-      <View className="items-center mb-xl">
-        <Text className="text-display-md text-primary font-black tracking-tight">SHADOW</Text>
-        <Text className="text-display-md text-on-surface font-black tracking-tight -mt-2">LEVELING</Text>
-        <Text className="text-label-md text-on-surface-variant mt-2 tracking-widest">
-          ENTRE PARA EVOLUIR
+      <View className="items-center">
+        <Text className="text-display-xxl text-primary font-extrabold">
+          SHADOW
+        </Text>
+        <Text className="text-display-xxl text-on-surface font-extrabold -mt-2">
+          LEVELING
+        </Text>
+        <Text
+          className="text-label-md font-semibold uppercase text-on-surface-variant mt-4"
+          style={{ letterSpacing: 2 }}
+        >
+          Entre para evoluir
         </Text>
       </View>
 
-      <View className="gap-md">
-        <Button
-          testID="auth-google"
-          label="Continuar com Google"
-          onPress={handleGoogle}
-          loading={busy === "google"}
-          disabled={busy !== null}
-          fullWidth
-        />
-
-        {appleAvailable && (
+      <View className="mt-10">
+        <View className="gap-3">
           <Button
-            testID="auth-apple"
-            label="Continuar com Apple"
-            variant="tonal"
-            onPress={handleApple}
-            loading={busy === "apple"}
+            testID="auth-google"
+            label="Continuar com Google"
+            transform="capitalize"
+            labelClassName="text-body-lg"
+            // ponytail: custom SVG isn't a LucideIcon; Button only calls it with size/color.
+            icon={GoogleGlyph as unknown as LucideIcon}
+            style={{
+              shadowColor: "#9F1FFF",
+              shadowOpacity: 0.4,
+              shadowRadius: 20,
+              shadowOffset: { width: 0, height: 6 },
+              elevation: 8,
+            }}
+            onPress={handleGoogle}
+            loading={busy === "google"}
             disabled={busy !== null}
             fullWidth
           />
-        )}
+
+          {appleAvailable && (
+            <Button
+              testID="auth-apple"
+              label="Continuar com Apple"
+              variant="tonal"
+              transform="capitalize"
+              labelClassName="text-body-lg"
+              icon={Apple}
+              style={{ borderWidth: 1, borderColor: "rgba(159,31,255,0.35)" }}
+              onPress={handleApple}
+              loading={busy === "apple"}
+              disabled={busy !== null}
+              fullWidth
+            />
+          )}
+        </View>
 
         <Button
           testID="auth-email"
           label="Continuar com e-mail"
           variant="ghost"
+          transform="capitalize"
+          labelClassName="text-body-lg"
           onPress={() => router.push("/(auth)/email")}
           disabled={busy !== null}
           fullWidth
+          style={{ marginTop: 24 }}
         />
       </View>
     </SafeAreaView>
