@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -13,33 +13,17 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { useAuthStore } from "../../../src/stores/auth.store";
 import { useToast } from "../../../src/components/ui/Toast";
 import { groupsService } from "../../../src/services/groups.service";
 import { pickImage } from "../../../src/lib/pickImage";
 import { inviteUrl } from "../../../src/lib/invite";
-import { ChevronLeft, LogOut, Award, Share2 } from "lucide-react-native";
+import { dayLabel, formatTime } from "../../../src/lib/date";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import LogOut from "lucide-react-native/icons/log-out";
+import Award from "lucide-react-native/icons/award";
+import Share2 from "lucide-react-native/icons/share-2";
 import type { GroupDetail, FeedItem } from "../../../src/types/api.types";
-
-/** Buckets an ISO timestamp into "Hoje" / "Ontem" / "DD/MM". */
-function dayLabel(iso: string): string {
-  const d = new Date(iso);
-  const today = new Date();
-  const startOf = (x: Date) =>
-    new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const diffDays = Math.round((startOf(today) - startOf(d)) / 86_400_000);
-  if (diffDays <= 0) return "Hoje";
-  if (diffDays === 1) return "Ontem";
-  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-}
-
-function timeLabel(iso: string): string {
-  return new Date(iso).toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 const POLL_MS = 15000;
 
@@ -54,7 +38,9 @@ function signature(
   return `${topScore}-${myScore}-${headSessionId}`;
 }
 
-function FeedRow({
+// Props são só primitivos + o item; ao paginar itens antigos, as linhas já
+// renderizadas não refazem trabalho.
+const FeedRow = memo(function FeedRow({
   item,
   first,
   groupId,
@@ -101,11 +87,11 @@ function FeedRow({
         )}
       </View>
       <Text className="text-label-sm text-on-surface-variant font-semibold">
-        {timeLabel(item.created_at)}
+        {formatTime(item.created_at)}
       </Text>
     </Pressable>
   );
-}
+});
 
 // A compact podium item: circular avatar (initial), then the week's score with a
 // trophy (leader) or a "Você" label (current user) beneath it. The current

@@ -7,7 +7,12 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { Home, Users, History, UserPen, Dumbbell } from "lucide-react-native";
+// `Home` é alias de `House` no lucide v1; o módulo real é house.
+import Home from "lucide-react-native/icons/house";
+import Users from "lucide-react-native/icons/users";
+import History from "lucide-react-native/icons/history";
+import UserPen from "lucide-react-native/icons/user-pen";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
 
 const TABS = [
   { name: "index", title: "Home", Icon: Home },

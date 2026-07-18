@@ -16,34 +16,23 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  TriangleAlert,
-  Pencil,
-  Flame,
-  Trophy,
-  ChevronRight,
-  LogOut,
-  Target,
-} from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Pencil from "lucide-react-native/icons/pencil";
+import Flame from "lucide-react-native/icons/flame";
+import Trophy from "lucide-react-native/icons/trophy";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
+import LogOut from "lucide-react-native/icons/log-out";
+import Target from "lucide-react-native/icons/target";
 import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
+import { formatDateSlash } from "../../src/lib/date";
 import { pickImage } from "../../src/lib/pickImage";
+import { TRACK } from "../../src/lib/ui";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import type { User, UserLevel } from "../../src/types/api.types";
-
-// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
-// então o valor do mock vem inline.
-const TRACK = { letterSpacing: 0.5 };
-
-function fmtSince(iso: string) {
-  const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, "0")}/${String(
-    d.getMonth() + 1,
-  ).padStart(2, "0")}/${d.getFullYear()}`;
-}
 
 export default function ProfileScreen() {
   const { showToast } = useToast();
@@ -288,7 +277,7 @@ export default function ProfileScreen() {
                     className="text-label-sm font-semibold uppercase text-on-surface-variant"
                     style={TRACK}
                   >
-                    Caçador desde {fmtSince(user.created_at)}
+                    Caçador desde {formatDateSlash(user.created_at)}
                   </Text>
                 </View>
               ) : null}

@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Play, Check } from "lucide-react-native";
+import Play from "lucide-react-native/icons/play";
+import Check from "lucide-react-native/icons/check";
 import { Button } from "./Button";
 
 export function StartWorkoutButton({

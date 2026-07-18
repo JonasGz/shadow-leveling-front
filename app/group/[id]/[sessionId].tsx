@@ -15,10 +15,13 @@ import {
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { ChevronLeft, Plus, Send } from "lucide-react-native";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Plus from "lucide-react-native/icons/plus";
+import Send from "lucide-react-native/icons/send";
 import EmojiPicker from "rn-emoji-keyboard";
 import { groupsService } from "../../../src/services/groups.service";
 import { useToast } from "../../../src/components/ui/Toast";
+import { relativeTime } from "../../../src/lib/date";
 import type {
   SessionSocialDetail,
   SessionComment,
@@ -26,23 +29,6 @@ import type {
 
 const HERO_HEIGHT = Math.round(Dimensions.get("window").height * 0.55);
 
-// relativeTime renders "agora", "há 5 min", "há 2 h", "há 3 d" or a date.
-function relativeTime(iso: string): string {
-  const secs = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
-  if (secs < 60) return "agora";
-  const mins = Math.floor(secs / 60);
-  if (mins < 60) return `há ${mins} min`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `há ${hrs} h`;
-  const days = Math.floor(hrs / 24);
-  if (days < 7) return `há ${days} d`;
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-  });
-}
-
-// Circular avatar with the name initial as fallback.
 function Avatar({
   uri,
   name,

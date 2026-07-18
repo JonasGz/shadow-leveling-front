@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,17 +18,10 @@ import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { workoutsService } from "../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
+import { DAY_ORDER, DAY_UPPER } from "../../src/lib/date";
 import type { DayOfWeek } from "../../src/types/api.types";
 
-const DAYS: { value: DayOfWeek; label: string }[] = [
-  { value: "sunday", label: "DOM" },
-  { value: "monday", label: "SEG" },
-  { value: "tuesday", label: "TER" },
-  { value: "wednesday", label: "QUA" },
-  { value: "thursday", label: "QUI" },
-  { value: "friday", label: "SEX" },
-  { value: "saturday", label: "SÁB" },
-];
+const DAYS = DAY_ORDER.map((value) => ({ value, label: DAY_UPPER[value] }));
 
 const schema = z.object({
   name: z

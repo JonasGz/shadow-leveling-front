@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -11,41 +11,20 @@ import {
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  TriangleAlert,
-  Search,
-  Dumbbell,
-  CalendarRange,
-  Plus,
-} from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Search from "lucide-react-native/icons/search";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import CalendarRange from "lucide-react-native/icons/calendar-range";
+import Plus from "lucide-react-native/icons/plus";
 import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { IconButton } from "../../src/components/ui/IconButton";
 import { SearchInput } from "../../src/components/ui/SearchInput";
 import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
-import { useAuthStore } from "../../src/stores/auth.store";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
+import { DAY_SHORT, dayOfWeekFromDate } from "../../src/lib/date";
 import type { DayOfWeek, Workout } from "../../src/types/api.types";
 
-const DAY_SHORT: Record<DayOfWeek, string> = {
-  sunday: "Dom",
-  monday: "Seg",
-  tuesday: "Ter",
-  wednesday: "Qua",
-  thursday: "Qui",
-  friday: "Sex",
-  saturday: "Sáb",
-};
-
-const DAY_INDEX: Record<number, DayOfWeek> = {
-  0: "sunday",
-  1: "monday",
-  2: "tuesday",
-  3: "wednesday",
-  4: "thursday",
-  5: "friday",
-  6: "saturday",
-};
 
 function exerciseCountLabel(w: Workout) {
   const n = w.exercises?.length ?? 0;
@@ -183,32 +162,32 @@ function LibraryWorkoutCard({
 }
 
 export default function WorkoutsScreen() {
-  const { workouts, loading, error, fetch, refresh, remove } =
-    useWorkoutsStore();
-  const user = useAuthStore((s) => s.user);
+  const workouts = useWorkoutsStore((s) => s.workouts);
+  const loading = useWorkoutsStore((s) => s.loading);
+  const error = useWorkoutsStore((s) => s.error);
+  const fetch = useWorkoutsStore((s) => s.fetch);
+  const refresh = useWorkoutsStore((s) => s.refresh);
+  const remove = useWorkoutsStore((s) => s.remove);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
-  // Dia da semana lido do relógio local do dispositivo.
-  const [today, setToday] = useState<DayOfWeek>(
-    () => DAY_INDEX[new Date().getDay()],
-  );
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
+  const [today, setToday] = useState<DayOfWeek>(dayOfWeekFromDate);
 
   useFocusEffect(
     useCallback(() => {
       // Reavalia o dia atual a cada foco — cobre virada de meia-noite
       // e troca de fuso horário com o app aberto em segundo plano.
-      setToday(DAY_INDEX[new Date().getDay()]);
-      refresh();
-    }, [refresh]),
+      setToday(dayOfWeekFromDate());
+      // Primeira carga usa fetch (liga o spinner); focos seguintes usam
+      // refresh, que atualiza em silêncio. getState evita pôr workouts nas
+      // deps — isso re-dispararia o efeito a cada mudança da lista.
+      if (useWorkoutsStore.getState().workouts.length === 0) fetch();
+      else refresh();
+    }, [fetch, refresh]),
   );
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setToday(DAY_INDEX[new Date().getDay()]);
+    setToday(dayOfWeekFromDate());
     await refresh();
     setRefreshing(false);
   }, [refresh]);
@@ -251,8 +230,6 @@ export default function WorkoutsScreen() {
     () => filtered.filter((w) => !todayWorkouts.includes(w)),
     [filtered, todayWorkouts],
   );
-
-  const initial = (user?.email?.[0] ?? "?").toUpperCase();
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>

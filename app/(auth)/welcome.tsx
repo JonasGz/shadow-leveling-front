@@ -2,7 +2,7 @@ import { ImageBackground, View, Text, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { ArrowRight } from "lucide-react-native";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
 import { Badge } from "../../src/components/ui/Badge";
 
 const ATTRIBUTES = ["Força", "Resistência", "Foco"];
@@ -54,7 +54,6 @@ export default function LandingScreen() {
             </Text>
 
             <Pressable
-              testID="landing-cta"
               onPress={goToLogin}
               className="flex-row items-center justify-center gap-2 w-full h-16 mt-6 rounded-lg bg-primary active:opacity-80"
               style={{
@@ -72,7 +71,6 @@ export default function LandingScreen() {
             </Pressable>
 
             <Pressable
-              testID="landing-login"
               onPress={goToLogin}
               className="items-center mt-3 p-2 active:opacity-60"
             >

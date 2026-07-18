@@ -18,9 +18,13 @@ Expo SDK 54 / React Native 0.81, TypeScript (strict), Expo Router (file-based), 
 npm install
 npm start        # expo start
 npm run android  # or: npm run ios / npm run web
+npm test         # jest (jest-expo + @testing-library/react-native)
+npm run typecheck
 ```
 
-Env: `EXPO_PUBLIC_API_URL` in `.env` (default `http://localhost:8080`) points at the backend. E2E flows use Maestro — see `.maestro/` and `.maestro/run.sh`.
+Env: `EXPO_PUBLIC_API_URL` in `.env` (default `http://localhost:8080`) points at the backend.
+
+There is no E2E suite. Unit/component tests live next to the code as `*.test.ts(x)`; the meaningful coverage is in `src/features/` (regras de negócio), `src/lib/date.ts`, `src/hooks/` and `src/components/session/`.
 
 ## Architecture
 

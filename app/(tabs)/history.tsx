@@ -8,63 +8,28 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect, router } from "expo-router";
-import {
-  TriangleAlert,
-  BookOpen,
-  Shield,
-  RefreshCw,
-  Check,
-  X,
-  ChevronRight,
-  Skull,
-  type LucideIcon,
-} from "lucide-react-native";
+import { router } from "expo-router";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Shield from "lucide-react-native/icons/shield";
+import RefreshCw from "lucide-react-native/icons/refresh-cw";
+import Check from "lucide-react-native/icons/check";
+import X from "lucide-react-native/icons/x";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
+import Skull from "lucide-react-native/icons/skull";
+import type { LucideIcon } from "lucide-react-native";
 import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { sessionsService } from "../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
-import type {
-  MissedWorkout,
-  SessionStatus,
-  WorkoutSession,
-} from "../../src/types/api.types";
-
-const MONTHS = [
-  "JAN",
-  "FEV",
-  "MAR",
-  "ABR",
-  "MAI",
-  "JUN",
-  "JUL",
-  "AGO",
-  "SET",
-  "OUT",
-  "NOV",
-  "DEZ",
-];
-
-function fmtDate(iso: string) {
-  const d = new Date(iso);
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${dd} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-}
-
-function fmtShort(iso: string) {
-  const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, "0")}/${String(
-    d.getMonth() + 1,
-  ).padStart(2, "0")}`;
-}
-
-function toISODate(d: Date) {
-  return d.toISOString().slice(0, 10);
-}
-
-// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
-// então o valor do mock vem inline.
-const TRACK = { letterSpacing: 0.5 };
+import { useScreenData } from "../../src/hooks/useScreenData";
+import {
+  formatDayMonth,
+  formatDayMonthYear,
+  toISODate,
+} from "../../src/lib/date";
+import { TRACK } from "../../src/lib/ui";
+import type { SessionStatus } from "../../src/types/api.types";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -125,11 +90,6 @@ export default function HistoryScreen() {
   const fetchWorkouts = useWorkoutsStore((s) => s.fetch);
 
   const [preset, setPreset] = useState<Preset>("this_month");
-  const [sessions, setSessions] = useState<WorkoutSession[]>([]);
-  const [missed, setMissed] = useState<MissedWorkout[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
 
   const { from, to } = useMemo(() => rangeFor(preset), [preset]);
 
@@ -138,50 +98,33 @@ export default function HistoryScreen() {
     [workouts],
   );
 
-  const load = useCallback(async () => {
-    setError(false);
-    try {
-      const [s, m] = await Promise.all([
-        sessionsService.list({ from: toISODate(from), to: toISODate(to) }),
-        sessionsService.missed({
-          from: toISODate(from),
-          to: toISODate(to),
-        }),
-      ]);
-      // mais recentes primeiro
-      setSessions(
-        [...s].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        ),
-      );
-      setMissed(
-        [...m].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        ),
-      );
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [from, to]);
+  const {
+    data,
+    loading,
+    error,
+    refreshing,
+    refresh: onRefresh,
+    reload,
+  } = useScreenData(async () => {
+    const range = { from: toISODate(from), to: toISODate(to) };
+    const [s, m] = await Promise.all([
+      sessionsService.list(range),
+      sessionsService.missed(range),
+    ]);
+    const mostRecentFirst = (a: { date: string }, b: { date: string }) =>
+      new Date(b.date).getTime() - new Date(a.date).getTime();
+    return {
+      sessions: [...s].sort(mostRecentFirst),
+      missed: [...m].sort(mostRecentFirst),
+    };
+  }, [preset]);
+
+  const sessions = data?.sessions ?? [];
+  const missed = data?.missed ?? [];
 
   useEffect(() => {
     if (workouts.length === 0) fetchWorkouts();
   }, [workouts.length, fetchWorkouts]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      load();
-    }, [load]),
-  );
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  }, [load]);
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -224,7 +167,7 @@ export default function HistoryScreen() {
               De
             </Text>
             <Text className="text-body-lg font-bold text-on-surface mt-2">
-              {fmtDate(from.toISOString())}
+              {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
           <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
@@ -235,7 +178,7 @@ export default function HistoryScreen() {
               Até
             </Text>
             <Text className="text-body-lg font-bold text-on-surface mt-2">
-              {fmtDate(to.toISOString())}
+              {formatDayMonthYear(to.toISOString())}
             </Text>
           </View>
         </View>
@@ -282,10 +225,7 @@ export default function HistoryScreen() {
             <Button
               label="Tentar novamente"
               size="sm"
-              onPress={() => {
-                setLoading(true);
-                load();
-              }}
+              onPress={reload}
             />
           </View>
         ) : (
@@ -331,7 +271,7 @@ export default function HistoryScreen() {
                           </Text>
                         </View>
                         <Text className="text-label-sm text-outline-variant">
-                          {fmtShort(s.date)}
+                          {formatDayMonth(s.date)}
                         </Text>
                       </View>
 
@@ -399,7 +339,7 @@ export default function HistoryScreen() {
                     className="w-[170px] bg-error/5 border border-card-border rounded-xl p-4"
                   >
                     <Text className="text-label-sm font-semibold text-outline-variant">
-                      {fmtDate(m.date)}
+                      {formatDayMonthYear(m.date)}
                     </Text>
                     <Text
                       className="text-title-lg font-bold text-on-surface mt-2"
