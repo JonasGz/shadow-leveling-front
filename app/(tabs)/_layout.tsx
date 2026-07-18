@@ -77,11 +77,11 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View
             style={{
-              backgroundColor: "#9f1fff",
+              backgroundColor: "#8113D3",
               borderRadius: 38,
               paddingHorizontal: 38,
               paddingVertical: 36,
-              shadowColor: "#9f1fff",
+              shadowColor: "#8113D3",
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.6,
               shadowRadius: 8,

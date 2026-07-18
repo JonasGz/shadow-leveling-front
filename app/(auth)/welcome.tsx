@@ -58,7 +58,7 @@ export default function LandingScreen() {
               onPress={goToLogin}
               className="flex-row items-center justify-center gap-2 w-full h-16 mt-6 rounded-lg bg-primary active:opacity-80"
               style={{
-                shadowColor: "#9F1FFF",
+                shadowColor: "#8113D3",
                 shadowOpacity: 0.5,
                 shadowRadius: 20,
                 shadowOffset: { width: 0, height: 8 },

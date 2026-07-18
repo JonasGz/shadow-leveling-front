@@ -219,7 +219,7 @@ export default function SessionCompleteScreen() {
               borderRadius: 27,
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0px 0px 22px rgba(159, 31, 255, 0.55)",
+              boxShadow: "0px 0px 22px rgba(129, 19, 211, 0.55)",
             }}
           >
             <Trophy size={28} color="#FFF" strokeWidth={1.7} />
@@ -244,7 +244,7 @@ export default function SessionCompleteScreen() {
               borderRadius: 22,
               padding: 14,
               alignItems: "center",
-              boxShadow: "0px 8px 22px rgba(159, 31, 255, 0.4)",
+              boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.4)",
             }}
           >
             <Text className="text-label-sm text-white/85 uppercase tracking-widest font-bold">
@@ -414,7 +414,7 @@ export default function SessionCompleteScreen() {
           label="Concluir"
           fullWidth
           disabled={uploadingPhoto}
-          style={{ boxShadow: "0px 8px 22px rgba(159, 31, 255, 0.45)" }}
+          style={{ boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.45)" }}
           onPress={handleDone}
         />
       </View>

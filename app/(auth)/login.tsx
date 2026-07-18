@@ -125,7 +125,7 @@ export default function AuthScreen() {
             // ponytail: custom SVG isn't a LucideIcon; Button only calls it with size/color.
             icon={GoogleGlyph as unknown as LucideIcon}
             style={{
-              shadowColor: "#9F1FFF",
+              shadowColor: "#8113D3",
               shadowOpacity: 0.4,
               shadowRadius: 20,
               shadowOffset: { width: 0, height: 6 },
@@ -145,7 +145,7 @@ export default function AuthScreen() {
               transform="capitalize"
               labelClassName="text-body-lg"
               icon={Apple}
-              style={{ borderWidth: 1, borderColor: "rgba(159,31,255,0.35)" }}
+              style={{ borderWidth: 1, borderColor: "rgba(129, 19, 211,0.35)" }}
               onPress={handleApple}
               loading={busy === "apple"}
               disabled={busy !== null}

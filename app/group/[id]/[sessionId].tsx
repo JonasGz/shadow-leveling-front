@@ -67,8 +67,8 @@ function Avatar({
         ...(ring
           ? {
               borderWidth: 2.5,
-              borderColor: "#9F1FFF",
-              boxShadow: "0px 0px 18px rgba(159,31,255,0.35)",
+              borderColor: "#8113D3",
+              boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
             }
           : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }),
       }}
@@ -313,7 +313,7 @@ export default function SessionPostScreen() {
                   }`}
                   style={
                     active
-                      ? { boxShadow: "0px 0px 14px rgba(159,31,255,0.35)" }
+                      ? { boxShadow: "0px 0px 14px rgba(129, 19, 211,0.35)" }
                       : undefined
                   }
                 >
@@ -384,7 +384,7 @@ export default function SessionPostScreen() {
             disabled={sending || draft.trim().length === 0}
             className="w-12 h-12 rounded-full bg-primary items-center justify-center active:opacity-80"
             style={{
-              boxShadow: "0px 0px 18px rgba(159,31,255,0.35)",
+              boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
               opacity: draft.trim().length === 0 ? 0.5 : 1,
             }}
           >
@@ -406,14 +406,14 @@ export default function SessionPostScreen() {
         enableSearchBar
         theme={{
           backdrop: "#00000099",
-          knob: "#9F1FFF",
+          knob: "#8113D3",
           container: "#1A191C",
           header: "#908D94",
           category: {
             icon: "#908D94",
             iconActive: "#fff",
             container: "#111113",
-            containerActive: "#9F1FFF",
+            containerActive: "#8113D3",
           },
           search: {
             text: "#fff",

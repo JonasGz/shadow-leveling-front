@@ -39,7 +39,7 @@ const variantStyles: Record<
     spinner: "#DCDCDD", // neutral-50 (on-primary)
   },
   tonal: {
-    container: "bg-[#9F1FFF1F] active:opacity-80",
+    container: "bg-[#8113D31F] active:opacity-80",
     text: "text-[#CAA4FF] font-semibold",
     icon: "#CAA4FF", // purple-100
     spinner: "#CAA4FF",

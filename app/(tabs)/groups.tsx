@@ -138,7 +138,7 @@ export default function GroupsScreen() {
                   className="relative bg-surface-container rounded-xl overflow-hidden pl-5 pr-md py-md flex-row items-center justify-between gap-3 active:opacity-80"
                 >
                   <LinearGradient
-                    colors={["#B26CFF", "#9F1FFF"]}
+                    colors={["#B26CFF", "#8113D3"]}
                     style={{
                       position: "absolute",
                       left: 0,

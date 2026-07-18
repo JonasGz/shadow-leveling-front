@@ -63,11 +63,11 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
       style={{
         borderRadius: 20, // rounded-xl
         borderLeftWidth: 4,
-        borderLeftColor: "#9F1FFF", // secondary
+        borderLeftColor: "#8113D3", // secondary
         overflow: "hidden",
         borderWidth: 1,
         borderColor:
-          "rgba(159, 31, 255, 0.35) rgba(159, 31, 255, 0.35) rgba(159, 31, 255, 0.35) rgb(159, 31, 255)",
+          "rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgb(129, 19, 211)",
       }}
     >
       <View className="p-md gap-lg">

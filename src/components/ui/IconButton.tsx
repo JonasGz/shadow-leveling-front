@@ -9,7 +9,7 @@ interface IconButtonProps extends PressableProps {
   size?: number;
 }
 
-const PRIMARY_SHADOW = { boxShadow: "0px 4px 14px rgba(159, 31, 255, 0.35)" };
+const PRIMARY_SHADOW = { boxShadow: "0px 4px 14px rgba(129, 19, 211, 0.35)" };
 
 export function IconButton({
   icon: Icon,

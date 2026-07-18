@@ -51,7 +51,7 @@ module.exports = {
         "card-border-strong": palette.border.strong,
         "surface-tint": palette.purple[200],
         primary: {
-          DEFAULT: palette.purple[300], // #9F1FFF accent
+          DEFAULT: palette.purple[300], // #8113D3 accent
           container: palette.purple[400],
           fixed: palette.purple[50],
           "fixed-dim": palette.purple[100],

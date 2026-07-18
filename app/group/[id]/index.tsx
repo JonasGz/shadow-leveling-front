@@ -132,8 +132,8 @@ function PodiumItem({
           badge === "leader"
             ? {
                 borderWidth: 1,
-                borderColor: "#9F1FFF",
-                boxShadow: "0px 0px 0px 3px rgba(159,31,255,0.2)",
+                borderColor: "#8113D3",
+                boxShadow: "0px 0px 0px 3px rgba(129, 19, 211,0.2)",
               }
             : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }
         }

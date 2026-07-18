@@ -18,7 +18,7 @@ const palette = {
     50: "#E5D6FF",
     100: "#CAA4FF",
     200: "#B26CFF", // secondary accent (distinct from primary)
-    300: "#9F1FFF", // primary accent
+    300: "#8113D3", // primary accent
     400: "#6E00B3",
     500: "#41006C",
     600: "#1E0037",
@@ -40,7 +40,7 @@ const palette = {
   },
   border: {
     DEFAULT: "rgba(255, 255, 255, 0.07)", // neutral-300
-    strong: "#9F1FFF4D", // purple-300 @ 30% — emphasized card border
+    strong: "#8113D34D", // purple-300 @ 30% — emphasized card border
   },
 };
 

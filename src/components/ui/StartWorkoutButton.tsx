@@ -18,7 +18,7 @@ export function StartWorkoutButton({
       label="Iniciar treino"
       icon={Play}
       fullWidth
-      style={{ boxShadow: "0px 6px 18px rgba(159, 31, 255, 0.4)" }}
+      style={{ boxShadow: "0px 6px 18px rgba(129, 19, 211, 0.4)" }}
       onPress={(e) => {
         e.stopPropagation();
         router.push(`/workout/${workoutId}/session`);

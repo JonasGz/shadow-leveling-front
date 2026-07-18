@@ -19,7 +19,7 @@ const labelSizes: Record<LabelSize, string> = {
 
 /** Halo roxo do estado de foco — compartilhado com [SearchInput]. */
 export const FOCUS_RING = {
-  boxShadow: "0px 0px 0px 3px rgba(159, 31, 255, 0.25)",
+  boxShadow: "0px 0px 0px 3px rgba(129, 19, 211, 0.25)",
 };
 
 export function Input({

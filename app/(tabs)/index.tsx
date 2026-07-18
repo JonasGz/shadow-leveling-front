@@ -223,7 +223,7 @@ export default function HomeScreen() {
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
           className="w-14 h-14 rounded-full items-center justify-center overflow-hidden active:opacity-70"
-          style={{ backgroundColor: "#9F1FFF" }}
+          style={{ backgroundColor: "#8113D3" }}
         >
           {user?.avatar_url ? (
             <Image
@@ -286,7 +286,7 @@ export default function HomeScreen() {
                   borderRadius: 20,
                   padding: 16,
                   borderWidth: 1,
-                  borderColor: "#9F1FFF4D",
+                  borderColor: "#8113D34D",
                 }}
               >
                 <WeeklyGoalRing pct={goalPct} />

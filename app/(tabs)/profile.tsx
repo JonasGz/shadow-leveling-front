@@ -224,14 +224,14 @@ export default function ProfileScreen() {
                 <View
                   className="w-[88px] h-[88px] rounded-full p-[3px]"
                   style={{
-                    shadowColor: "#9F1FFF",
+                    shadowColor: "#8113D3",
                     shadowOpacity: 0.45,
                     shadowRadius: 22,
                     shadowOffset: { width: 0, height: 0 },
                   }}
                 >
                   <LinearGradient
-                    colors={["#9F1FFF", "#6E00B3"]}
+                    colors={["#8113D3", "#6E00B3"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -338,7 +338,7 @@ export default function ProfileScreen() {
 
                   <View className="h-3 w-full bg-surface-high rounded-full overflow-hidden mt-3">
                     <LinearGradient
-                      colors={["#6E00B3", "#9F1FFF"]}
+                      colors={["#6E00B3", "#8113D3"]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={{
