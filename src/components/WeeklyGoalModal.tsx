@@ -75,10 +75,8 @@ export function WeeklyGoalModal({
         className="flex-1 items-center justify-center bg-black/70 px-6"
       >
         <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
-          <Text className="text-title-md font-bold text-white">
-            Meta semanal
-          </Text>
-          <Text className="text-label-sm text-gray-200">
+          <Text className="text-xl font-bold text-white">Meta semanal</Text>
+          <Text className="text-xs font-medium text-gray-200">
             Quantos treinos você quer fazer por semana?
           </Text>
           <TextInput
@@ -88,7 +86,7 @@ export function WeeklyGoalModal({
             placeholderTextColor={color["gray-200"]}
             keyboardType="number-pad"
             autoFocus
-            className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-body-lg text-white"
+            className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-lg font-normal text-white"
           />
           <View className="mt-2 flex-row gap-4">
             {!required && (
@@ -97,7 +95,7 @@ export function WeeklyGoalModal({
                 disabled={saving}
                 className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-gray-200">
+                <Text className="text-base font-semibold uppercase text-gray-200">
                   Depois
                 </Text>
               </Pressable>
@@ -114,7 +112,7 @@ export function WeeklyGoalModal({
                 {saving ? (
                   <ActivityIndicator size="small" color={color.white} />
                 ) : (
-                  <Text className="text-label-md font-semibold uppercase text-gray-50">
+                  <Text className="text-base font-semibold uppercase text-gray-50">
                     Confirmar
                   </Text>
                 )}

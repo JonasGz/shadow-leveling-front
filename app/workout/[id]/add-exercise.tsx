@@ -46,11 +46,11 @@ const ExerciseRow = memo(function ExerciseRow({
       className="flex-row items-center justify-between text-gray-200"
     >
       <View className="flex-1">
-        <Text className="text-body-lg font-semibold text-white">
+        <Text className="text-lg font-semibold text-white">
           {exercise.name}
         </Text>
       </View>
-      <Text className="text-title-lg text-purple-200">+</Text>
+      <Text className="text-2xl font-bold text-purple-200">+</Text>
     </Card>
   );
 });
@@ -194,7 +194,7 @@ export default function AddExerciseScreen() {
         >
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg font-bold text-white">
+        <Text className="text-2xl font-bold text-white">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
         </Text>
         {/* espaçador para manter o título centralizado */}
@@ -260,7 +260,7 @@ export default function AddExerciseScreen() {
 
           {showCreateOption && (
             <View className="gap-2 py-2 pb-10">
-              <Text className="text-center text-label-sm uppercase tracking-widest text-gray-200">
+              <Text className="text-center text-xs font-medium uppercase text-gray-200">
                 {`Criar "${query.trim()}" como:`}
               </Text>
               <View className="flex-row gap-2">
@@ -293,10 +293,10 @@ export default function AddExerciseScreen() {
         >
           <View className="flex-1 gap-4 px-4">
             <Card>
-              <Text className="text-title-md font-semibold text-white">
+              <Text className="text-xl font-semibold text-white">
                 {selected?.name}
               </Text>
-              <Text className="mt-1 text-label-sm uppercase tracking-widest text-gray-200">
+              <Text className="mt-1 text-xs font-medium uppercase text-gray-200">
                 {isTimeBased ? "Baseado em tempo" : "Baseado em repetições"} ·{" "}
                 {selected?.unit}
               </Text>

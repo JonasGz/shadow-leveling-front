@@ -22,11 +22,11 @@ export function EmptyState({
       <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-gray-500">
         <Icon size={26} color={color["gray-300"]} strokeWidth={1.6} />
       </View>
-      <Text className="mt-3 text-center text-title-md font-bold text-gray-50">
+      <Text className="mt-3 text-center text-xl font-bold text-gray-50">
         {title}
       </Text>
       {description ? (
-        <Text className="mt-2 text-center text-body-md text-gray-200">
+        <Text className="mt-2 text-center text-base font-normal text-gray-200">
           {description}
         </Text>
       ) : null}

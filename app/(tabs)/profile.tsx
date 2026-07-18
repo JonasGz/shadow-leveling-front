@@ -182,7 +182,7 @@ export default function ProfileScreen() {
         }
       >
         {/* Header */}
-        <Text className="mt-2 text-title-xxl font-bold text-white">Perfil</Text>
+        <Text className="mt-2 text-4xl font-bold text-white">Perfil</Text>
 
         {loading ? (
           <View className="items-center justify-center py-10">
@@ -236,7 +236,7 @@ export default function ProfileScreen() {
                         resizeMode="cover"
                       />
                     ) : (
-                      <Text className="text-title-xxl font-extrabold text-white">
+                      <Text className="text-4xl font-extrabold text-white">
                         {initial}
                       </Text>
                     )}
@@ -264,18 +264,20 @@ export default function ProfileScreen() {
                     para fora da tela em 320px, porque Text não encolhe. */}
                 <Text
                   numberOfLines={1}
-                  className="shrink text-title-lg font-bold capitalize text-white"
+                  className="shrink text-2xl font-bold capitalize text-white"
                 >
                   {displayName}
                 </Text>
                 <Pencil size={14} color={color["purple-200"]} strokeWidth={2} />
               </Pressable>
 
-              <Text className="mt-2 text-body-md text-gray-200">{email}</Text>
+              <Text className="mt-2 text-base font-normal text-gray-200">
+                {email}
+              </Text>
 
               {user?.created_at ? (
                 <View className="mt-3 rounded-full border border-white/12 px-4 py-2">
-                  <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
+                  <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                     Caçador desde {formatDateSlash(user.created_at)}
                   </Text>
                 </View>
@@ -287,18 +289,18 @@ export default function ProfileScreen() {
                 {/* Rank / Nível */}
                 <View className="mt-5 flex-row gap-3">
                   <Card className="flex-1 items-center">
-                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Rank
                     </Text>
-                    <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
+                    <Text className="mt-3 text-3xl font-extrabold text-purple-200">
                       {level.rank}
                     </Text>
                   </Card>
                   <Card className="flex-1 items-center">
-                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Nível
                     </Text>
-                    <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
+                    <Text className="mt-3 text-3xl font-extrabold text-purple-200">
                       {level.level}
                     </Text>
                   </Card>
@@ -307,10 +309,10 @@ export default function ProfileScreen() {
                 {/* Progresso do nível */}
                 <Card className="mt-3">
                   <View className="flex-row items-center justify-between">
-                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Progresso do nível
                     </Text>
-                    <Text className="text-label-md font-bold text-purple-200">
+                    <Text className="text-base font-bold text-purple-200">
                       {level.xp_into_level} / {level.xp_for_next_level} XP
                     </Text>
                   </View>
@@ -329,7 +331,7 @@ export default function ProfileScreen() {
                   </View>
 
                   <View className="mt-3 flex-row items-center justify-between">
-                    <Text className="text-label-md text-gray-300">
+                    <Text className="text-base font-semibold text-gray-300">
                       {level.total_xp.toLocaleString("pt-BR")} XP total
                     </Text>
                     <View className="flex-row items-center gap-2">
@@ -338,7 +340,7 @@ export default function ProfileScreen() {
                         color={color.warning}
                         fill={color.warning}
                       />
-                      <Text className="text-label-md font-bold text-warning">
+                      <Text className="text-base font-bold text-warning">
                         {level.current_streak}{" "}
                         {level.current_streak === 1 ? "dia" : "dias"} de streak
                       </Text>
@@ -359,11 +361,11 @@ export default function ProfileScreen() {
                   color={color["purple-200"]}
                   strokeWidth={1.9}
                 />
-                <Text className="flex-1 text-label-md font-semibold text-white">
+                <Text className="flex-1 text-base font-semibold text-white">
                   Meta semanal
                 </Text>
                 {user?.weekly_goal_days != null && (
-                  <Text className="text-label-md text-gray-200">
+                  <Text className="text-base font-semibold text-gray-200">
                     {user.weekly_goal_days}x
                   </Text>
                 )}
@@ -383,7 +385,7 @@ export default function ProfileScreen() {
                   color={color["purple-200"]}
                   strokeWidth={1.9}
                 />
-                <Text className="flex-1 text-label-md font-semibold text-white">
+                <Text className="flex-1 text-base font-semibold text-white">
                   Conquistas
                 </Text>
                 <ChevronRight
@@ -405,7 +407,7 @@ export default function ProfileScreen() {
               ) : (
                 <>
                   <LogOut size={18} color={color.error} strokeWidth={2} />
-                  <Text className="text-label-md font-semibold tracking-label text-error">
+                  <Text className="text-base font-semibold tracking-wider text-error">
                     Sair
                   </Text>
                 </>
@@ -427,10 +429,8 @@ export default function ProfileScreen() {
           className="flex-1 items-center justify-center bg-black/70 px-6"
         >
           <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
-            <Text className="text-title-md font-bold text-white">
-              Editar nick
-            </Text>
-            <Text className="text-label-sm text-gray-200">
+            <Text className="text-xl font-bold text-white">Editar nick</Text>
+            <Text className="text-xs font-medium text-gray-200">
               Como você quer ser chamado? (2 a 30 caracteres)
             </Text>
             <TextInput
@@ -442,7 +442,7 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-body-lg text-white"
+              className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-lg font-normal text-white"
             />
             <View className="mt-2 flex-row gap-4">
               <Pressable
@@ -450,7 +450,7 @@ export default function ProfileScreen() {
                 disabled={savingNick}
                 className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-gray-200">
+                <Text className="text-base font-semibold uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

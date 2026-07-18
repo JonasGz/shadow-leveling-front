@@ -103,11 +103,11 @@ export function SubstituteExerciseModal({
           <View className="px-6 pb-4 pt-6">
             <View className="mb-1 flex-row items-center gap-2">
               <ArrowLeftRight size={18} color={color["purple-100"]} />
-              <Text className="text-title-md font-bold text-white">
+              <Text className="text-xl font-bold text-white">
                 Trocar exercício
               </Text>
             </View>
-            <Text className="text-label-sm text-gray-200">
+            <Text className="text-xs font-medium text-gray-200">
               {origin
                 ? `Máquina ocupada? Substitua "${origin.name}" por hoje.`
                 : "Substituir o exercício atual por esta sessão."}
@@ -123,7 +123,7 @@ export function SubstituteExerciseModal({
                 onChangeText={setSearch}
                 placeholder="Buscar outro exercício..."
                 placeholderTextColor={color["gray-200"]}
-                className="flex-1 text-body-md text-white"
+                className="flex-1 text-base font-normal text-white"
               />
             </View>
           </View>
@@ -135,7 +135,7 @@ export function SubstituteExerciseModal({
             {/* Suggested substitutes (only when no active search) */}
             {search.trim().length < 2 && (
               <View className="mb-4">
-                <Text className="mb-2 text-label-sm font-bold uppercase tracking-widest text-gray-200">
+                <Text className="mb-2 text-xs font-bold uppercase text-gray-200">
                   Sugestões
                 </Text>
                 {loadingSuggestions ? (
@@ -146,7 +146,7 @@ export function SubstituteExerciseModal({
                     />
                   </View>
                 ) : suggestions.length === 0 ? (
-                  <Text className="text-label-sm text-gray-200">
+                  <Text className="text-xs font-medium text-gray-200">
                     Nenhuma sugestão automática. Use a busca acima.
                   </Text>
                 ) : (
@@ -168,7 +168,7 @@ export function SubstituteExerciseModal({
                     />
                   </View>
                 ) : searchResults.length === 0 ? (
-                  <Text className="text-label-sm text-gray-200">
+                  <Text className="text-xs font-medium text-gray-200">
                     Nenhum exercício encontrado.
                   </Text>
                 ) : (
@@ -215,14 +215,14 @@ function SubstituteRow({
         <Dumbbell size={18} color={color["purple-100"]} />
       </View>
       <View className="flex-1">
-        <Text
-          className="text-body-md font-semibold text-white"
-          numberOfLines={2}
-        >
+        <Text className="text-base font-semibold text-white" numberOfLines={2}>
           {exercise.name}
         </Text>
         {(muscles.length > 0 || chips.length > 0) && (
-          <Text className="mt-1 text-label-sm text-gray-200" numberOfLines={1}>
+          <Text
+            className="mt-1 text-xs font-medium text-gray-200"
+            numberOfLines={1}
+          >
             {[...chips, ...muscles].join(" · ")}
           </Text>
         )}

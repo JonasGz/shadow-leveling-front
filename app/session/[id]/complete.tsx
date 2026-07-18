@@ -176,10 +176,10 @@ export default function SessionCompleteScreen() {
           >
             <Trophy size={28} color={color.white} strokeWidth={1.7} />
           </LinearGradient>
-          <Text className="mt-3 text-center text-title-xl font-extrabold uppercase text-purple-200">
+          <Text className="mt-3 text-center text-3xl font-extrabold uppercase text-purple-200">
             {hasSets ? "Treino Concluído!" : "Treino registrado"}
           </Text>
-          <Text className="mt-2 text-center text-label-sm uppercase tracking-widest text-gray-200">
+          <Text className="mt-2 text-center text-xs font-medium uppercase text-gray-200">
             {hasSets
               ? "Sessão finalizada com sucesso"
               : "Nenhuma série registrada nesta sessão"}
@@ -199,16 +199,14 @@ export default function SessionCompleteScreen() {
               boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.4)",
             }}
           >
-            <Text className="text-label-sm font-bold uppercase tracking-widest text-white/85">
+            <Text className="text-xs font-bold uppercase text-white/85">
               XP Conquistado
             </Text>
             <View className="mt-2 flex-row items-end gap-1">
-              <Text className="text-title-xxl font-extrabold text-white">
+              <Text className="text-4xl font-extrabold text-white">
                 +{earnedXp}
               </Text>
-              <Text className="mb-1 text-title-md font-bold text-white">
-                XP
-              </Text>
+              <Text className="mb-1 text-xl font-bold text-white">XP</Text>
             </View>
           </LinearGradient>
         ) : null}
@@ -224,10 +222,10 @@ export default function SessionCompleteScreen() {
           ) : (
             <View className="items-center gap-2 px-4">
               <Camera size={26} color={color["gray-300"]} strokeWidth={1.6} />
-              <Text className="text-label-md uppercase tracking-widest text-gray-200">
+              <Text className="text-base font-semibold uppercase text-gray-200">
                 Adicionar foto do treino
               </Text>
-              <Text className="text-center text-label-sm text-gray-300">
+              <Text className="text-center text-xs font-medium text-gray-300">
                 Aparece para o seu grupo
               </Text>
             </View>
@@ -240,7 +238,7 @@ export default function SessionCompleteScreen() {
         </Pressable>
         {photoUri && !uploadingPhoto ? (
           <Pressable onPress={handlePickPhoto} className="mt-2 items-center">
-            <Text className="text-label-sm uppercase tracking-widest text-purple-200">
+            <Text className="text-xs font-medium uppercase text-purple-200">
               Trocar foto
             </Text>
           </Pressable>
@@ -249,15 +247,15 @@ export default function SessionCompleteScreen() {
         {/* Stats */}
         <View className="mt-4 flex-row gap-3">
           <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-4">
-            <Text className="text-label-sm uppercase tracking-widest text-gray-200">
+            <Text className="text-xs font-medium uppercase text-gray-200">
               Volume total
             </Text>
             <View className="mt-2 flex-row items-end gap-1">
-              <Text className="text-title-xl font-extrabold text-purple-200">
+              <Text className="text-3xl font-extrabold text-purple-200">
                 {totalVolume > 0 ? totalVolume.toLocaleString("pt-BR") : "—"}
               </Text>
               {totalVolume > 0 ? (
-                <Text className="mb-1 text-label-md font-semibold text-gray-300">
+                <Text className="mb-1 text-base font-semibold text-gray-300">
                   kg
                 </Text>
               ) : null}
@@ -265,14 +263,14 @@ export default function SessionCompleteScreen() {
           </View>
 
           <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-4">
-            <Text className="text-label-sm uppercase tracking-widest text-gray-200">
+            <Text className="text-xs font-medium uppercase text-gray-200">
               Séries
             </Text>
             <View className="mt-2 flex-row items-end gap-1">
-              <Text className="text-title-xl font-extrabold text-purple-200">
+              <Text className="text-3xl font-extrabold text-purple-200">
                 {session.sets?.length ?? 0}
               </Text>
-              <Text className="mb-1 text-label-md font-semibold text-gray-300">
+              <Text className="mb-1 text-base font-semibold text-gray-300">
                 total
               </Text>
             </View>
@@ -280,7 +278,7 @@ export default function SessionCompleteScreen() {
         </View>
 
         {/* Resumo de performance */}
-        <Text className="mb-4 mt-6 text-center text-label-sm font-bold uppercase tracking-widest text-purple-200">
+        <Text className="mb-4 mt-6 text-center text-xs font-bold uppercase text-purple-200">
           Resumo de performance
         </Text>
 
@@ -304,12 +302,12 @@ export default function SessionCompleteScreen() {
                   </View>
                   <View className="flex-1">
                     <Text
-                      className="text-title-md font-bold text-white"
+                      className="text-xl font-bold text-white"
                       numberOfLines={1}
                     >
                       {ex.name}
                     </Text>
-                    <Text className="mt-1 text-label-md text-gray-300">
+                    <Text className="mt-1 text-base font-semibold text-gray-300">
                       {ex.setsCount}{" "}
                       {ex.setsCount === 1
                         ? "série realizada"
@@ -319,30 +317,30 @@ export default function SessionCompleteScreen() {
                 </View>
 
                 <View className="mt-3 flex-row items-center justify-between rounded-lg border border-dashed border-white/12 px-3 py-3">
-                  <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-200">
+                  <Text className="text-xs font-bold uppercase text-purple-200">
                     Melhor série
                   </Text>
                   {ex.isTime ? (
-                    <Text className="text-title-md font-extrabold text-white">
+                    <Text className="text-xl font-extrabold text-white">
                       {ex.bestDuration ?? 0}
-                      <Text className="text-label-sm font-semibold text-gray-300">
+                      <Text className="text-xs font-semibold text-gray-300">
                         {" "}
                         s
                       </Text>
                     </Text>
                   ) : (
                     <View className="flex-row items-center gap-3">
-                      <Text className="text-title-md font-extrabold text-white">
+                      <Text className="text-xl font-extrabold text-white">
                         {ex.bestWeight ?? 0}
-                        <Text className="text-label-sm font-semibold text-gray-300">
+                        <Text className="text-xs font-semibold text-gray-300">
                           {" "}
                           kg
                         </Text>
                       </Text>
                       <View className="h-[18px] w-px bg-white/12" />
-                      <Text className="text-title-md font-extrabold text-white">
+                      <Text className="text-xl font-extrabold text-white">
                         {ex.bestReps ?? 0}
-                        <Text className="text-label-sm font-semibold text-gray-300">
+                        <Text className="text-xs font-semibold text-gray-300">
                           {" "}
                           reps
                         </Text>

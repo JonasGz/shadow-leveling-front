@@ -50,9 +50,7 @@ export function Badge({ label, tone = "neutral" }: BadgeProps) {
   const styles = toneStyles[tone];
   return (
     <View className={cn("rounded-full px-3 py-1", styles.container)}>
-      <Text
-        className={cn("text-label-sm uppercase tracking-widest", styles.text)}
-      >
+      <Text className={cn("text-xs font-medium uppercase", styles.text)}>
         {label}
       </Text>
     </View>

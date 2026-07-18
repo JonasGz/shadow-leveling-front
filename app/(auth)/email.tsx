@@ -78,10 +78,10 @@ export default function EmailAuthScreen() {
         >
           {step === "email" ? (
             <View className="gap-4">
-              <Text className="text-headline-mobile font-bold text-white">
+              <Text className="text-2xl font-bold text-white">
                 Entrar com e-mail
               </Text>
-              <Text className="text-body-md text-gray-200">
+              <Text className="text-base font-normal text-gray-200">
                 Enviaremos um código de acesso para o seu e-mail.
               </Text>
               <Input
@@ -102,10 +102,10 @@ export default function EmailAuthScreen() {
             </View>
           ) : (
             <View className="gap-4">
-              <Text className="text-headline-mobile font-bold text-white">
+              <Text className="text-2xl font-bold text-white">
                 Digite o código
               </Text>
-              <Text className="text-body-md text-gray-200">
+              <Text className="text-base font-normal text-gray-200">
                 Enviamos um código de 6 dígitos para {email}.
               </Text>
               <Input
@@ -122,9 +122,11 @@ export default function EmailAuthScreen() {
                 fullWidth
               />
               <View className="mt-1 flex-row justify-center gap-1">
-                <Text className="text-body-md text-gray-200">Não recebeu?</Text>
+                <Text className="text-base font-normal text-gray-200">
+                  Não recebeu?
+                </Text>
                 <Pressable onPress={sendCode} disabled={loading}>
-                  <Text className="text-body-md font-semibold text-purple-200">
+                  <Text className="text-base font-semibold text-purple-200">
                     Reenviar
                   </Text>
                 </Pressable>
@@ -133,7 +135,7 @@ export default function EmailAuthScreen() {
                 onPress={() => setStep("email")}
                 className="items-center"
               >
-                <Text className="text-body-md text-gray-200">
+                <Text className="text-base font-normal text-gray-200">
                   Usar outro e-mail
                 </Text>
               </Pressable>

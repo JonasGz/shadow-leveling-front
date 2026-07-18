@@ -143,7 +143,7 @@ export default function HistoryScreen() {
       >
         {/* Header */}
         <View className="mt-2 flex-row items-center justify-between">
-          <Text className="text-title-xxl font-bold text-white">Histórico</Text>
+          <Text className="text-4xl font-bold text-white">Histórico</Text>
           <Pressable
             onPress={onRefresh}
             disabled={refreshing}
@@ -160,18 +160,18 @@ export default function HistoryScreen() {
         {/* De / Até */}
         <View className="mt-4 flex-row gap-3">
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
-            <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
+            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
               De
             </Text>
-            <Text className="mt-2 text-body-lg font-bold text-white">
+            <Text className="mt-2 text-lg font-bold text-white">
               {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
-            <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
+            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
               Até
             </Text>
-            <Text className="mt-2 text-body-lg font-bold text-white">
+            <Text className="mt-2 text-lg font-bold text-white">
               {formatDayMonthYear(to.toISOString())}
             </Text>
           </View>
@@ -196,7 +196,7 @@ export default function HistoryScreen() {
               >
                 <Text
                   className={cn(
-                    "text-label-md font-semibold",
+                    "text-base font-semibold",
                     active ? "text-white" : "text-gray-200",
                   )}
                 >
@@ -223,7 +223,7 @@ export default function HistoryScreen() {
         ) : (
           <>
             {/* Sessões realizadas */}
-            <Text className="mb-3 mt-6 text-label-sm font-bold uppercase tracking-label text-gray-200">
+            <Text className="mb-3 mt-6 text-xs font-bold uppercase tracking-wider text-gray-200">
               Treinos realizados
             </Text>
 
@@ -254,21 +254,21 @@ export default function HistoryScreen() {
                         >
                           <Text
                             className={cn(
-                              "tracking-label",
-                              "text-label-sm font-bold uppercase",
+                              "tracking-wider",
+                              "text-xs font-bold uppercase",
                               meta.text,
                             )}
                           >
                             {meta.label}
                           </Text>
                         </View>
-                        <Text className="text-label-sm text-gray-300">
+                        <Text className="text-xs font-medium text-gray-300">
                           {formatDayMonth(s.date)}
                         </Text>
                       </View>
 
                       <Text
-                        className="mt-4 text-title-lg font-bold text-white"
+                        className="mt-4 text-2xl font-bold text-white"
                         numberOfLines={1}
                       >
                         {workoutName(s.workout_id)}
@@ -283,7 +283,7 @@ export default function HistoryScreen() {
                           strokeWidth={2.4}
                         />
                         <View className="flex-row items-center gap-1">
-                          <Text className="text-label-sm font-bold tracking-label text-purple-200">
+                          <Text className="text-xs font-bold tracking-wider text-purple-200">
                             VER DETALHES
                           </Text>
                           <ChevronRight
@@ -302,7 +302,7 @@ export default function HistoryScreen() {
             {/* Treinos perdidos */}
             <View className="mb-3 mt-6 flex-row items-center gap-2">
               <Skull size={16} color={color["gray-300"]} strokeWidth={1.9} />
-              <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
+              <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
                 Treinos perdidos
               </Text>
             </View>
@@ -324,16 +324,16 @@ export default function HistoryScreen() {
                     key={`${m.workout_id}-${m.date}-${i}`}
                     className="w-[170px] rounded-2xl border border-white/7 bg-error/5 p-4"
                   >
-                    <Text className="text-label-sm font-semibold text-gray-300">
+                    <Text className="text-xs font-semibold text-gray-300">
                       {formatDayMonthYear(m.date)}
                     </Text>
                     <Text
-                      className="mt-2 text-title-lg font-bold text-white"
+                      className="mt-2 text-2xl font-bold text-white"
                       numberOfLines={1}
                     >
                       {m.workout_name}
                     </Text>
-                    <Text className="mt-3 text-label-sm font-semibold uppercase tracking-label text-error/80">
+                    <Text className="mt-3 text-xs font-semibold uppercase tracking-wider text-error/80">
                       Missão falhada
                     </Text>
                   </View>

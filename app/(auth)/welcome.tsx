@@ -33,7 +33,7 @@ export default function LandingScreen() {
       >
         <SafeAreaView className="flex-1 justify-between px-6">
           <View className="items-center pt-10">
-            <Text className="text-title-xl font-bold tracking-tight text-white">
+            <Text className="text-3xl font-bold text-white">
               SHADOW <Text className="font-light text-gray-200">Leveling</Text>
             </Text>
           </View>
@@ -45,10 +45,10 @@ export default function LandingScreen() {
               ))}
             </View>
 
-            <Text className="text-center text-display-xxl tracking-tight text-white">
+            <Text className="text-center text-5xl font-extrabold text-white">
               Desperte{"\n"}Sua Força
             </Text>
-            <Text className="mt-3 text-center text-body-lg text-gray-200">
+            <Text className="mt-3 text-center text-lg font-normal text-gray-200">
               Evolua seus atributos todos os dias.
             </Text>
 
@@ -63,7 +63,7 @@ export default function LandingScreen() {
                 elevation: 8,
               }}
             >
-              <Text className="text-body-lg font-bold uppercase text-gray-50">
+              <Text className="text-lg font-bold uppercase text-gray-50">
                 Evoluir Agora
               </Text>
               <ArrowRight size={18} color={color.white} />
@@ -73,7 +73,7 @@ export default function LandingScreen() {
               onPress={goToLogin}
               className="mt-3 items-center p-2 active:opacity-60"
             >
-              <Text className="text-body-md font-semibold text-white">
+              <Text className="text-base font-semibold text-white">
                 Já tenho conta · <Text className="text-purple-200">Entrar</Text>
               </Text>
             </Pressable>

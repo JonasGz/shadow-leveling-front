@@ -83,7 +83,7 @@ export default function SessionDetailScreen() {
         >
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg font-bold text-white">Sessão</Text>
+        <Text className="text-2xl font-bold text-white">Sessão</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
@@ -108,15 +108,13 @@ export default function SessionDetailScreen() {
         >
           {/* Resumo */}
           <Card className="p-[18px]">
-            <Text className="text-title-lg font-bold text-white">
-              {workoutName}
-            </Text>
-            <Text className="mt-2 text-body-md text-gray-200">
+            <Text className="text-2xl font-bold text-white">{workoutName}</Text>
+            <Text className="mt-2 text-base font-normal text-gray-200">
               {formatFullDate(session.date)}
             </Text>
             <View className="mt-3 flex-row items-center gap-2">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
-              <Text className="text-label-md font-bold uppercase tracking-label text-purple-200">
+              <Text className="text-base font-bold uppercase tracking-wider text-purple-200">
                 {status.label}
               </Text>
             </View>
@@ -130,10 +128,10 @@ export default function SessionDetailScreen() {
               { value: totals.volume, label: "kg vol." },
             ].map((stat) => (
               <Card key={stat.label} className="flex-1 items-center">
-                <Text className="text-title-xl font-extrabold text-white">
+                <Text className="text-3xl font-extrabold text-white">
                   {stat.value}
                 </Text>
-                <Text className="mt-1 text-label-sm text-gray-200">
+                <Text className="mt-1 text-xs font-medium text-gray-200">
                   {stat.label}
                 </Text>
               </Card>
@@ -158,11 +156,11 @@ export default function SessionDetailScreen() {
               return (
                 <Card key={exerciseId}>
                   <View className="flex-row items-center justify-between">
-                    <Text className="text-label-sm font-bold uppercase tracking-label text-gray-200">
+                    <Text className="text-xs font-bold uppercase tracking-wider text-gray-200">
                       Exercício
                     </Text>
                     <Text
-                      className="ml-3 flex-1 text-right text-label-md font-semibold text-white"
+                      className="ml-3 flex-1 text-right text-base font-semibold text-white"
                       numberOfLines={1}
                     >
                       {exerciseNames[exerciseId] ?? "Exercício"}
@@ -192,14 +190,14 @@ export default function SessionDetailScreen() {
                             ) : null}
                             <Text
                               className={cn(
-                                "text-label-md font-semibold",
+                                "text-base font-semibold",
                                 isBest ? "text-purple-100" : "text-gray-200",
                               )}
                             >
                               Série {set.set_number}
                             </Text>
                           </View>
-                          <Text className="text-body-lg font-extrabold text-white">
+                          <Text className="text-lg font-extrabold text-white">
                             {formatSet(set)}
                           </Text>
                         </View>
@@ -214,7 +212,7 @@ export default function SessionDetailScreen() {
                         color={color["purple-200"]}
                         strokeWidth={2}
                       />
-                      <Text className="text-label-sm text-gray-300">
+                      <Text className="text-xs font-medium text-gray-300">
                         Melhor série: {formatSet(best)}
                       </Text>
                     </View>

@@ -96,11 +96,11 @@ export function Button({
       ) : (
         <>
           {Icon && <Icon size={20} color={styles.icon} fill={styles.icon} />}
-          {/* text-label-md é o padrão; um text-* vindo em labelClassName vence
-              pelo merge, sem precisar detectá-lo antes. */}
+          {/* text-base + font-semibold é o padrão; um tamanho ou peso vindo em
+              labelClassName vence pelo merge, sem precisar detectá-lo antes. */}
           <Text
             className={cn(
-              "text-label-md",
+              "text-base font-semibold",
               transformClass,
               styles.text,
               labelClassName,

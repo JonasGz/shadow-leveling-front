@@ -38,6 +38,7 @@ Visual identity is high-contrast dark mode with purple as the accent. Root
 background is `gray-700` (`#111113`).
 
 **Styling rules:**
+
 - Colors live in `src/theme/palette.js` (flat object, typed by `palette.d.ts`),
   which `tailwind.config.js` consumes. Each key is exactly the Tailwind class
   suffix, so `bg-purple-100`, `text-purple-100` and `color={color["purple-100"]}`
@@ -50,8 +51,24 @@ background is `gray-700` (`#111113`).
   the palette.
 - Any conditional `className` goes through `cn()` (`src/lib/cn.ts`, clsx +
   tailwind-merge). No template literals. `cn.test.ts` guards the custom
-  classGroups — the config's custom `fontSize`/spacing scales must be registered
-  there or the merge fails silently.
+  classGroups — only `shadow` is custom now; a custom scale that isn't
+  registered there makes the merge fail silently.
+- **Typography is the native Tailwind scale** (`text-xs` … `text-5xl`), with the
+  design system's px values overriding the native ones in `tailwind.config.js`.
+  The old semantic scale (`display`/`h1`/`title-md`/`label-sm`/…) is gone: it was
+  24 tokens for 13 distinct values, 11 exact duplicates and 10 never used.
+- **Weight is always explicit** — `text-base font-semibold`, never `text-base`
+  alone expecting a default. The old tokens baked a `fontWeight` into each
+  `fontSize` tuple and 52% of call sites overrode it anyway (100% of titles), so
+  the class never told the truth. `fontSize` tuples now carry size + lineHeight
+  only.
+- Never use an arbitrary size (`text-[17px]`). `src/lib/typography.test.ts`
+  fails on any legacy token or arbitrary size and names the file:line. Genuine
+  outliers go in its `ALLOWED_ARBITRARY` list with the reason written down.
+- Letter-spacing is the native scale; `tracking-wider` is the one in use, on
+  small uppercase labels. The config no longer overrides `letterSpacing` — it
+  used to zero out every value except a custom `label`, so 34 of 48 `tracking-*`
+  classes in the app rendered nothing.
 - `style={{}}` only for what a class cannot express: `LinearGradient` and
   `Animated.View` (no cssInterop registered, they ignore `className`), shadows,
   and genuinely dynamic values.

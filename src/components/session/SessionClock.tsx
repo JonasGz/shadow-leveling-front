@@ -28,7 +28,7 @@ export function SessionClock({ running }: SessionClockProps) {
   return (
     <View className="mt-1 flex-row items-center gap-1">
       <Clock size={15} color={color["gray-200"]} />
-      <Text className="text-label-md text-gray-200">
+      <Text className="text-base font-semibold text-gray-200">
         {formatDuration(elapsed)}
       </Text>
     </View>

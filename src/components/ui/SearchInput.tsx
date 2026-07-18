@@ -34,10 +34,10 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
           }}
           placeholderTextColor={color["gray-300"]}
           style={{ fontSize: 18, lineHeight: 20, includeFontPadding: false }}
-          className="flex-1 text-body-md text-white"
+          className="flex-1 text-base font-normal text-white"
         />
       </View>
-      {error && <Text className="text-label-sm text-error">{error}</Text>}
+      {error && <Text className="text-xs font-medium text-error">{error}</Text>}
     </View>
   );
 }

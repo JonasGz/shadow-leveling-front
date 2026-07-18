@@ -61,7 +61,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={cn("rounded-lg px-4 py-3", typeStyles[t.type])}
           >
-            <Text className="text-body-md text-white">{t.message}</Text>
+            <Text className="text-base font-normal text-white">
+              {t.message}
+            </Text>
           </View>
         ))}
       </View>

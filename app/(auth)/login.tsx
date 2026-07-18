@@ -104,14 +104,12 @@ export default function AuthScreen() {
   return (
     <SafeAreaView className="flex-1 justify-center bg-gray-700 px-6">
       <View className="items-center">
-        <Text className="text-display-xxl font-extrabold text-purple-300">
-          SHADOW
-        </Text>
-        <Text className="-mt-2 text-display-xxl font-extrabold text-white">
+        <Text className="text-5xl font-extrabold text-purple-300">SHADOW</Text>
+        <Text className="-mt-2 text-5xl font-extrabold text-white">
           LEVELING
         </Text>
         <Text
-          className="mt-4 text-label-md font-semibold uppercase text-gray-200"
+          className="mt-4 text-base font-semibold uppercase text-gray-200"
           style={{ letterSpacing: 2 }}
         >
           Entre para evoluir
@@ -123,7 +121,7 @@ export default function AuthScreen() {
           <Button
             label="Continuar com Google"
             transform="capitalize"
-            labelClassName="text-body-lg"
+            labelClassName="text-lg font-normal"
             // ponytail: custom SVG isn't a LucideIcon; Button only calls it with size/color.
             icon={GoogleGlyph as unknown as LucideIcon}
             style={{
@@ -144,7 +142,7 @@ export default function AuthScreen() {
               label="Continuar com Apple"
               variant="tonal"
               transform="capitalize"
-              labelClassName="text-body-lg"
+              labelClassName="text-lg font-normal"
               icon={Apple}
               className="border border-purple-300/35"
               onPress={handleApple}
@@ -159,7 +157,7 @@ export default function AuthScreen() {
           label="Continuar com e-mail"
           variant="ghost"
           transform="capitalize"
-          labelClassName="text-body-lg"
+          labelClassName="text-lg font-normal"
           onPress={() => router.push("/(auth)/email")}
           disabled={busy !== null}
           fullWidth

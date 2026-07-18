@@ -37,7 +37,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
         <View
           key={i}
           className={cn(
-            "h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500",
+            "h-7 w-7 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500",
             i > 0 && "-ml-2",
           )}
         >
@@ -51,11 +51,15 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       {rest > 0 && (
         <View
           className={cn(
-            "h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25",
+            "h-7 w-7 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25",
             shown.length > 0 && "-ml-2",
           )}
         >
-          <Text className="text-[9px] font-bold text-purple-200">+{rest}</Text>
+          {/* Sem teto o texto estoura o círculo: um grupo de 150 renderiza
+              "+147". +99 é o pior caso e cabe nos 28px. */}
+          <Text className="text-xs font-bold text-purple-200">
+            {rest > 99 ? "+99" : `+${rest}`}
+          </Text>
         </View>
       )}
     </View>
@@ -99,7 +103,7 @@ export default function GroupsScreen() {
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
       <View className="h-16 flex-row items-center justify-between px-4">
-        <Text className="text-title-xxl font-bold text-white">Grupos</Text>
+        <Text className="text-4xl font-bold text-white">Grupos</Text>
         <Pressable
           onPress={() => setCreating(true)}
           className="h-14 w-14 items-center justify-center rounded-full border border-white/7 bg-gray-600 active:bg-purple-300"
@@ -147,10 +151,10 @@ export default function GroupsScreen() {
                     }}
                   />
                   <View className="flex-1">
-                    <Text className="text-title-md font-bold text-white">
+                    <Text className="text-xl font-bold text-white">
                       {g.name}
                     </Text>
-                    <Text className="mt-1 text-label-sm text-gray-200">
+                    <Text className="mt-1 text-xs font-medium text-gray-200">
                       Código:{" "}
                       <Text className="font-semibold text-white">
                         {g.invite_code}
@@ -183,7 +187,7 @@ export default function GroupsScreen() {
           className="flex-1 items-center justify-center bg-black/70 px-6"
         >
           <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
-            <Text className="text-title-md font-bold text-white">
+            <Text className="text-xl font-bold text-white">
               Criar novo grupo
             </Text>
             <Input
@@ -203,7 +207,7 @@ export default function GroupsScreen() {
                 disabled={busy}
                 className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-gray-200">
+                <Text className="text-base font-semibold uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

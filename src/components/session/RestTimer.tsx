@@ -62,10 +62,10 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         <Timer size={20} color={color.white} />
       </LinearGradient>
       <View className="flex-1">
-        <Text className="text-label-sm font-bold uppercase tracking-widest text-gray-200">
+        <Text className="text-xs font-bold uppercase text-gray-200">
           Descanso
         </Text>
-        <Text className="mt-1 text-title-md font-bold leading-none text-purple-200">
+        <Text className="mt-1 text-xl font-bold leading-none text-purple-200">
           {formatDuration(remaining)}
         </Text>
       </View>

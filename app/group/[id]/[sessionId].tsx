@@ -89,14 +89,14 @@ function CommentRow({
       <Avatar uri={comment.avatar_url} name={comment.name} size={36} />
       <View className="flex-1">
         <View className="flex-row items-baseline gap-2">
-          <Text className="text-body-sm font-bold text-white">
-            {comment.name}
-          </Text>
-          <Text className="text-caption text-gray-200">
+          <Text className="text-sm font-bold text-white">{comment.name}</Text>
+          <Text className="text-xs font-medium text-gray-200">
             {relativeTime(comment.created_at)}
           </Text>
         </View>
-        <Text className="mt-1 text-body-sm text-white">{comment.body}</Text>
+        <Text className="mt-1 text-sm font-normal text-white">
+          {comment.body}
+        </Text>
       </View>
     </Pressable>
   );
@@ -269,14 +269,14 @@ export default function SessionPostScreen() {
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
             <View className="flex-1 pt-1">
-              <Text className="text-body-lg font-bold text-white">
+              <Text className="text-lg font-bold text-white">
                 {detail.name}
               </Text>
-              <Text className="mt-1 text-body-sm font-semibold text-purple-200">
+              <Text className="mt-1 text-sm font-semibold text-purple-200">
                 {detail.workout_name}
               </Text>
             </View>
-            <Text className="pt-1 text-body-sm text-gray-200">
+            <Text className="pt-1 text-sm font-normal text-gray-200">
               {relativeTime(detail.created_at)}
             </Text>
           </View>
@@ -301,10 +301,10 @@ export default function SessionPostScreen() {
                       : undefined
                   }
                 >
-                  <Text className="text-body">{rc.emoji}</Text>
+                  <Text className="text-base font-normal">{rc.emoji}</Text>
                   <Text
                     className={cn(
-                      "text-body-sm font-bold",
+                      "text-sm font-bold",
                       active ? "text-white" : "text-gray-200",
                     )}
                   >
@@ -325,11 +325,11 @@ export default function SessionPostScreen() {
 
           {/* 4. Comments */}
           <View className="px-5 pt-5">
-            <Text className="mb-4 text-caption font-bold uppercase text-gray-200">
+            <Text className="mb-4 text-xs font-bold uppercase text-gray-200">
               Comentários
             </Text>
             {comments.length === 0 ? (
-              <Text className="pb-4 text-body-sm text-gray-200">
+              <Text className="pb-4 text-sm font-normal text-gray-200">
                 Seja o primeiro a comentar.
               </Text>
             ) : (
@@ -339,7 +339,7 @@ export default function SessionPostScreen() {
             )}
             {cursor && (
               <Pressable onPress={loadMoreComments} className="py-2">
-                <Text className="text-body-sm font-semibold text-purple-200">
+                <Text className="text-sm font-semibold text-purple-200">
                   Carregar mais
                 </Text>
               </Pressable>
@@ -358,7 +358,7 @@ export default function SessionPostScreen() {
               onChangeText={setDraft}
               placeholder="Adicionar comentário…"
               placeholderTextColor={color["gray-200"]}
-              className="flex-1 py-0 text-body-sm text-white"
+              className="flex-1 py-0 text-sm font-normal text-white"
               multiline
               maxLength={500}
               onSubmitEditing={sendComment}

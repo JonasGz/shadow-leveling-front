@@ -62,7 +62,7 @@ export const SetRow = memo(function SetRow({
     >
       <Text
         className={cn(
-          "w-8 text-center text-body-md font-bold",
+          "w-8 text-center text-base font-bold",
           isActiveRow ? "text-purple-200" : "text-gray-400",
         )}
       >

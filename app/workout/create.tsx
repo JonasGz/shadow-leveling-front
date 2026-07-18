@@ -91,7 +91,7 @@ export default function CreateWorkoutScreen() {
         >
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg font-bold text-white">Criar treino</Text>
+        <Text className="text-2xl font-bold text-white">Criar treino</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
@@ -140,7 +140,7 @@ export default function CreateWorkoutScreen() {
           />
 
           <View className="gap-2">
-            <Text className="text-center text-label-md uppercase tracking-widest text-gray-200">
+            <Text className="text-center text-base font-semibold uppercase text-gray-200">
               Dias da semana
             </Text>
             <View className="flex-row flex-wrap gap-2">
@@ -159,7 +159,7 @@ export default function CreateWorkoutScreen() {
                   >
                     <Text
                       className={cn(
-                        "text-label-md uppercase tracking-widest",
+                        "text-base font-semibold uppercase",
                         active ? "text-white" : "text-white",
                       )}
                     >
@@ -170,7 +170,9 @@ export default function CreateWorkoutScreen() {
               })}
             </View>
             {daysError ? (
-              <Text className="text-label-sm text-error">{daysError}</Text>
+              <Text className="text-xs font-medium text-error">
+                {daysError}
+              </Text>
             ) : null}
           </View>
 
@@ -181,7 +183,7 @@ export default function CreateWorkoutScreen() {
               loading={loading}
               fullWidth
             />
-            <Text className="mt-2 text-center text-label-sm text-gray-300">
+            <Text className="mt-2 text-center text-xs font-medium text-gray-300">
               Você poderá adicionar exercícios no próximo passo.
             </Text>
           </View>

@@ -42,8 +42,10 @@ function repsLabel(ex: WorkoutExercise): string {
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <Card className="flex-1 items-center">
-      <Text className="text-title-xl font-extrabold text-white">{value}</Text>
-      <Text className="mt-2 text-label-md text-gray-200">{label}</Text>
+      <Text className="text-3xl font-extrabold text-white">{value}</Text>
+      <Text className="mt-2 text-base font-semibold text-gray-200">
+        {label}
+      </Text>
     </Card>
   );
 }
@@ -60,19 +62,14 @@ function ExerciseCard({
   return (
     <Card className="flex-row items-center gap-3">
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-gray-500">
-        <Text className="text-label-md font-bold text-gray-400">
-          {index + 1}
-        </Text>
+        <Text className="text-base font-bold text-gray-400">{index + 1}</Text>
       </View>
 
       <View className="flex-1 items-center">
-        <Text
-          className="text-title-md font-semibold text-gray-50"
-          numberOfLines={1}
-        >
+        <Text className="text-xl font-semibold text-gray-50" numberOfLines={1}>
           {item.exercise.name}
         </Text>
-        <Text className="mt-1 text-body-sm font-light text-gray-400">
+        <Text className="mt-1 text-sm font-light text-gray-400">
           {repsLabel(item)}
         </Text>
       </View>
@@ -141,7 +138,7 @@ export default function WorkoutDetailScreen() {
         >
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg font-bold text-white">Treino</Text>
+        <Text className="text-2xl font-bold text-white">Treino</Text>
         <IconButton
           icon={Play}
           variant="primary"
@@ -183,7 +180,7 @@ export default function WorkoutDetailScreen() {
               />
               <Text
                 className={cn(
-                  "text-label-sm font-bold",
+                  "text-xs font-bold",
                   workout?.active ? "text-success" : "text-gray-200",
                 )}
               >
@@ -191,7 +188,7 @@ export default function WorkoutDetailScreen() {
               </Text>
             </View>
             {daysLabel ? (
-              <Text className="text-label-sm uppercase tracking-widest text-purple-200">
+              <Text className="text-xs font-medium uppercase text-purple-200">
                 {daysLabel}
               </Text>
             ) : null}
@@ -199,11 +196,11 @@ export default function WorkoutDetailScreen() {
 
           {/* Título + descrição */}
           <View className="gap-1">
-            <Text className="text-center text-title-xl font-bold text-white">
+            <Text className="text-center text-3xl font-bold text-white">
               {workout?.name ?? "Treino"}
             </Text>
             {workout?.description ? (
-              <Text className="text-body-sm text-gray-200">
+              <Text className="text-sm font-normal text-gray-200">
                 {workout.description}
               </Text>
             ) : null}
@@ -232,7 +229,7 @@ export default function WorkoutDetailScreen() {
             />
           ) : (
             <>
-              <Text className="mt-2 text-center text-title-md font-bold text-white">
+              <Text className="mt-2 text-center text-xl font-bold text-white">
                 Exercícios
               </Text>
               <View className="gap-2">
@@ -254,7 +251,7 @@ export default function WorkoutDetailScreen() {
                   icon={Plus}
                   onPress={() => router.push(`/workout/${id}/add-exercise`)}
                 />
-                <Text className="text-label-md text-gray-200">
+                <Text className="text-base font-semibold text-gray-200">
                   Adicionar exercício
                 </Text>
               </View>

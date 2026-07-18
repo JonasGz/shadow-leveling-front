@@ -68,7 +68,7 @@ export function ExerciseChips({
             </View>
             <Text
               className={cn(
-                "text-label-md font-semibold",
+                "text-base font-semibold",
                 active ? "text-white" : "text-gray-200",
               )}
               numberOfLines={3}

@@ -47,46 +47,33 @@ module.exports = {
         // when the first consumer lands.
         mono: ["JetBrains Mono", "monospace"],
       },
-      // Letter-spacing disabled app-wide: every tracking-* resolves to 0.
-      // A única exceção é `label`, para labels em caixa alta — antes vivia
-      // inline em src/lib/ui.ts (TRACK) espalhado por 13 sites.
-      letterSpacing: {
-        tighter: "0px",
-        tight: "0px",
-        normal: "0px",
-        wide: "0px",
-        wider: "0px",
-        widest: "0px",
-        label: "0.5px",
-      },
+      // letterSpacing removido: o bloco zerava tighter/tight/normal/wide/wider/
+      // widest, então 34 das 48 classes de tracking do app não renderizavam
+      // nada. O único valor real era `label` (0.5px), para label em caixa alta
+      // — coberto agora pelo `tracking-wider` nativo (0.05em ≈ 0.6px a 12px).
       fontSize: {
-        // PULSE type scale.
-        display: ["40px", { lineHeight: "48px", fontWeight: "800" }],
-        h1: ["32px", { lineHeight: "40px", fontWeight: "700" }],
-        h2: ["28px", { lineHeight: "34px", fontWeight: "700" }],
-        h3: ["24px", { lineHeight: "30px", fontWeight: "600" }],
-        title: ["20px", { lineHeight: "28px", fontWeight: "600" }],
-        subtitle: ["18px", { lineHeight: "26px", fontWeight: "600" }],
-        body: ["16px", { lineHeight: "24px", fontWeight: "400" }],
-        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
-        button: ["15px", { lineHeight: "20px", fontWeight: "600" }],
-        caption: ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        // Oversized display tokens for hero titles (above the base 40px scale).
-        "display-xxl": ["56px", { lineHeight: "58px", fontWeight: "800" }],
-        "display-xl": ["48px", { lineHeight: "52px", fontWeight: "800" }],
-        // Aliases for legacy names → closest PULSE value.
-        "display-lg": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display
-        "display-md": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display
-        "headline-lg": ["28px", { lineHeight: "34px", fontWeight: "700" }], // →h2
-        "headline-mobile": ["24px", { lineHeight: "30px", fontWeight: "600" }], // →h3
-        "title-md": ["20px", { lineHeight: "28px", fontWeight: "600" }], // →title
-        "title-lg": ["24px", { lineHeight: "30px", fontWeight: "700" }], // →h3
-        "title-xl": ["28px", { lineHeight: "34px", fontWeight: "700" }], // →h2
-        "title-xxl": ["32px", { lineHeight: "40px", fontWeight: "700" }], // →h1
-        "body-lg": ["18px", { lineHeight: "26px", fontWeight: "400" }], // →subtitle weight 400-ish
-        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], // →body
-        "label-md": ["15px", { lineHeight: "20px", fontWeight: "600" }], // →button
-        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }], // →caption
+        // Escala nativa do Tailwind com os valores do design system. Nomes
+        // nativos de propósito: `text-xl` é o que qualquer dev já sabe ler, e o
+        // tailwind-merge reconhece o grupo de fábrica — por isso src/lib/cn.ts
+        // não registra classGroup de font-size.
+        //
+        // Antes existia uma escala semântica paralela (display/h1/title-md/
+        // label-sm/…): 24 tokens para 13 valores distintos, 11 duplicatas
+        // exatas e 10 nunca usados. Cada tupla embutia um fontWeight que 52%
+        // dos call sites sobrescreviam (100% nos títulos), então a classe nunca
+        // dizia a verdade. Peso agora é sempre explícito no <Text>.
+        //
+        // Todas as chaves são redeclaradas, inclusive as que batem com o
+        // nativo, para a escala caber inteira numa leitura só.
+        xs: ["12px", { lineHeight: "16px" }], // micro-label, caption
+        sm: ["14px", { lineHeight: "20px" }], // texto secundário
+        base: ["16px", { lineHeight: "24px" }], // corpo, label de controle
+        lg: ["18px", { lineHeight: "26px" }],
+        xl: ["20px", { lineHeight: "28px" }], // título de card/seção
+        "2xl": ["24px", { lineHeight: "30px" }],
+        "3xl": ["28px", { lineHeight: "34px" }],
+        "4xl": ["32px", { lineHeight: "40px" }], // título de página
+        "5xl": ["56px", { lineHeight: "58px" }], // hero de auth
       },
       // Quatro raios, um por papel. Antes eram ~11 valores com os papéis
       // misturados: card aparecia em 28px e 20px sem critério, e botão de

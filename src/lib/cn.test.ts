@@ -15,17 +15,24 @@ describe("cn", () => {
     expect(cn("gap-1", "gap-4")).toBe("gap-4");
   });
 
-  it("resolve conflito entre os fontSize custom", () => {
+  it("resolve conflito na escala de fontSize", () => {
     // Este é o caso que existia como hack de regex em Button.tsx.
-    expect(cn("text-body", "text-title")).toBe("text-title");
-    expect(cn("text-caption", "text-display-xxl")).toBe("text-display-xxl");
+    expect(cn("text-base", "text-xl")).toBe("text-xl");
+    expect(cn("text-xs", "text-5xl")).toBe("text-5xl");
   });
 
   it("não confunde tamanho de fonte com cor de texto", () => {
     // Ambos são `text-*`, mas são propriedades diferentes: as duas sobrevivem.
-    expect(cn("text-h1", "text-gray-200")).toBe("text-h1 text-gray-200");
+    expect(cn("text-4xl", "text-gray-200")).toBe("text-4xl text-gray-200");
     // E cor ainda conflita com cor.
     expect(cn("text-gray-200", "text-purple-300")).toBe("text-purple-300");
+  });
+
+  it("deixa o peso vindo de fora vencer o do componente", () => {
+    // O peso não é mais embutido no token de tamanho, então ele merge sozinho.
+    expect(cn("text-base font-semibold", "font-normal")).toBe(
+      "text-base font-normal",
+    );
   });
 
   it("resolve conflito na escala de elevação do design system", () => {

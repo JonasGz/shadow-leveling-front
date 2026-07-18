@@ -121,10 +121,10 @@ function StatCard({
   return (
     <Card className="flex-1">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
-      <Text className="mt-2 text-center text-title-xl font-extrabold text-white">
+      <Text className="mt-2 text-center text-3xl font-extrabold text-white">
         {value}
       </Text>
-      <Text className="mt-1 text-center text-label-md text-gray-200">
+      <Text className="mt-1 text-center text-base font-semibold text-gray-200">
         {label}
       </Text>
     </Card>
@@ -192,9 +192,7 @@ export default function HomeScreen() {
       {/* Header */}
       <View className="flex-row items-center justify-between px-4 py-4">
         <View>
-          <Text className="text-title-xxl font-bold text-white">
-            Hey, {name} 👋
-          </Text>
+          <Text className="text-4xl font-bold text-white">Hey, {name} 👋</Text>
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
@@ -262,10 +260,10 @@ export default function HomeScreen() {
               >
                 <WeeklyGoalRing pct={goalPct} />
                 <View className="flex-1">
-                  <Text className="text-center text-title-lg font-bold text-white">
+                  <Text className="text-center text-2xl font-bold text-white">
                     Meta semanal
                   </Text>
-                  <Text className="mt-1 text-center text-body-sm text-gray-100">
+                  <Text className="mt-1 text-center text-sm font-normal text-gray-100">
                     {goalScheduled === 0
                       ? "Defina sua meta semanal"
                       : goalCompleted >= goalScheduled
@@ -299,7 +297,7 @@ export default function HomeScreen() {
 
           {/* Today's workout */}
           <View>
-            <Text className="mb-4 text-center text-title-lg font-bold text-white">
+            <Text className="mb-4 text-center text-2xl font-bold text-white">
               Treino de hoje
             </Text>
 
@@ -310,7 +308,7 @@ export default function HomeScreen() {
               >
                 <View className="bg-purple-400 px-4 py-4">
                   <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
-                    <Text className="text-label-sm uppercase text-white">
+                    <Text className="text-xs font-medium uppercase text-white">
                       {featured.is_completed ? "Concluído" : "Próximo"}
                     </Text>
                   </View>
@@ -318,12 +316,12 @@ export default function HomeScreen() {
 
                 <View className="items-center p-6">
                   <Text
-                    className="text-title-xl font-bold text-white"
+                    className="text-3xl font-bold text-white"
                     numberOfLines={1}
                   >
                     {featured.name}
                   </Text>
-                  <Text className="mt-1 text-body-sm text-gray-200">
+                  <Text className="mt-1 text-sm font-normal text-gray-200">
                     {featured.estimated_duration_min} min ·{" "}
                     {featured.exercise_count} exercício
                     {featured.exercise_count === 1 ? "" : "s"}
@@ -345,10 +343,10 @@ export default function HomeScreen() {
                   strokeWidth={1.5}
                 />
                 <View className="items-center">
-                  <Text className="text-title-md font-semibold text-white">
+                  <Text className="text-xl font-semibold text-white">
                     Nenhum treino para hoje
                   </Text>
-                  <Text className="mt-1 text-body-sm text-gray-200">
+                  <Text className="mt-1 text-sm font-normal text-gray-200">
                     Aproveite para descansar ou criar um novo treino.
                   </Text>
                 </View>

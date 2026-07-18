@@ -295,7 +295,7 @@ export default function WorkoutSessionScreen() {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-gray-700">
         <ActivityIndicator size="large" color={color["purple-100"]} />
-        <Text className="mt-4 text-label-md uppercase tracking-widest text-gray-200">
+        <Text className="mt-4 text-base font-semibold uppercase text-gray-200">
           Preparando sessão...
         </Text>
       </SafeAreaView>
@@ -355,7 +355,7 @@ export default function WorkoutSessionScreen() {
             </LinearGradient>
             <View className="flex-1">
               <Text
-                className="text-title-lg font-bold uppercase text-purple-200"
+                className="text-2xl font-bold uppercase text-purple-200"
                 numberOfLines={1}
               >
                 {workout.name}
@@ -384,10 +384,10 @@ export default function WorkoutSessionScreen() {
       {/* Progresso */}
       <View className="px-4 pb-4">
         <View className="mb-2 flex-row items-end justify-between">
-          <Text className="text-label-sm font-bold uppercase tracking-widest text-gray-200">
+          <Text className="text-xs font-bold uppercase text-gray-200">
             Exercício {current + 1} de {exercises.length}
           </Text>
-          <Text className="text-label-sm font-bold text-purple-200">
+          <Text className="text-xs font-bold text-purple-200">
             {progressPct}% Concluído
           </Text>
         </View>

@@ -14,9 +14,9 @@ interface InputProps extends TextInputProps {
 }
 
 const labelSizes: Record<LabelSize, string> = {
-  sm: "text-label-sm",
-  md: "text-label-md",
-  lg: "text-body-md",
+  sm: "text-xs font-medium",
+  md: "text-base font-semibold",
+  lg: "text-base font-normal",
 };
 
 /** Halo roxo do estado de foco — compartilhado com [SearchInput]. */
@@ -47,7 +47,7 @@ export function Input({
       <Text
         className={cn(
           labelSizes[labelSize],
-          "uppercase tracking-widest text-gray-200",
+          "uppercase text-gray-200",
           centeredLabel && "text-center",
         )}
       >
@@ -72,14 +72,14 @@ export function Input({
           passwordRules=""
           placeholderTextColor={color["gray-400"]} // neutral-400
           style={[
-            // O text-body-md traz lineHeight 24 para uma fonte de 16 — no Android
+            // O text-base traz lineHeight 24 para uma fonte de 16 — no Android
             // essa sobra vai toda para baixo do texto. lineHeight = fontSize
             // (+ includeFontPadding off) deixa o padding vertical centralizar.
             { fontSize: 18, lineHeight: 20, includeFontPadding: false },
             focused && !error ? FOCUS_RING : null,
           ]}
           className={cn(
-            "w-full rounded-lg border bg-gray-600 px-5 py-5 text-body-md text-white",
+            "w-full rounded-lg border bg-gray-600 px-5 py-5 text-base font-normal text-white",
             controlBorder(focused, error),
           )}
         />
@@ -88,13 +88,13 @@ export function Input({
             onPress={() => setHidden((h) => !h)}
             className="absolute bottom-0 right-4 top-0 justify-center"
           >
-            <Text className="text-label-sm text-gray-200">
+            <Text className="text-xs font-medium text-gray-200">
               {hidden ? "MOSTRAR" : "OCULTAR"}
             </Text>
           </Pressable>
         )}
       </View>
-      {error && <Text className="text-label-sm text-error">{error}</Text>}
+      {error && <Text className="text-xs font-medium text-error">{error}</Text>}
     </View>
   );
 }
