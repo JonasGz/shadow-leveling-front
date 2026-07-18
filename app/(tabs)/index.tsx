@@ -272,7 +272,9 @@ export default function HomeScreen() {
           {/* Weekly goal card */}
           {weekly ? (
             <Pressable
-              onPress={goalScheduled > 0 ? undefined : () => setGoalModalVisible(true)}
+              onPress={
+                goalScheduled > 0 ? undefined : () => setGoalModalVisible(true)
+              }
               disabled={goalScheduled > 0}
             >
               <LinearGradient

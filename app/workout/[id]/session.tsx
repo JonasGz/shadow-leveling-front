@@ -24,6 +24,7 @@ import {
   Timer,
   Plus,
   X,
+  TrendingUp,
 } from "lucide-react-native";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
@@ -32,6 +33,12 @@ import { SubstituteExerciseModal } from "../../../src/components/SubstituteExerc
 import { authService } from "../../../src/services/auth.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { sessionsService } from "../../../src/services/sessions.service";
+import {
+  computeHint,
+  prefillSets,
+  type Hint,
+  type LastSet,
+} from "../../../src/features/progression";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
   Exercise,
@@ -90,6 +97,10 @@ export default function WorkoutSessionScreen() {
   const [setsByExercise, setSetsByExercise] = useState<
     Record<string, LocalSet[]>
   >({});
+  // Dica de progressão por exercício (keyed by workoutExercise.id).
+  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>(
+    {},
+  );
 
   // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
   // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
@@ -126,28 +137,47 @@ export default function WorkoutSessionScreen() {
       const sorted = [...(w.exercises ?? [])].sort(
         (a, b) => a.sort_order - b.sort_order,
       );
+
+      // Última sessão completa (autopreenchimento + dica). Em paralelo com a
+      // criação da sessão; falha aqui não impede o treino (segue sem prefill).
+      const [createdSession, lastDetail] = await Promise.all([
+        sessionsService.create({
+          workout_id: workoutId,
+          // A sessão é datada pelo DIA LOCAL, não pelo instante UTC: um treino
+          // às 22:31 (UTC-3) vira 01:31Z do dia seguinte, e `toISOString()`
+          // gravaria a data errada na coluna DATE — fazendo `done_today`
+          // acender no dia seguinte. Enviamos meio-dia UTC do dia local (margem
+          // de ±12h contra o fuso do banco) para a data truncada bater com o
+          // calendário do usuário.
+          date: localCalendarDate(),
+          status: "incomplete",
+        }),
+        sessionsService.lastCompletedDetail(workoutId).catch(() => null),
+      ]);
+
       const initial: Record<string, LocalSet[]> = {};
+      const hints: Record<string, Hint> = {};
       for (const we of sorted) {
-        initial[we.id] = Array.from({ length: Math.max(1, we.sets) }, () => ({
-          weight: "",
-          reps: "",
-          duration: "",
+        // Sets da última sessão para ESTE exercício (match por exercise_id).
+        const lastSets: LastSet[] = (lastDetail?.sets ?? [])
+          .filter((s) => s.exercise_id === we.exercise_id)
+          .map((s) => ({
+            setNumber: s.set_number,
+            reps: s.reps ?? null,
+            weight: s.weight ?? null,
+            duration: s.duration ?? null,
+          }));
+        const timed = we.exercise.type === "time";
+        initial[we.id] = prefillSets(lastSets, we.sets, timed).map((row) => ({
+          ...row,
           done: false,
         }));
+        hints[we.id] = computeHint(lastSets, we.reps_max ?? null, timed);
       }
       setSetsByExercise(initial);
+      setHintByExercise(hints);
 
-      const s = await sessionsService.create({
-        workout_id: workoutId,
-        // A sessão é datada pelo DIA LOCAL, não pelo instante UTC: um treino às
-        // 22:31 (UTC-3) vira 01:31Z do dia seguinte, e `toISOString()` gravaria
-        // a data errada na coluna DATE — fazendo `done_today` acender no dia
-        // seguinte. Enviamos meio-dia UTC do dia local (margem de ±12h contra o
-        // fuso do banco) para a data truncada bater com o calendário do usuário.
-        date: localCalendarDate(),
-        status: "incomplete",
-      });
-      setSession(s);
+      setSession(createdSession);
     } catch {
       setBootError(true);
     } finally {
@@ -402,7 +432,7 @@ export default function WorkoutSessionScreen() {
             <Pressable
               key={we.id}
               onPress={() => goTo(i, exercises.length)}
-              className={`w-36 h-24 px-3 py-2.5 rounded-xl border justify-between active:opacity-70 ${
+              className={`w-36 h-24 px-3 py-3 rounded-xl border justify-between active:opacity-70 ${
                 allDone
                   ? "bg-secondary/15 border-secondary/60"
                   : active
@@ -412,7 +442,7 @@ export default function WorkoutSessionScreen() {
             >
               <View className="flex-row items-center justify-between">
                 <Text
-                  className={`text-label-sm font-bold ${
+                  className={`text-xs font-bold ${
                     active ? "text-secondary" : "text-outline"
                   }`}
                 >
@@ -505,7 +535,7 @@ export default function WorkoutSessionScreen() {
                         </View>
                       )}
                       <Text
-                        className="text-title-xxl text-white font-extrabold"
+                        className="text-title-xl text-white font-extrabold"
                         numberOfLines={2}
                       >
                         {effective.name}
@@ -521,7 +551,7 @@ export default function WorkoutSessionScreen() {
                             {timed ? "Tempo" : "Força"}
                           </Text>
                         </View>
-                        <Text className="text-on-surface-variant text-label-md font-semibold">
+                        <Text className="text-on-surface-variant text-label-sm font-semibold">
                           {we.sets} séries
                           {timed
                             ? we.duration
@@ -546,6 +576,17 @@ export default function WorkoutSessionScreen() {
                         </Pressable>
                       </View>
                     </View>
+
+                    {/* Dica de progressão (Diferencial 2): meta discreta no
+                        topo do exercício, baseada na última sessão. */}
+                    {hintByExercise[we.id] && (
+                      <View className="flex-row items-center gap-2 px-lg pt-3 pb-1">
+                        <TrendingUp size={15} color="#5CE1E6" />
+                        <Text className="flex-1 text-label-md text-info font-semibold">
+                          {hintByExercise[we.id]!.text}
+                        </Text>
+                      </View>
+                    )}
 
                     {/* Grid de séries */}
                     <View className="p-3.5">

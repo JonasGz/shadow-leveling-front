@@ -109,4 +109,16 @@ export const sessionsService = {
   async deleteSet(sessionId: string, setId: string): Promise<void> {
     await api.delete(`/workout-sessions/${sessionId}/sets/${setId}`);
   },
+
+  // Última sessão COMPLETA do treino, com os sets — base do autopreenchimento
+  // e da dica de progressão. null se o treino nunca foi concluído.
+  async lastCompletedDetail(
+    workoutId: string
+  ): Promise<WorkoutSessionDetail | null> {
+    const sessions = await sessionsService.list({ workout_id: workoutId });
+    const last = sessions
+      .filter((s) => s.status === "complete")
+      .sort((a, b) => b.date.localeCompare(a.date))[0];
+    return last ? sessionsService.get(last.id) : null;
+  },
 };
