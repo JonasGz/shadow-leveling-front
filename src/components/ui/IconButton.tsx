@@ -26,7 +26,7 @@ export function IconButton({
       {...props}
       style={isPrimary ? PRIMARY_SHADOW : undefined}
       className={cn(
-        "items-center justify-center self-center rounded-[10px] p-3 active:opacity-70",
+        "rounded-lg items-center justify-center self-center p-3 active:opacity-70",
         isPrimary ? "bg-purple-300" : "border border-white/12",
       )}
     >

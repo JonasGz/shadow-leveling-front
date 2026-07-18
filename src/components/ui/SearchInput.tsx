@@ -17,7 +17,7 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
       <View
         style={focused && !error ? FOCUS_RING : undefined}
         className={cn(
-          "flex-row items-center gap-sm rounded-xl border bg-gray-600 px-5 py-4",
+          "flex-row items-center gap-sm rounded-lg border bg-gray-600 px-5 py-4",
           controlBorder(focused, error),
         )}
       >

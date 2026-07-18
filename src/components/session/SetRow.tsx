@@ -54,7 +54,7 @@ export const SetRow = memo(function SetRow({
   return (
     <View
       className={cn(
-        "mt-1 flex-row items-center gap-2 rounded-xl border px-2 py-4",
+        "mt-1 flex-row items-center gap-2 rounded-lg border px-2 py-4",
         isActiveRow
           ? "border-purple-300/50 bg-purple-300/10"
           : "border-transparent",

@@ -345,7 +345,7 @@ export default function WorkoutSessionScreen() {
               style={{
                 width: 50,
                 height: 50,
-                borderRadius: 24,
+                borderRadius: 9999, // circulo: 50x50
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0px 0px 16px rgba(129, 19, 211, 0.5)",

@@ -130,7 +130,7 @@ export default function SessionDetailScreen() {
             ].map((stat) => (
               <View
                 key={stat.label}
-                className="flex-1 items-center rounded-xl border border-white/7 bg-gray-600 p-3"
+                className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-3"
               >
                 <Text className="text-title-xl font-extrabold text-white">
                   {stat.value}
@@ -181,7 +181,7 @@ export default function SessionDetailScreen() {
                         <View
                           key={set.id}
                           className={cn(
-                            "flex-row items-center justify-between rounded-xl px-3.5 py-3",
+                            "flex-row items-center justify-between rounded-lg px-3.5 py-3",
                             isBest
                               ? "border border-purple-300/35 bg-purple-300/10"
                               : "bg-gray-700",

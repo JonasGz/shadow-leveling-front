@@ -79,7 +79,7 @@ export function Input({
             focused && !error ? FOCUS_RING : null,
           ]}
           className={cn(
-            "w-full rounded-xl border bg-gray-600 px-5 py-5 text-body-md text-white",
+            "w-full rounded-lg border bg-gray-600 px-5 py-5 text-body-md text-white",
             controlBorder(focused, error),
           )}
         />

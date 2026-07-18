@@ -64,7 +64,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         height: 60,
         marginBottom: 32,
         marginHorizontal: 26,
-        borderRadius: 36,
+        borderRadius: 9999, // pilula: altura 60
       }}
     >
       {ready && (
@@ -84,7 +84,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
           <View
             style={{
               backgroundColor: color["purple-300"],
-              borderRadius: 38,
+              borderRadius: 9999, // pilula
               paddingHorizontal: 38,
               paddingVertical: 36,
               shadowColor: color["purple-300"],

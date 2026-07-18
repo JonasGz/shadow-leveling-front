@@ -42,7 +42,7 @@ const ExerciseRow = memo(function ExerciseRow({
   return (
     <Pressable
       onPress={() => onSelect(exercise)}
-      className="flex-row items-center justify-between rounded-xl border border-white/7 bg-gray-600 px-md py-md text-gray-200 active:opacity-80"
+      className="flex-row items-center justify-between rounded-2xl border border-white/7 bg-gray-600 px-md py-md text-gray-200 active:opacity-80"
     >
       <View className="flex-1">
         <Text className="text-body-lg font-semibold text-white">

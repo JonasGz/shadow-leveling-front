@@ -167,7 +167,7 @@ export default function SessionCompleteScreen() {
             style={{
               width: 54,
               height: 54,
-              borderRadius: 27,
+              borderRadius: 9999, // circulo: 54x54
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "0px 0px 22px rgba(129, 19, 211, 0.55)",
@@ -192,7 +192,7 @@ export default function SessionCompleteScreen() {
             start={{ x: 0, y: 0 }}
             end={{ x: 0.87, y: 0.5 }} // ≈ 120deg
             style={{
-              borderRadius: 22,
+              borderRadius: 28, // rounded-2xl (container)
               padding: 14,
               alignItems: "center",
               boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.4)",
@@ -247,7 +247,7 @@ export default function SessionCompleteScreen() {
 
         {/* Stats */}
         <View className="mt-md flex-row gap-2.5">
-          <View className="flex-1 rounded-xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
+          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
             <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Volume total
             </Text>
@@ -263,7 +263,7 @@ export default function SessionCompleteScreen() {
             </View>
           </View>
 
-          <View className="flex-1 rounded-xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
+          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
             <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Séries
             </Text>
@@ -294,10 +294,10 @@ export default function SessionCompleteScreen() {
             {summaries.map((ex) => (
               <View
                 key={ex.exerciseId}
-                className="rounded-xl border border-white/7 bg-gray-600 p-3.5"
+                className="rounded-2xl border border-white/7 bg-gray-600 p-3.5"
               >
                 <View className="flex-row items-center gap-3">
-                  <View className="h-[38px] w-[38px] items-center justify-center rounded-[9px] bg-gray-500">
+                  <View className="rounded-lg h-[38px] w-[38px] items-center justify-center bg-gray-500">
                     <Dumbbell
                       size={22}
                       color={color["purple-200"]}

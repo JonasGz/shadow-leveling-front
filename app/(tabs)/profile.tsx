@@ -348,7 +348,7 @@ export default function ProfileScreen() {
             ) : null}
 
             {/* Menu */}
-            <View className="mt-3 overflow-hidden rounded-xl border border-white/7 bg-gray-600">
+            <View className="mt-3 overflow-hidden rounded-2xl border border-white/7 bg-gray-600">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
@@ -397,7 +397,7 @@ export default function ProfileScreen() {
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
-              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-2.5 rounded-xl border border-error/40 bg-error/10 active:opacity-80"
+              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-2.5 rounded-lg border border-error/40 bg-error/10 active:opacity-80"
             >
               {loggingOut ? (
                 <ActivityIndicator size="small" color={color.error} />
@@ -425,7 +425,7 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full gap-md rounded-xl border border-gray-300 bg-gray-600 p-lg">
+          <View className="w-full gap-md rounded-2xl border border-gray-300 bg-gray-600 p-lg">
             <Text className="text-title-md font-bold text-white">
               Editar nick
             </Text>
@@ -441,7 +441,7 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="rounded-xl border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
+              className="rounded-lg border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
             />
             <View className="mt-sm flex-row gap-md">
               <Pressable

@@ -39,7 +39,7 @@ export function ExerciseChips({
             key={we.id}
             onPress={() => onSelect(i)}
             className={cn(
-              "h-24 w-36 justify-between rounded-xl border px-3 py-3 active:opacity-70",
+              "h-24 w-36 justify-between rounded-lg border px-3 py-3 active:opacity-70",
               allDone
                 ? "border-purple-200/60 bg-purple-200/15"
                 : active

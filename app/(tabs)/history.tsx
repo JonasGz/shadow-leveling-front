@@ -321,7 +321,7 @@ export default function HistoryScreen() {
                 {missed.map((m, i) => (
                   <View
                     key={`${m.workout_id}-${m.date}-${i}`}
-                    className="w-[170px] rounded-xl border border-white/7 bg-error/5 p-4"
+                    className="w-[170px] rounded-2xl border border-white/7 bg-error/5 p-4"
                   >
                     <Text className="text-label-sm font-semibold text-gray-300">
                       {formatDayMonthYear(m.date)}

@@ -53,7 +53,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         style={{
           width: 40,
           height: 40,
-          borderRadius: 14,
+          borderRadius: 12, // rounded-lg (controle)
           alignItems: "center",
           justifyContent: "center",
           boxShadow: "0px 0px 14px rgba(129, 19, 211, 0.5)",
@@ -73,7 +73,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Adicionar 15 segundos ao descanso"
         onPress={() => setRemaining((r) => r + 15)}
-        className="h-9 w-9 items-center justify-center rounded-xl border border-purple-200/25 bg-gray-700 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-lg border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
         <Plus size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>
@@ -81,7 +81,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Encerrar descanso"
         onPress={onDismiss}
-        className="h-9 w-9 items-center justify-center rounded-xl border border-purple-200/25 bg-gray-700 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-lg border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
         <X size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>

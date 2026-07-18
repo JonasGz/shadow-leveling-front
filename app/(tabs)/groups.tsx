@@ -134,7 +134,7 @@ export default function GroupsScreen() {
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-xl bg-gray-600 py-md pl-5 pr-md active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-md pl-5 pr-md active:opacity-80"
                 >
                   <LinearGradient
                     colors={[color["purple-200"], color["purple-300"]]}
@@ -182,7 +182,7 @@ export default function GroupsScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full gap-md rounded-xl border border-gray-300 bg-gray-600 p-lg">
+          <View className="w-full gap-md rounded-2xl border border-gray-300 bg-gray-600 p-lg">
             <Text className="text-title-md font-bold text-white">
               Criar novo grupo
             </Text>

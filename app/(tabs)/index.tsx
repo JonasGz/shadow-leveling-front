@@ -252,7 +252,7 @@ export default function HomeScreen() {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 12,
-                  borderRadius: 20,
+                  borderRadius: 28, // rounded-2xl (container)
                   padding: 16,
                   borderWidth: 1,
                   // purple-300 a 30%; LinearGradient só aceita style.

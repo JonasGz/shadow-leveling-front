@@ -88,16 +88,18 @@ module.exports = {
         "label-md": ["15px", { lineHeight: "20px", fontWeight: "600" }], // →button
         "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }], // →caption
       },
+      // Quatro raios, um por papel. Antes eram ~11 valores com os papéis
+      // misturados: card aparecia em 28px e 20px sem critério, e botão de
+      // ícone em 10, 12 e 20. `rounded` e `rounded-md` eram o mesmo 8px.
+      //
+      // O salto container→controle (28→12) é o que mantém o aninhamento
+      // harmônico sem auditoria: o elemento de dentro sempre lê menos redondo
+      // que o de fora.
       borderRadius: {
-        // PULSE radius scale (reduces existing ~4px).
-        sm: "4px",
-        DEFAULT: "8px",
-        md: "8px",
-        lg: "12px",
-        xl: "20px",
-        "2xl": "28px",
-        "3xl": "36px",
-        full: "9999px",
+        sm: "4px", // micro: tag, marcador
+        lg: "12px", // controle: input, botão, chip, tile de ícone
+        "2xl": "28px", // container: card, painel, modal, sheet
+        full: "9999px", // pílula, avatar, círculo, track
       },
       spacing: {
         // PULSE numeric scale (1=4 … 16=64) in addition to the legacy named

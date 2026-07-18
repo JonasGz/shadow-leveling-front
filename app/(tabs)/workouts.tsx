@@ -41,7 +41,7 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
       end={{ x: 0.5, y: 0.87 }} // ≈ 150deg
       // LinearGradient não aceita className (não é wrapped pelo NativeWind)
       style={{
-        borderRadius: 20, // rounded-xl
+        borderRadius: 28, // rounded-2xl (container)
         borderLeftWidth: 4,
         borderLeftColor: color["purple-300"], // secondary
         overflow: "hidden",
@@ -102,7 +102,7 @@ function LibraryWorkoutCard({
     <Pressable
       onPress={() => router.push(`/workout/${workout.id}`)}
       className={cn(
-        "rounded-xl border border-white/7 bg-gray-600 p-md active:bg-gray-500",
+        "rounded-2xl border border-white/7 bg-gray-600 p-md active:bg-gray-500",
         workout.active ? "" : "opacity-60",
       )}
     >
@@ -145,14 +145,14 @@ function LibraryWorkoutCard({
 
       <View className="flex-row flex-wrap gap-sm">
         {workout.done_today ? (
-          <View className="rounded bg-purple-300/15 px-2 py-1">
+          <View className="rounded-sm bg-purple-300/15 px-2 py-1">
             <Text className="text-label-sm uppercase tracking-widest text-purple-300">
               Feito hoje
             </Text>
           </View>
         ) : null}
         {!workout.active ? (
-          <View className="rounded px-2 py-1">
+          <View className="rounded-sm px-2 py-1">
             <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Inativo
             </Text>

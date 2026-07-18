@@ -115,7 +115,7 @@ export function SubstituteExerciseModal({
 
           {/* Manual search */}
           <View className="px-lg pb-md">
-            <View className="flex-row items-center gap-2 rounded-xl border border-white/12 bg-gray-600 px-md py-3">
+            <View className="flex-row items-center gap-2 rounded-lg border border-white/12 bg-gray-600 px-md py-3">
               <Search size={16} color={color["gray-200"]} />
               <TextInput
                 value={search}
@@ -208,7 +208,7 @@ function SubstituteRow({
   return (
     <Pressable
       onPress={() => onPick(exercise)}
-      className="mb-2 flex-row items-center gap-3 rounded-xl border border-white/12 bg-gray-600 p-md active:opacity-70"
+      className="mb-2 flex-row items-center gap-3 rounded-2xl border border-white/12 bg-gray-600 p-md active:opacity-70"
     >
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-purple-300/20">
         <Dumbbell size={18} color={color["purple-100"]} />
