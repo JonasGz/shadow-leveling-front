@@ -29,7 +29,6 @@ import { useToast } from "../../src/components/ui/Toast";
 import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
 import { formatDateSlash } from "../../src/lib/date";
 import { pickImage } from "../../src/lib/pickImage";
-import { TRACK } from "../../src/lib/ui";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import type { User, UserLevel } from "../../src/types/api.types";
@@ -260,7 +259,12 @@ export default function ProfileScreen() {
                 onPress={openNicknameEditor}
                 className="mt-3.5 flex-row items-center gap-2 active:opacity-70"
               >
-                <Text className="text-title-lg font-bold capitalize text-white">
+                {/* shrink + 1 linha: sem isso um nome longo empurra o lápis
+                    para fora da tela em 320px, porque Text não encolhe. */}
+                <Text
+                  numberOfLines={1}
+                  className="shrink text-title-lg font-bold capitalize text-white"
+                >
                   {displayName}
                 </Text>
                 <Pencil size={14} color={color["purple-200"]} strokeWidth={2} />
@@ -270,10 +274,7 @@ export default function ProfileScreen() {
 
               {user?.created_at ? (
                 <View className="mt-3 rounded-full border border-white/12 px-3.5 py-1.5">
-                  <Text
-                    className="text-label-sm font-semibold uppercase text-gray-200"
-                    style={TRACK}
-                  >
+                  <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                     Caçador desde {formatDateSlash(user.created_at)}
                   </Text>
                 </View>
@@ -285,10 +286,7 @@ export default function ProfileScreen() {
                 {/* Rank / Nível */}
                 <View className="mt-5 flex-row gap-3">
                   <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-gray-200"
-                      style={TRACK}
-                    >
+                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Rank
                     </Text>
                     <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
@@ -296,10 +294,7 @@ export default function ProfileScreen() {
                     </Text>
                   </View>
                   <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-gray-200"
-                      style={TRACK}
-                    >
+                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Nível
                     </Text>
                     <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
@@ -311,10 +306,7 @@ export default function ProfileScreen() {
                 {/* Progresso do nível */}
                 <View className="mt-3 rounded-2xl border border-white/7 bg-gray-600 p-6">
                   <View className="flex-row items-center justify-between">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-gray-200"
-                      style={TRACK}
-                    >
+                    <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Progresso do nível
                     </Text>
                     <Text className="text-label-md font-bold text-purple-200">
@@ -412,10 +404,7 @@ export default function ProfileScreen() {
               ) : (
                 <>
                   <LogOut size={18} color={color.error} strokeWidth={2} />
-                  <Text
-                    className="text-label-md font-semibold text-error"
-                    style={TRACK}
-                  >
+                  <Text className="text-label-md font-semibold tracking-label text-error">
                     Sair
                   </Text>
                 </>

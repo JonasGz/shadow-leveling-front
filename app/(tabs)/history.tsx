@@ -28,7 +28,6 @@ import {
   formatDayMonthYear,
   toISODate,
 } from "../../src/lib/date";
-import { TRACK } from "../../src/lib/ui";
 import type { SessionStatus } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
@@ -160,10 +159,7 @@ export default function HistoryScreen() {
         {/* De / Até */}
         <View className="mt-4 flex-row gap-2.5">
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-2.5">
-            <Text
-              className="text-label-sm font-bold uppercase text-gray-300"
-              style={TRACK}
-            >
+            <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
               De
             </Text>
             <Text className="mt-2 text-body-lg font-bold text-white">
@@ -171,10 +167,7 @@ export default function HistoryScreen() {
             </Text>
           </View>
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-2.5">
-            <Text
-              className="text-label-sm font-bold uppercase text-gray-300"
-              style={TRACK}
-            >
+            <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
               Até
             </Text>
             <Text className="mt-2 text-body-lg font-bold text-white">
@@ -229,10 +222,7 @@ export default function HistoryScreen() {
         ) : (
           <>
             {/* Sessões realizadas */}
-            <Text
-              className="mb-3 mt-6 text-label-sm font-bold uppercase text-gray-200"
-              style={TRACK}
-            >
+            <Text className="mb-3 mt-6 text-label-sm font-bold uppercase tracking-label text-gray-200">
               Treinos realizados
             </Text>
 
@@ -263,10 +253,10 @@ export default function HistoryScreen() {
                         >
                           <Text
                             className={cn(
+                              "tracking-label",
                               "text-label-sm font-bold uppercase",
                               meta.text,
                             )}
-                            style={TRACK}
                           >
                             {meta.label}
                           </Text>
@@ -292,10 +282,7 @@ export default function HistoryScreen() {
                           strokeWidth={2.4}
                         />
                         <View className="flex-row items-center gap-1">
-                          <Text
-                            className="text-label-sm font-bold text-purple-200"
-                            style={TRACK}
-                          >
+                          <Text className="text-label-sm font-bold tracking-label text-purple-200">
                             VER DETALHES
                           </Text>
                           <ChevronRight
@@ -314,10 +301,7 @@ export default function HistoryScreen() {
             {/* Treinos perdidos */}
             <View className="mb-3 mt-6 flex-row items-center gap-2">
               <Skull size={16} color={color["gray-300"]} strokeWidth={1.9} />
-              <Text
-                className="text-label-sm font-bold uppercase text-gray-300"
-                style={TRACK}
-              >
+              <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
                 Treinos perdidos
               </Text>
             </View>
@@ -348,10 +332,7 @@ export default function HistoryScreen() {
                     >
                       {m.workout_name}
                     </Text>
-                    <Text
-                      className="mt-2.5 text-label-sm font-semibold uppercase text-error/80"
-                      style={TRACK}
-                    >
+                    <Text className="mt-2.5 text-label-sm font-semibold uppercase tracking-label text-error/80">
                       Missão falhada
                     </Text>
                   </View>

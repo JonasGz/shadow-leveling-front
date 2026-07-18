@@ -10,7 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -28,8 +28,6 @@ import type {
 } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
 import { cn } from "../../../src/lib/cn";
-
-const HERO_HEIGHT = Math.round(Dimensions.get("window").height * 0.55);
 
 function Avatar({
   uri,
@@ -111,6 +109,9 @@ export default function SessionPostScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const { showToast } = useToast();
+  // Antes era const de módulo, calculada uma vez no load do bundle: em
+  // split-screen ou foldable o hero ficava com a altura da tela anterior.
+  const heroHeight = Math.round(useWindowDimensions().height * 0.55);
 
   const [detail, setDetail] = useState<SessionSocialDetail | null>(null);
   const [comments, setComments] = useState<SessionComment[]>([]);
@@ -231,7 +232,7 @@ export default function SessionPostScreen() {
           keyboardShouldPersistTaps="handled"
         >
           {/* 1. Hero photo */}
-          <View style={{ height: HERO_HEIGHT }} className="w-full">
+          <View style={{ height: heroHeight }} className="w-full">
             {detail.photo_url ? (
               <Image
                 source={{ uri: detail.photo_url }}

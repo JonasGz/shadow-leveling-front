@@ -20,7 +20,6 @@ import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import { formatFullDate } from "../../../src/lib/date";
-import { TRACK } from "../../../src/lib/ui";
 import type { ExerciseSet, SessionStatus } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
@@ -116,10 +115,7 @@ export default function SessionDetailScreen() {
             </Text>
             <View className="mt-3 flex-row items-center gap-2">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
-              <Text
-                className="text-label-md font-bold uppercase text-purple-200"
-                style={TRACK}
-              >
+              <Text className="text-label-md font-bold uppercase tracking-label text-purple-200">
                 {status.label}
               </Text>
             </View>
@@ -167,10 +163,7 @@ export default function SessionDetailScreen() {
                   className="rounded-2xl border border-white/7 bg-gray-600 p-4"
                 >
                   <View className="flex-row items-center justify-between">
-                    <Text
-                      className="text-label-sm font-bold uppercase text-gray-200"
-                      style={TRACK}
-                    >
+                    <Text className="text-label-sm font-bold uppercase tracking-label text-gray-200">
                       Exercício
                     </Text>
                     <Text
