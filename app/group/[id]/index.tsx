@@ -44,11 +44,9 @@ function signature(
 // renderizadas não refazem trabalho.
 const FeedRow = memo(function FeedRow({
   item,
-  first,
   groupId,
 }: {
   item: FeedItem;
-  first: boolean;
   groupId: string;
 }) {
   const initial = item.name.charAt(0).toUpperCase();
@@ -56,10 +54,7 @@ const FeedRow = memo(function FeedRow({
   return (
     <Pressable
       onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
-      className={cn(
-        "flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70",
-        first ? "" : "border-t border-white/7",
-      )}
+      className="flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70"
     >
       {item.photo_url ? (
         <Image
@@ -68,26 +63,53 @@ const FeedRow = memo(function FeedRow({
         />
       ) : (
         <View className="h-12 w-12 items-center justify-center rounded-full border border-white/7 bg-gray-600">
-          <Text className="text-label-md font-bold text-purple-200">
-            {initial}
-          </Text>
+          <Text className="text-base font-bold text-purple-200">{initial}</Text>
         </View>
       )}
       <View className="flex-1">
-        <Text className="text-body-lg font-bold text-white">
+        <Text className="text-lg font-bold text-white">
           {item.workout_name}
         </Text>
-        <Text className="mt-1 text-label-sm text-gray-200">{item.name}</Text>
+        {/* Avatar do autor. O círculo grande da esquerda é a foto do treino
+            (ws.photo_url), não a pessoa — por isso o nome carrega o seu. */}
+        <View className="mt-1 flex-row items-center gap-1.5">
+          {item.avatar_url ? (
+            <Image
+              source={{ uri: item.avatar_url }}
+              className="h-5 w-5 rounded-full"
+            />
+          ) : (
+            <View className="h-5 w-5 items-center justify-center rounded-full bg-gray-500">
+              <Text className="text-xs font-bold text-purple-200">
+                {initial}
+              </Text>
+            </View>
+          )}
+          <Text className="text-xs font-medium text-gray-200">{item.name}</Text>
+        </View>
         {hasSocial && (
-          <Text className="mt-1 text-label-sm text-gray-200">
-            {item.reaction_count > 0 &&
-              `${item.top_emoji ?? "🔥"} ${item.reaction_count}`}
-            {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
-            {item.comment_count > 0 && `💬 ${item.comment_count}`}
-          </Text>
+          <View className="absolute bottom-[-22px] right-0">
+            {/* Emoji num Text aninhado: cresce sem levar o contador junto, que
+                fica de propósito discreto no text-xs. */}
+            <Text className="mt-1 text-xs font-medium text-gray-200">
+              {item.reaction_count > 0 && (
+                <>
+                  <Text className="text-base">{item.top_emoji ?? "🔥"}</Text>
+                  {` ${item.reaction_count}`}
+                </>
+              )}
+              {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
+              {item.comment_count > 0 && (
+                <>
+                  <Text className="text-base">💬</Text>
+                  {` ${item.comment_count}`}
+                </>
+              )}
+            </Text>
+          </View>
         )}
       </View>
-      <Text className="text-label-sm font-semibold text-gray-200">
+      <Text className="text-xs font-semibold text-gray-200">
         {formatTime(item.created_at)}
       </Text>
     </Pressable>
@@ -133,13 +155,11 @@ function PodiumItem({
             resizeMode="cover"
           />
         ) : (
-          <Text className="text-title-md font-bold text-purple-200">
-            {initial}
-          </Text>
+          <Text className="text-xl font-bold text-purple-200">{initial}</Text>
         )}
       </View>
       <View className="items-center justify-center">
-        <Text className="text-body-lg font-bold text-white">{score}</Text>
+        <Text className="text-lg font-bold text-white">{score}</Text>
         {badge === "leader" ? (
           <Award
             size={20}
@@ -147,7 +167,7 @@ function PodiumItem({
             style={{ marginTop: 3 }}
           />
         ) : (
-          <Text className="mt-1 text-label-sm text-gray-200">Você</Text>
+          <Text className="mt-1 text-xs font-medium text-gray-200">Você</Text>
         )}
       </View>
     </View>
@@ -337,18 +357,18 @@ export default function GroupDetailScreen() {
         {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
-          className="h-[140px] items-center justify-center overflow-hidden px-4"
+          className="rounded-4xl h-[140px] items-center justify-center overflow-hidden px-4"
         >
           {group.cover_url ? (
             <Image
               source={{ uri: group.cover_url }}
-              className="h-full w-full"
+              className="h-full w-full rounded-3xl"
             />
           ) : (
             // ponytail: the mockup's radial purple glow isn't expressible with
             // expo-linear-gradient — approximated by the diagonal purple stops.
             <View className="h-full w-full items-center justify-center rounded-lg bg-gray-600">
-              <Text className="text-label-sm uppercase text-gray-200">
+              <Text className="text-xs font-medium uppercase text-gray-200">
                 {isOwner ? "Toque para definir a capa" : "Sem capa"}
               </Text>
             </View>
@@ -363,10 +383,8 @@ export default function GroupDetailScreen() {
         {/* Title row */}
         <View className="flex-row items-center justify-between px-4 pb-1 pt-4">
           <View className="flex-1 pr-2">
-            <Text className="text-title-xxl font-bold text-white">
-              {group.name}
-            </Text>
-            <Text className="mt-1 text-label-sm text-gray-200">
+            <Text className="text-4xl font-bold text-white">{group.name}</Text>
+            <Text className="mt-1 text-xs font-medium text-gray-200">
               {group.member_count}{" "}
               {group.member_count === 1 ? "membro" : "membros"}
             </Text>
@@ -415,17 +433,12 @@ export default function GroupDetailScreen() {
             <View className="pb-10">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="mb-2 ml-1 mt-4 text-center text-label-sm uppercase tracking-widest text-gray-200">
+                  <Text className="mb-2 ml-1 mt-4 text-center text-xs font-medium uppercase text-gray-200">
                     {label}
                   </Text>
-                  <View className="flex flex-col gap-2">
-                    {items.map((it, i) => (
-                      <FeedRow
-                        key={it.session_id}
-                        item={it}
-                        first={i === 0}
-                        groupId={id}
-                      />
+                  <View className="flex flex-col gap-5">
+                    {items.map((it) => (
+                      <FeedRow key={it.session_id} item={it} groupId={id} />
                     ))}
                   </View>
                 </View>

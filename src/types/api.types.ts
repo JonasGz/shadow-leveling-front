@@ -230,8 +230,9 @@ export interface FeedItem {
   session_id: string;
   user_id: string;
   name: string;
+  avatar_url: string | null; // the author's profile photo
   workout_name: string;
-  photo_url: string | null;
+  photo_url: string | null; // the session's progress photo, not the author's avatar
   created_at: string;
   reaction_count: number;
   comment_count: number;
