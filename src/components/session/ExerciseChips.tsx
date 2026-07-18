@@ -25,7 +25,7 @@ export function ExerciseChips({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{ flexGrow: 0 }}
+      className="grow-0"
       contentContainerClassName="px-md pb-8 gap-2 py-3"
       keyboardShouldPersistTaps="handled"
     >

@@ -129,7 +129,7 @@ function PodiumItem({
         {avatarUrl ? (
           <Image
             source={{ uri: avatarUrl }}
-            style={{ width: "100%", height: "100%" }}
+            className="h-full w-full"
             resizeMode="cover"
           />
         ) : (

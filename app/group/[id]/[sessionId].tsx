@@ -63,11 +63,7 @@ function Avatar({
       className="bg-gray-500"
     >
       {uri ? (
-        <Image
-          source={{ uri }}
-          style={{ width: "100%", height: "100%" }}
-          resizeMode="cover"
-        />
+        <Image source={{ uri }} className="h-full w-full" resizeMode="cover" />
       ) : (
         <Text
           className="font-bold text-purple-200"
@@ -239,7 +235,7 @@ export default function SessionPostScreen() {
             {detail.photo_url ? (
               <Image
                 source={{ uri: detail.photo_url }}
-                style={{ width: "100%", height: "100%" }}
+                className="h-full w-full"
                 resizeMode="cover"
               />
             ) : (
@@ -304,7 +300,7 @@ export default function SessionPostScreen() {
                       : undefined
                   }
                 >
-                  <Text style={{ fontSize: 16 }}>{rc.emoji}</Text>
+                  <Text className="text-body">{rc.emoji}</Text>
                   <Text
                     className={cn(
                       "text-body-sm font-bold",

@@ -28,6 +28,7 @@ export default function LandingScreen() {
       <LinearGradient
         colors={["rgb(25, 3, 42)", "rgba(27, 24, 28, 0.868)", "#130023"]}
         locations={[0, 0.55, 1]}
+        // LinearGradient não tem cssInterop registrado: só aceita style.
         style={{ flex: 1 }}
       >
         <SafeAreaView className="flex-1 justify-between px-lg">

@@ -232,7 +232,7 @@ export default function ProfileScreen() {
                     {user?.avatar_url ? (
                       <Image
                         source={{ uri: user.avatar_url }}
-                        style={{ width: "100%", height: "100%" }}
+                        className="h-full w-full"
                         resizeMode="cover"
                       />
                     ) : (

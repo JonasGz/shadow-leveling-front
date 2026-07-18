@@ -216,14 +216,10 @@ export default function SessionCompleteScreen() {
         <Pressable
           onPress={handlePickPhoto}
           disabled={uploadingPhoto}
-          className="mt-md items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/12 bg-gray-600 active:opacity-70"
-          style={{ height: 140 }}
+          className="mt-md h-[140px] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/12 bg-gray-600 active:opacity-70"
         >
           {photoUri ? (
-            <Image
-              source={{ uri: photoUri }}
-              style={{ width: "100%", height: "100%" }}
-            />
+            <Image source={{ uri: photoUri }} className="h-full w-full" />
           ) : (
             <View className="items-center gap-2 px-md">
               <Camera size={26} color={color["gray-300"]} strokeWidth={1.6} />

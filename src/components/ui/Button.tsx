@@ -70,6 +70,7 @@ export function Button({
   labelClassName = "",
   transform = "uppercase",
   disabled,
+  className,
   ...props
 }: ButtonProps) {
   const transformClass = transform === "none" ? "" : transform;
@@ -86,6 +87,8 @@ export function Button({
         styles.container,
         fullWidth && "w-full",
         isDisabled && "opacity-50",
+        // por último: quem chama vence a base.
+        className,
       )}
     >
       {loading ? (

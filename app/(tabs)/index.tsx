@@ -197,13 +197,12 @@ export default function HomeScreen() {
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
-          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full active:opacity-70"
-          style={{ backgroundColor: color["purple-300"] }}
+          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-purple-300 active:opacity-70"
         >
           {user?.avatar_url ? (
             <Image
               source={{ uri: user.avatar_url }}
-              style={{ width: "100%", height: "100%" }}
+              className="h-full w-full"
               resizeMode="cover"
             />
           ) : (
@@ -256,7 +255,8 @@ export default function HomeScreen() {
                   borderRadius: 20,
                   padding: 16,
                   borderWidth: 1,
-                  borderColor: "#8113D34D",
+                  // purple-300 a 30%; LinearGradient só aceita style.
+                  borderColor: `${color["purple-300"]}4D`,
                 }}
               >
                 <WeeklyGoalRing pct={goalPct} />
@@ -264,10 +264,7 @@ export default function HomeScreen() {
                   <Text className="text-center text-title-lg font-bold text-white">
                     Meta semanal
                   </Text>
-                  <Text
-                    className="mt-1 text-center text-body-sm"
-                    style={{ color: color["gray-100"] }}
-                  >
+                  <Text className="mt-1 text-center text-body-sm text-gray-100">
                     {goalScheduled === 0
                       ? "Defina sua meta semanal"
                       : goalCompleted >= goalScheduled
@@ -308,17 +305,10 @@ export default function HomeScreen() {
             {featured ? (
               <Pressable
                 onPress={() => router.push(`/workout/${featured.id}`)}
-                className="overflow-hidden rounded-2xl border border-white/7 active:opacity-80"
-                style={{ backgroundColor: color["gray-600"] }}
+                className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600 active:opacity-80"
               >
-                <View
-                  className="px-md py-md"
-                  style={{ backgroundColor: color["purple-400"] }}
-                >
-                  <View
-                    className="mt-6 self-start rounded-full px-2 py-1"
-                    style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
-                  >
+                <View className="bg-purple-400 px-md py-md">
+                  <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
                     <Text className="text-label-sm uppercase text-white">
                       {featured.is_completed ? "Concluído" : "Próximo"}
                     </Text>
@@ -347,10 +337,7 @@ export default function HomeScreen() {
                 </View>
               </Pressable>
             ) : (
-              <View
-                className="items-center gap-md rounded-2xl border border-white/7 p-lg"
-                style={{ backgroundColor: color["gray-600"] }}
-              >
+              <View className="items-center gap-md rounded-2xl border border-white/7 bg-gray-600 p-lg">
                 <Calendar
                   size={36}
                   color={color["gray-200"]}

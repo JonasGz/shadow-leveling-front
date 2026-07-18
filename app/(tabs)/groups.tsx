@@ -43,7 +43,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
         >
           <Image
             source={{ uri: url }}
-            style={{ width: "100%", height: "100%" }}
+            className="h-full w-full"
             resizeMode="cover"
           />
         </View>

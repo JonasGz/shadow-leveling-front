@@ -146,7 +146,7 @@ export default function AuthScreen() {
               transform="capitalize"
               labelClassName="text-body-lg"
               icon={Apple}
-              style={{ borderWidth: 1, borderColor: "rgba(129, 19, 211,0.35)" }}
+              className="border border-purple-300/35"
               onPress={handleApple}
               loading={busy === "apple"}
               disabled={busy !== null}
@@ -163,7 +163,7 @@ export default function AuthScreen() {
           onPress={() => router.push("/(auth)/email")}
           disabled={busy !== null}
           fullWidth
-          style={{ marginTop: 24 }}
+          className="mt-6"
         />
       </View>
     </SafeAreaView>
