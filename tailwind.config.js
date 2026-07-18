@@ -1,4 +1,4 @@
-const { palette } = require("./src/theme/palette");
+const { color, difficulty } = require("./src/theme/palette");
 
 // Elevation tokens (PULSE) translated to RN shadow props. tailwind/nativewind
 // consumes box-shadow strings for web; on RN the NativeWind shadow* utilities
@@ -20,83 +20,17 @@ const motion = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./App.{js,jsx,ts,tsx}",
-    "./app/**/*.{js,jsx,ts,tsx}",
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      // A escala é literal (purple-300, gray-600), não semântica. Nomes como
+      // `primary`/`secondary`/`surface-low` escondiam ~10 apelidos apontando
+      // para o mesmo hex — `secondary` e `tertiary` eram idênticos, e
+      // `secondary-container` era o mesmo que `primary`. Ver src/theme/palette.js.
       colors: {
-        // Semantic surface tokens (PULSE). Components only know these names;
-        // the underlying values moved from purple-tinged to neutral dark.
-        background: palette.surface.bg,
-        surface: {
-          DEFAULT: palette.surface.default,
-          dim: palette.surface.bg,
-          bright: palette.surface.raised,
-          lowest: palette.surface.bg,
-          low: palette.surface.default,
-          container: palette.surface.default,
-          high: palette.surface.raised,
-          highest: palette.surface.raised,
-        },
-        "on-surface": palette.text.DEFAULT,
-        "on-surface-variant": palette.text.muted,
-        outline: palette.neutral[400], // neutral border on dark surfaces
-        "outline-variant": palette.neutral[300],
-        "card-border": palette.border.DEFAULT,
-        "card-border-strong": palette.border.strong,
-        "surface-tint": palette.purple[200],
-        primary: {
-          DEFAULT: palette.purple[300], // #8113D3 accent
-          container: palette.purple[400],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-primary": palette.neutral[50],
-        "on-primary-fixed": palette.surface.bg,
-        "on-primary-fixed-variant": palette.purple[400],
-        secondary: {
-          // secondary accent is the lighter purple (purple-200), distinct from
-          // the primary purple-300 so two accents side-by-side read separately.
-          DEFAULT: palette.purple[200],
-          container: palette.purple[300],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-secondary": palette.surface.bg,
-        "on-secondary-fixed": palette.surface.bg,
-        "on-secondary-fixed-variant": palette.purple[600],
-        // tertiary collapes the old orange onto the purple accent family.
-        tertiary: {
-          DEFAULT: palette.purple[200],
-          container: palette.purple[300],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-tertiary": palette.surface.bg,
-        "on-tertiary-fixed": palette.surface.bg,
-        "on-tertiary-fixed-variant": palette.purple[600],
-        error: {
-          DEFAULT: palette.semantic.error,
-          container: palette.semantic.error,
-        },
-        "on-error": palette.neutral[50],
-        "on-error-container": palette.neutral[50],
-        // Semantic surface aliases for the Toast/Badge etc.
-        success: palette.semantic.success,
-        warning: palette.semantic.warning,
-        info: palette.semantic.info,
-        difficulty: {
-          // Aligned to PULSE semantic hues.
-          easy: palette.semantic.success,
-          medium: palette.semantic.warning,
-          hard: palette.semantic.error,
-          "no-rank": palette.neutral[200],
-        },
+        ...color,
+        difficulty,
       },
       fontFamily: {
         sans: ["OpenSans_400Regular", "System"],
@@ -106,6 +40,8 @@ module.exports = {
         mono: ["JetBrains Mono", "monospace"],
       },
       // Letter-spacing disabled app-wide: every tracking-* resolves to 0.
+      // A única exceção é `label`, para labels em caixa alta — antes vivia
+      // inline em src/lib/ui.ts (TRACK) espalhado por 13 sites.
       letterSpacing: {
         tighter: "0px",
         tight: "0px",
@@ -113,6 +49,7 @@ module.exports = {
         wide: "0px",
         wider: "0px",
         widest: "0px",
+        label: "0.5px",
       },
       fontSize: {
         // PULSE type scale.
