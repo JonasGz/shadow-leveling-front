@@ -70,10 +70,10 @@ export function WeeklyGoalModal({
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1 bg-black/70 items-center justify-center px-lg"
+        className="flex-1 items-center justify-center bg-black/70 px-lg"
       >
-        <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
-          <Text className="text-title-md text-on-surface font-bold">
+        <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
+          <Text className="text-title-md font-bold text-on-surface">
             Meta semanal
           </Text>
           <Text className="text-label-sm text-on-surface-variant">
@@ -86,16 +86,16 @@ export function WeeklyGoalModal({
             placeholderTextColor="#958ea0"
             keyboardType="number-pad"
             autoFocus
-            className="bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3 text-on-surface text-body-lg"
+            className="rounded-xl border border-[#FFFFFF1F] bg-surface-low px-md py-3 text-body-lg text-on-surface"
           />
-          <View className="flex-row gap-md mt-sm">
+          <View className="mt-sm flex-row gap-md">
             {!required && (
               <Pressable
                 onPress={onClose}
                 disabled={saving}
-                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase">
+                <Text className="text-label-md uppercase text-on-surface-variant">
                   Depois
                 </Text>
               </Pressable>
@@ -104,14 +104,14 @@ export function WeeklyGoalModal({
               <Pressable
                 onPress={save}
                 disabled={saving || !isValid}
-                className={`rounded-lg py-3 items-center active:opacity-80 ${
+                className={`items-center rounded-lg py-3 active:opacity-80 ${
                   isValid ? "bg-primary" : "bg-primary/40"
                 }`}
               >
                 {saving ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text className="text-on-primary text-label-md font-semibold uppercase">
+                  <Text className="text-label-md font-semibold uppercase text-on-primary">
                     Confirmar
                   </Text>
                 )}

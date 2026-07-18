@@ -68,7 +68,7 @@ function Avatar({
         />
       ) : (
         <Text
-          className="text-secondary font-bold"
+          className="font-bold text-secondary"
           style={{ fontSize: size / 2.6 }}
         >
           {initial}
@@ -88,19 +88,19 @@ function CommentRow({
   return (
     <Pressable
       onLongPress={comment.is_mine ? () => onDelete(comment) : undefined}
-      className="flex-row gap-3 mb-5 active:opacity-80"
+      className="mb-5 flex-row gap-3 active:opacity-80"
     >
       <Avatar uri={comment.avatar_url} name={comment.name} size={36} />
       <View className="flex-1">
         <View className="flex-row items-baseline gap-2">
-          <Text className="text-body-sm text-on-surface font-bold">
+          <Text className="text-body-sm font-bold text-on-surface">
             {comment.name}
           </Text>
           <Text className="text-caption text-on-surface-variant">
             {relativeTime(comment.created_at)}
           </Text>
         </View>
-        <Text className="text-body-sm text-on-surface mt-0.5">
+        <Text className="mt-0.5 text-body-sm text-on-surface">
           {comment.body}
         </Text>
       </View>
@@ -209,7 +209,7 @@ export default function SessionPostScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-background items-center justify-center">
+      <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator color="#c8a3ff" />
       </View>
     );
@@ -217,7 +217,7 @@ export default function SessionPostScreen() {
 
   if (!detail) {
     return (
-      <View className="flex-1 bg-background items-center justify-center px-md">
+      <View className="flex-1 items-center justify-center bg-background px-md">
         <Text className="text-on-surface-variant">Treino indisponível.</Text>
       </View>
     );
@@ -243,7 +243,7 @@ export default function SessionPostScreen() {
                 resizeMode="cover"
               />
             ) : (
-              <View className="w-full h-full bg-surface-high" />
+              <View className="h-full w-full bg-surface-high" />
             )}
             {/* fade into the page */}
             <LinearGradient
@@ -262,7 +262,7 @@ export default function SessionPostScreen() {
               onPress={() => router.back()}
               hitSlop={8}
               style={{ top: insets.top + 8 }}
-              className="absolute left-5 w-11 h-11 rounded-full bg-surface/60 border border-white/[0.12] items-center justify-center active:opacity-70"
+              className="absolute left-5 h-11 w-11 items-center justify-center rounded-full border border-white/[0.12] bg-surface/60 active:opacity-70"
             >
               <ChevronLeft size={22} color="#fff" />
             </Pressable>
@@ -272,14 +272,14 @@ export default function SessionPostScreen() {
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
             <View className="flex-1 pt-0.5">
-              <Text className="text-body-lg text-on-surface font-bold">
+              <Text className="text-body-lg font-bold text-on-surface">
                 {detail.name}
               </Text>
-              <Text className="text-body-sm text-secondary font-semibold mt-0.5">
+              <Text className="mt-0.5 text-body-sm font-semibold text-secondary">
                 {detail.workout_name}
               </Text>
             </View>
-            <Text className="text-body-sm text-on-surface-variant pt-1">
+            <Text className="pt-1 text-body-sm text-on-surface-variant">
               {relativeTime(detail.created_at)}
             </Text>
           </View>
@@ -292,10 +292,10 @@ export default function SessionPostScreen() {
                 <Pressable
                   key={rc.emoji}
                   onPress={() => react(rc.emoji)}
-                  className={`flex-row items-center gap-1.5 h-9 px-3.5 rounded-full border active:opacity-70 ${
+                  className={`h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 active:opacity-70 ${
                     active
-                      ? "bg-primary/15 border-primary"
-                      : "bg-surface-low border-white/[0.07]"
+                      ? "border-primary bg-primary/15"
+                      : "border-white/[0.07] bg-surface-low"
                   }`}
                   style={
                     active
@@ -316,21 +316,21 @@ export default function SessionPostScreen() {
             })}
             <Pressable
               onPress={() => setPickerOpen(true)}
-              className="w-9 h-9 rounded-full bg-primary/15 border border-primary/40 items-center justify-center active:opacity-70"
+              className="h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-primary/15 active:opacity-70"
             >
               <Plus size={18} color="#CAA4FF" />
             </Pressable>
           </View>
 
-          <View className="h-px bg-white/[0.07] mx-5 mt-5" />
+          <View className="mx-5 mt-5 h-px bg-white/[0.07]" />
 
           {/* 4. Comments */}
           <View className="px-5 pt-5">
-            <Text className="text-caption font-bold uppercase text-on-surface-variant mb-4">
+            <Text className="mb-4 text-caption font-bold uppercase text-on-surface-variant">
               Comentários
             </Text>
             {comments.length === 0 ? (
-              <Text className="text-body-sm text-on-surface-variant pb-4">
+              <Text className="pb-4 text-body-sm text-on-surface-variant">
                 Seja o primeiro a comentar.
               </Text>
             ) : (
@@ -340,7 +340,7 @@ export default function SessionPostScreen() {
             )}
             {cursor && (
               <Pressable onPress={loadMoreComments} className="py-2">
-                <Text className="text-body-sm text-secondary font-semibold">
+                <Text className="text-body-sm font-semibold text-secondary">
                   Carregar mais
                 </Text>
               </Pressable>
@@ -351,15 +351,15 @@ export default function SessionPostScreen() {
         {/* 5. Fixed composer */}
         <View
           style={{ paddingBottom: insets.bottom + 12 }}
-          className="flex-row items-center gap-2.5 px-5 pt-3 bg-background border-t border-white/[0.07]"
+          className="flex-row items-center gap-2.5 border-t border-white/[0.07] bg-background px-5 pt-3"
         >
-          <View className="flex-1 flex-row items-center h-12 px-4 rounded-full bg-surface-low border border-white/[0.07]">
+          <View className="h-12 flex-1 flex-row items-center rounded-full border border-white/[0.07] bg-surface-low px-4">
             <TextInput
               value={draft}
               onChangeText={setDraft}
               placeholder="Adicionar comentário…"
               placeholderTextColor="#908D94"
-              className="flex-1 text-body-sm py-0 text-on-surface"
+              className="flex-1 py-0 text-body-sm text-on-surface"
               multiline
               maxLength={500}
               onSubmitEditing={sendComment}
@@ -368,7 +368,7 @@ export default function SessionPostScreen() {
           <Pressable
             onPress={sendComment}
             disabled={sending || draft.trim().length === 0}
-            className="w-12 h-12 rounded-full bg-primary items-center justify-center active:opacity-80"
+            className="h-12 w-12 items-center justify-center rounded-full bg-primary active:opacity-80"
             style={{
               boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
               opacity: draft.trim().length === 0 ? 0.5 : 1,

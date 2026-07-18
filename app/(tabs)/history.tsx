@@ -140,14 +140,14 @@ export default function HistoryScreen() {
         }
       >
         {/* Header */}
-        <View className="flex-row items-center justify-between mt-2">
+        <View className="mt-2 flex-row items-center justify-between">
           <Text className="text-title-xxl font-bold text-on-surface">
             Histórico
           </Text>
           <Pressable
             onPress={onRefresh}
             disabled={refreshing}
-            className="w-10 h-10 rounded-full border border-white/10 bg-surface-low items-center justify-center active:opacity-70"
+            className="h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-surface-low active:opacity-70"
           >
             {refreshing ? (
               <ActivityIndicator size="small" color="#B26CFF" />
@@ -158,26 +158,26 @@ export default function HistoryScreen() {
         </View>
 
         {/* De / Até */}
-        <View className="flex-row gap-2.5 mt-4">
-          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
+        <View className="mt-4 flex-row gap-2.5">
+          <View className="flex-1 rounded-lg border border-white/10 bg-surface-low px-3 py-2.5">
             <Text
               className="text-label-sm font-bold uppercase text-outline-variant"
               style={TRACK}
             >
               De
             </Text>
-            <Text className="text-body-lg font-bold text-on-surface mt-2">
+            <Text className="mt-2 text-body-lg font-bold text-on-surface">
               {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
-          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
+          <View className="flex-1 rounded-lg border border-white/10 bg-surface-low px-3 py-2.5">
             <Text
               className="text-label-sm font-bold uppercase text-outline-variant"
               style={TRACK}
             >
               Até
             </Text>
-            <Text className="text-body-lg font-bold text-on-surface mt-2">
+            <Text className="mt-2 text-body-lg font-bold text-on-surface">
               {formatDayMonthYear(to.toISOString())}
             </Text>
           </View>
@@ -195,8 +195,8 @@ export default function HistoryScreen() {
               <Pressable
                 key={p.key}
                 onPress={() => setPreset(p.key)}
-                className={`rounded-full px-3.5 py-2 border ${
-                  active ? "bg-primary" : "bg-transparent border-white/10"
+                className={`rounded-full border px-3.5 py-2 ${
+                  active ? "bg-primary" : "border-white/10 bg-transparent"
                 }`}
               >
                 <Text
@@ -216,23 +216,19 @@ export default function HistoryScreen() {
             <ActivityIndicator size="large" color="#c8a3ff" />
           </View>
         ) : error ? (
-          <View className="items-center justify-center py-xl gap-md">
+          <View className="items-center justify-center gap-md py-xl">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar"
               description="Verifique sua conexão e tente novamente."
             />
-            <Button
-              label="Tentar novamente"
-              size="sm"
-              onPress={reload}
-            />
+            <Button label="Tentar novamente" size="sm" onPress={reload} />
           </View>
         ) : (
           <>
             {/* Sessões realizadas */}
             <Text
-              className="text-label-sm font-bold uppercase text-on-surface-variant mt-6 mb-3"
+              className="mb-3 mt-6 text-label-sm font-bold uppercase text-on-surface-variant"
               style={TRACK}
             >
               Treinos realizados
@@ -257,11 +253,11 @@ export default function HistoryScreen() {
                     <Pressable
                       key={s.id}
                       onPress={() => router.push(`/session/${s.id}`)}
-                      className="w-[200px] bg-surface-low border border-card-border rounded-2xl p-4 active:opacity-80"
+                      className="w-[200px] rounded-2xl border border-card-border bg-surface-low p-4 active:opacity-80"
                     >
                       <View className="flex-row items-center justify-between">
                         <View
-                          className={`px-2.5 py-1 rounded-full ${meta.badge}`}
+                          className={`rounded-full px-2.5 py-1 ${meta.badge}`}
                         >
                           <Text
                             className={`text-label-sm font-bold uppercase ${meta.text}`}
@@ -276,13 +272,13 @@ export default function HistoryScreen() {
                       </View>
 
                       <Text
-                        className="text-title-lg font-bold text-on-surface mt-3.5"
+                        className="mt-3.5 text-title-lg font-bold text-on-surface"
                         numberOfLines={1}
                       >
                         {workoutName(s.workout_id)}
                       </Text>
 
-                      <View className="h-px bg-white/10 my-3.5" />
+                      <View className="my-3.5 h-px bg-white/10" />
 
                       <View className="flex-row items-center justify-between">
                         <StatusIcon
@@ -311,7 +307,7 @@ export default function HistoryScreen() {
             )}
 
             {/* Treinos perdidos */}
-            <View className="flex-row items-center gap-2 mt-6 mb-3">
+            <View className="mb-3 mt-6 flex-row items-center gap-2">
               <Skull size={16} color="#6c6971" strokeWidth={1.9} />
               <Text
                 className="text-label-sm font-bold uppercase text-outline-variant"
@@ -336,19 +332,19 @@ export default function HistoryScreen() {
                 {missed.map((m, i) => (
                   <View
                     key={`${m.workout_id}-${m.date}-${i}`}
-                    className="w-[170px] bg-error/5 border border-card-border rounded-xl p-4"
+                    className="w-[170px] rounded-xl border border-card-border bg-error/5 p-4"
                   >
                     <Text className="text-label-sm font-semibold text-outline-variant">
                       {formatDayMonthYear(m.date)}
                     </Text>
                     <Text
-                      className="text-title-lg font-bold text-on-surface mt-2"
+                      className="mt-2 text-title-lg font-bold text-on-surface"
                       numberOfLines={1}
                     >
                       {m.workout_name}
                     </Text>
                     <Text
-                      className="text-label-sm font-semibold uppercase text-error/80 mt-2.5"
+                      className="mt-2.5 text-label-sm font-semibold uppercase text-error/80"
                       style={TRACK}
                     >
                       Missão falhada

@@ -58,7 +58,9 @@ describe("relativeTime", () => {
 });
 
 describe("dayLabel", () => {
-  beforeEach(() => jest.useFakeTimers().setSystemTime(new Date(2026, 0, 20, 9)));
+  beforeEach(() =>
+    jest.useFakeTimers().setSystemTime(new Date(2026, 0, 20, 9)),
+  );
   afterEach(() => jest.useRealTimers());
 
   it("distingue hoje, ontem e datas anteriores", () => {

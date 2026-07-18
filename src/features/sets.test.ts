@@ -1,9 +1,4 @@
-import {
-  bestSetId,
-  buildSessionSummary,
-  formatSet,
-  statsOf,
-} from "./sets";
+import { bestSetId, buildSessionSummary, formatSet, statsOf } from "./sets";
 import type { ExerciseSet } from "../types/api.types";
 
 const set = (over: Partial<ExerciseSet> & { id: string }): ExerciseSet =>

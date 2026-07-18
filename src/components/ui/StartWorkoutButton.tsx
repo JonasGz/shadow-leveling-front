@@ -11,7 +11,15 @@ export function StartWorkoutButton({
   done?: boolean;
 }) {
   if (done) {
-    return <Button label="Concluído" icon={Check} variant="tonal" fullWidth disabled />;
+    return (
+      <Button
+        label="Concluído"
+        icon={Check}
+        variant="tonal"
+        fullWidth
+        disabled
+      />
+    );
   }
 
   return (

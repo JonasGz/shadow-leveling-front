@@ -95,13 +95,13 @@ incluir um perfil `preview` que gera APK (em vez de AAB):
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://sua-api-publica.com"
-      }
+        "EXPO_PUBLIC_API_URL": "https://sua-api-publica.com",
+      },
     },
     "production": {
-      "android": { "buildType": "app-bundle" }
-    }
-  }
+      "android": { "buildType": "app-bundle" },
+    },
+  },
 }
 ```
 

@@ -54,31 +54,31 @@ const FeedRow = memo(function FeedRow({
   return (
     <Pressable
       onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
-      className={`flex-row items-center bg-surface-container rounded-lg px-3 gap-3 py-3 active:opacity-70 ${
+      className={`flex-row items-center gap-3 rounded-lg bg-surface-container px-3 py-3 active:opacity-70 ${
         first ? "" : "border-t border-white/5"
       }`}
     >
       {item.photo_url ? (
         <Image
           source={{ uri: item.photo_url }}
-          className="w-12 h-12 rounded-full"
+          className="h-12 w-12 rounded-full"
         />
       ) : (
-        <View className="w-12 h-12 rounded-full bg-surface-container border border-white/[0.07] items-center justify-center">
-          <Text className="text-label-md text-secondary font-bold">
+        <View className="h-12 w-12 items-center justify-center rounded-full border border-white/[0.07] bg-surface-container">
+          <Text className="text-label-md font-bold text-secondary">
             {initial}
           </Text>
         </View>
       )}
       <View className="flex-1">
-        <Text className="text-body-lg text-on-surface font-bold">
+        <Text className="text-body-lg font-bold text-on-surface">
           {item.workout_name}
         </Text>
-        <Text className="text-label-sm text-on-surface-variant mt-0.5">
+        <Text className="mt-0.5 text-label-sm text-on-surface-variant">
           {item.name}
         </Text>
         {hasSocial && (
-          <Text className="text-label-sm text-on-surface-variant mt-1">
+          <Text className="mt-1 text-label-sm text-on-surface-variant">
             {item.reaction_count > 0 &&
               `${item.top_emoji ?? "🔥"} ${item.reaction_count}`}
             {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
@@ -86,7 +86,7 @@ const FeedRow = memo(function FeedRow({
           </Text>
         )}
       </View>
-      <Text className="text-label-sm text-on-surface-variant font-semibold">
+      <Text className="text-label-sm font-semibold text-on-surface-variant">
         {formatTime(item.created_at)}
       </Text>
     </Pressable>
@@ -111,8 +111,8 @@ function PodiumItem({
   return (
     <View className="flex-row items-center gap-2">
       <View
-        className={`rounded-full bg-surface-container items-center justify-center overflow-hidden ${
-          badge === "you" ? "w-[52px] h-[52px]" : "w-[60px] h-[60px]"
+        className={`items-center justify-center overflow-hidden rounded-full bg-surface-container ${
+          badge === "you" ? "h-[52px] w-[52px]" : "h-[60px] w-[60px]"
         }`}
         style={
           badge === "leader"
@@ -131,17 +131,17 @@ function PodiumItem({
             resizeMode="cover"
           />
         ) : (
-          <Text className="text-title-md text-secondary font-bold">
+          <Text className="text-title-md font-bold text-secondary">
             {initial}
           </Text>
         )}
       </View>
-      <View className="justify-center items-center">
-        <Text className="text-body-lg text-on-surface font-bold">{score}</Text>
+      <View className="items-center justify-center">
+        <Text className="text-body-lg font-bold text-on-surface">{score}</Text>
         {badge === "leader" ? (
           <Award size={20} color="#B26CFF" style={{ marginTop: 3 }} />
         ) : (
-          <Text className="text-label-sm text-on-surface-variant mt-0.5">
+          <Text className="mt-0.5 text-label-sm text-on-surface-variant">
             Você
           </Text>
         )}
@@ -291,7 +291,7 @@ export default function GroupDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator color="#c8a3ff" />
       </SafeAreaView>
     );
@@ -299,7 +299,7 @@ export default function GroupDetailScreen() {
 
   if (!group) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-md">
+      <SafeAreaView className="flex-1 items-center justify-center bg-background px-md">
         <Text className="text-on-surface-variant">Grupo indisponível.</Text>
       </SafeAreaView>
     );
@@ -310,7 +310,7 @@ export default function GroupDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Top App Bar (mesma das outras telas) */}
-      <View className="flex-row items-center px-md h-16">
+      <View className="h-16 flex-row items-center px-md">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -333,36 +333,36 @@ export default function GroupDetailScreen() {
         {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
-          className="h-[140px] px-md items-center justify-center overflow-hidden"
+          className="h-[140px] items-center justify-center overflow-hidden px-md"
         >
           {group.cover_url ? (
             <Image
               source={{ uri: group.cover_url }}
-              className="w-full h-full"
+              className="h-full w-full"
             />
           ) : (
             // ponytail: the mockup's radial purple glow isn't expressible with
             // expo-linear-gradient — approximated by the diagonal purple stops.
-            <View className="w-full h-full bg-surface-container rounded-lg items-center justify-center">
+            <View className="h-full w-full items-center justify-center rounded-lg bg-surface-container">
               <Text className="text-label-sm uppercase text-on-surface-variant">
                 {isOwner ? "Toque para definir a capa" : "Sem capa"}
               </Text>
             </View>
           )}
           {uploadingCover && (
-            <View className="absolute inset-0 bg-black/40 items-center justify-center">
+            <View className="absolute inset-0 items-center justify-center bg-black/40">
               <ActivityIndicator color="#c8a3ff" />
             </View>
           )}
         </Pressable>
 
         {/* Title row */}
-        <View className="px-md pt-md pb-1 flex-row items-center justify-between">
+        <View className="flex-row items-center justify-between px-md pb-1 pt-md">
           <View className="flex-1 pr-2">
-            <Text className="text-title-xxl text-on-surface font-bold">
+            <Text className="text-title-xxl font-bold text-on-surface">
               {group.name}
             </Text>
-            <Text className="text-label-sm text-on-surface-variant mt-1">
+            <Text className="mt-1 text-label-sm text-on-surface-variant">
               {group.member_count}{" "}
               {group.member_count === 1 ? "membro" : "membros"}
             </Text>
@@ -371,14 +371,14 @@ export default function GroupDetailScreen() {
             <Pressable
               onPress={shareInvite}
               hitSlop={8}
-              className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/30 items-center justify-center active:opacity-70"
+              className="h-12 w-12 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 active:opacity-70"
             >
               <Share2 size={17} color="#CAA4FF" />
             </Pressable>
             <Pressable
               onPress={confirmLeave}
               hitSlop={8}
-              className="w-12 h-12 rounded-lg bg-error/10 border border-error/30 items-center justify-center active:opacity-70"
+              className="h-12 w-12 items-center justify-center rounded-lg border border-error/30 bg-error/10 active:opacity-70"
             >
               <LogOut size={17} color="#FF5C74" />
             </Pressable>
@@ -404,14 +404,14 @@ export default function GroupDetailScreen() {
         {/* Feed grouped by day */}
         <View className="px-md">
           {sections.length === 0 ? (
-            <Text className="text-on-surface-variant py-lg">
+            <Text className="py-lg text-on-surface-variant">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
             <View className="pb-xl">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="text-label-sm text-center uppercase tracking-widest text-on-surface-variant mt-md mb-2 ml-1">
+                  <Text className="mb-2 ml-1 mt-md text-center text-label-sm uppercase tracking-widest text-on-surface-variant">
                     {label}
                   </Text>
                   <View className="flex flex-col gap-2">

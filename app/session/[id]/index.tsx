@@ -69,7 +69,7 @@ export default function SessionDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -77,7 +77,7 @@ export default function SessionDetailScreen() {
         >
           <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Sessão</Text>
+        <Text className="text-title-lg font-bold text-white">Sessão</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
@@ -87,17 +87,13 @@ export default function SessionDetailScreen() {
           <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error || !session || !status ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-md px-lg">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Button
-            label="Tentar novamente"
-            size="sm"
-            onPress={reload}
-          />
+          <Button label="Tentar novamente" size="sm" onPress={reload} />
         </View>
       ) : (
         <ScrollView
@@ -105,14 +101,14 @@ export default function SessionDetailScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Resumo */}
-          <View className="bg-surface-low border border-card-border rounded-2xl p-[18px]">
+          <View className="rounded-2xl border border-card-border bg-surface-low p-[18px]">
             <Text className="text-title-lg font-bold text-on-surface">
               {workoutName}
             </Text>
-            <Text className="text-body-md text-on-surface-variant mt-2">
+            <Text className="mt-2 text-body-md text-on-surface-variant">
               {formatFullDate(session.date)}
             </Text>
-            <View className="flex-row items-center gap-2 mt-3">
+            <View className="mt-3 flex-row items-center gap-2">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
               <Text
                 className="text-label-md font-bold uppercase text-secondary"
@@ -132,12 +128,12 @@ export default function SessionDetailScreen() {
             ].map((stat) => (
               <View
                 key={stat.label}
-                className="flex-1 bg-surface-low border border-card-border rounded-xl p-3 items-center"
+                className="flex-1 items-center rounded-xl border border-card-border bg-surface-low p-3"
               >
                 <Text className="text-title-xl font-extrabold text-on-surface">
                   {stat.value}
                 </Text>
-                <Text className="text-label-sm text-on-surface-variant mt-1">
+                <Text className="mt-1 text-label-sm text-on-surface-variant">
                   {stat.label}
                 </Text>
               </View>
@@ -162,7 +158,7 @@ export default function SessionDetailScreen() {
               return (
                 <View
                   key={exerciseId}
-                  className="bg-surface-low border border-card-border rounded-2xl p-4"
+                  className="rounded-2xl border border-card-border bg-surface-low p-4"
                 >
                   <View className="flex-row items-center justify-between">
                     <Text
@@ -172,14 +168,14 @@ export default function SessionDetailScreen() {
                       Exercício
                     </Text>
                     <Text
-                      className="text-label-md font-semibold text-on-surface flex-1 text-right ml-3"
+                      className="ml-3 flex-1 text-right text-label-md font-semibold text-on-surface"
                       numberOfLines={1}
                     >
                       {exerciseNames[exerciseId] ?? "Exercício"}
                     </Text>
                   </View>
 
-                  <View className="gap-2 mt-3.5">
+                  <View className="mt-3.5 gap-2">
                     {ordered.map((set) => {
                       const isBest = set.id === bestId;
                       return (
@@ -187,7 +183,7 @@ export default function SessionDetailScreen() {
                           key={set.id}
                           className={`flex-row items-center justify-between rounded-xl px-3.5 py-3 ${
                             isBest
-                              ? "bg-primary/10 border border-primary/35"
+                              ? "border border-primary/35 bg-primary/10"
                               : "bg-background"
                           }`}
                         >
@@ -218,7 +214,7 @@ export default function SessionDetailScreen() {
                   </View>
 
                   {best ? (
-                    <View className="flex-row items-center gap-1.5 mt-3">
+                    <View className="mt-3 flex-row items-center gap-1.5">
                       <Trophy size={13} color="#B26CFF" strokeWidth={2} />
                       <Text className="text-label-sm text-outline-variant">
                         Melhor série: {formatSet(best)}

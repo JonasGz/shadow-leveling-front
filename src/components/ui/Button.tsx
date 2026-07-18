@@ -75,23 +75,18 @@ export function Button({
   const isDisabled = disabled || loading;
   // NativeWind doesn't reliably last-wins two conflicting text-<size> classes,
   // so only apply the default size when labelClassName doesn't set its own.
-  const sizeClass = /(^|\s)text-(label|body|title|display|subtitle|button|caption|h[123])/.test(
-    labelClassName,
-  )
-    ? ""
-    : "text-label-md";
+  const sizeClass =
+    /(^|\s)text-(label|body|title|display|subtitle|button|caption|h[123])/.test(
+      labelClassName,
+    )
+      ? ""
+      : "text-label-md";
 
   return (
     <Pressable
       {...props}
       disabled={isDisabled}
-      className={`
-        flex-row items-center justify-center gap-2
-        rounded-lg ${sizePad[size]}
-        ${styles.container}
-        ${fullWidth ? "w-full" : ""}
-        ${isDisabled ? "opacity-50" : ""}
-      `}
+      className={`flex-row items-center justify-center gap-2 rounded-lg ${sizePad[size]} ${styles.container} ${fullWidth ? "w-full" : ""} ${isDisabled ? "opacity-50" : ""} `}
     >
       {loading ? (
         <ActivityIndicator size="small" color={styles.spinner} />

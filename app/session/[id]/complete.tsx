@@ -124,7 +124,7 @@ export default function SessionCompleteScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" color="#c8a3ff" />
       </SafeAreaView>
     );
@@ -132,7 +132,7 @@ export default function SessionCompleteScreen() {
 
   if (error || !session) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
+      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-background px-lg">
         <EmptyState
           icon={TriangleAlert}
           title="Não foi possível carregar o resumo"
@@ -158,7 +158,7 @@ export default function SessionCompleteScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Header de celebração */}
-        <View className="items-center mb-lg">
+        <View className="mb-lg items-center">
           <LinearGradient
             colors={["#B26CFF", "#6E00B3"]}
             start={{ x: 0.32, y: 0.26 }}
@@ -174,10 +174,10 @@ export default function SessionCompleteScreen() {
           >
             <Trophy size={28} color="#FFF" strokeWidth={1.7} />
           </LinearGradient>
-          <Text className="text-title-xl text-secondary uppercase font-extrabold text-center mt-3">
+          <Text className="mt-3 text-center text-title-xl font-extrabold uppercase text-secondary">
             {hasSets ? "Treino Concluído!" : "Treino registrado"}
           </Text>
-          <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest text-center mt-2">
+          <Text className="mt-2 text-center text-label-sm uppercase tracking-widest text-on-surface-variant">
             {hasSets
               ? "Sessão finalizada com sucesso"
               : "Nenhuma série registrada nesta sessão"}
@@ -197,14 +197,14 @@ export default function SessionCompleteScreen() {
               boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.4)",
             }}
           >
-            <Text className="text-label-sm text-white/85 uppercase tracking-widest font-bold">
+            <Text className="text-label-sm font-bold uppercase tracking-widest text-white/85">
               XP Conquistado
             </Text>
-            <View className="flex-row items-end gap-1 mt-2">
-              <Text className="text-title-xxl text-white font-extrabold">
+            <View className="mt-2 flex-row items-end gap-1">
+              <Text className="text-title-xxl font-extrabold text-white">
                 +{earnedXp}
               </Text>
-              <Text className="text-title-md text-white font-bold mb-0.5">
+              <Text className="mb-0.5 text-title-md font-bold text-white">
                 XP
               </Text>
             </View>
@@ -215,7 +215,7 @@ export default function SessionCompleteScreen() {
         <Pressable
           onPress={handlePickPhoto}
           disabled={uploadingPhoto}
-          className="rounded-2xl border border-dashed border-[#FFFFFF1F] bg-surface-low items-center justify-center overflow-hidden active:opacity-70 mt-md"
+          className="mt-md items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#FFFFFF1F] bg-surface-low active:opacity-70"
           style={{ height: 140 }}
         >
           {photoUri ? (
@@ -226,55 +226,55 @@ export default function SessionCompleteScreen() {
           ) : (
             <View className="items-center gap-2 px-md">
               <Camera size={26} color="#6C6971" strokeWidth={1.6} />
-              <Text className="text-label-md text-on-surface-variant uppercase tracking-widest">
+              <Text className="text-label-md uppercase tracking-widest text-on-surface-variant">
                 Adicionar foto do treino
               </Text>
-              <Text className="text-label-sm text-outline-variant text-center">
+              <Text className="text-center text-label-sm text-outline-variant">
                 Aparece para o seu grupo
               </Text>
             </View>
           )}
           {uploadingPhoto ? (
-            <View className="absolute inset-0 bg-black/50 items-center justify-center">
+            <View className="absolute inset-0 items-center justify-center bg-black/50">
               <ActivityIndicator color="#c8a3ff" />
             </View>
           ) : null}
         </Pressable>
         {photoUri && !uploadingPhoto ? (
-          <Pressable onPress={handlePickPhoto} className="items-center mt-sm">
-            <Text className="text-label-sm text-secondary uppercase tracking-widest">
+          <Pressable onPress={handlePickPhoto} className="mt-sm items-center">
+            <Text className="text-label-sm uppercase tracking-widest text-secondary">
               Trocar foto
             </Text>
           </Pressable>
         ) : null}
 
         {/* Stats */}
-        <View className="flex-row gap-2.5 mt-md">
-          <View className="flex-1 bg-surface-low border border-card-border border-l-[3px] border-l-primary rounded-xl p-md">
-            <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+        <View className="mt-md flex-row gap-2.5">
+          <View className="flex-1 rounded-xl border border-l-[3px] border-card-border border-l-primary bg-surface-low p-md">
+            <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
               Volume total
             </Text>
-            <View className="flex-row items-end gap-1 mt-2">
-              <Text className="text-title-xl text-secondary font-extrabold">
+            <View className="mt-2 flex-row items-end gap-1">
+              <Text className="text-title-xl font-extrabold text-secondary">
                 {totalVolume > 0 ? totalVolume.toLocaleString("pt-BR") : "—"}
               </Text>
               {totalVolume > 0 ? (
-                <Text className="text-label-md text-outline-variant font-semibold mb-0.5">
+                <Text className="mb-0.5 text-label-md font-semibold text-outline-variant">
                   kg
                 </Text>
               ) : null}
             </View>
           </View>
 
-          <View className="flex-1 bg-surface-low border border-card-border border-l-[3px] border-l-primary rounded-xl p-md">
-            <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest">
+          <View className="flex-1 rounded-xl border border-l-[3px] border-card-border border-l-primary bg-surface-low p-md">
+            <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
               Séries
             </Text>
-            <View className="flex-row items-end gap-1 mt-2">
-              <Text className="text-title-xl text-secondary font-extrabold">
+            <View className="mt-2 flex-row items-end gap-1">
+              <Text className="text-title-xl font-extrabold text-secondary">
                 {session.sets?.length ?? 0}
               </Text>
-              <Text className="text-label-md text-outline-variant font-semibold mb-0.5">
+              <Text className="mb-0.5 text-label-md font-semibold text-outline-variant">
                 total
               </Text>
             </View>
@@ -282,7 +282,7 @@ export default function SessionCompleteScreen() {
         </View>
 
         {/* Resumo de performance */}
-        <Text className="text-label-sm text-center text-secondary uppercase tracking-widest mt-lg mb-md font-bold">
+        <Text className="mb-md mt-lg text-center text-label-sm font-bold uppercase tracking-widest text-secondary">
           Resumo de performance
         </Text>
 
@@ -297,20 +297,20 @@ export default function SessionCompleteScreen() {
             {summaries.map((ex) => (
               <View
                 key={ex.exerciseId}
-                className="bg-surface-low border border-card-border rounded-xl p-3.5"
+                className="rounded-xl border border-card-border bg-surface-low p-3.5"
               >
                 <View className="flex-row items-center gap-3">
-                  <View className="w-[38px] h-[38px] rounded-[9px] bg-surface-highest items-center justify-center">
+                  <View className="h-[38px] w-[38px] items-center justify-center rounded-[9px] bg-surface-highest">
                     <Dumbbell size={22} color="#B26CFF" strokeWidth={1.8} />
                   </View>
                   <View className="flex-1">
                     <Text
-                      className="text-title-md text-white font-bold"
+                      className="text-title-md font-bold text-white"
                       numberOfLines={1}
                     >
                       {ex.name}
                     </Text>
-                    <Text className="text-label-md text-outline-variant mt-1">
+                    <Text className="mt-1 text-label-md text-outline-variant">
                       {ex.setsCount}{" "}
                       {ex.setsCount === 1
                         ? "série realizada"
@@ -319,31 +319,31 @@ export default function SessionCompleteScreen() {
                   </View>
                 </View>
 
-                <View className="flex-row items-center justify-between border border-dashed border-[#FFFFFF1F] rounded-lg px-3 py-2.5 mt-3">
-                  <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
+                <View className="mt-3 flex-row items-center justify-between rounded-lg border border-dashed border-[#FFFFFF1F] px-3 py-2.5">
+                  <Text className="text-label-sm font-bold uppercase tracking-widest text-secondary">
                     Melhor série
                   </Text>
                   {ex.isTime ? (
-                    <Text className="text-title-md text-white font-extrabold">
+                    <Text className="text-title-md font-extrabold text-white">
                       {ex.bestDuration ?? 0}
-                      <Text className="text-label-sm text-outline-variant font-semibold">
+                      <Text className="text-label-sm font-semibold text-outline-variant">
                         {" "}
                         s
                       </Text>
                     </Text>
                   ) : (
                     <View className="flex-row items-center gap-3">
-                      <Text className="text-title-md text-white font-extrabold">
+                      <Text className="text-title-md font-extrabold text-white">
                         {ex.bestWeight ?? 0}
-                        <Text className="text-label-sm text-outline-variant font-semibold">
+                        <Text className="text-label-sm font-semibold text-outline-variant">
                           {" "}
                           kg
                         </Text>
                       </Text>
-                      <View className="w-px h-[18px] bg-[#FFFFFF1F]" />
-                      <Text className="text-title-md text-white font-extrabold">
+                      <View className="h-[18px] w-px bg-[#FFFFFF1F]" />
+                      <Text className="text-title-md font-extrabold text-white">
                         {ex.bestReps ?? 0}
-                        <Text className="text-label-sm text-outline-variant font-semibold">
+                        <Text className="text-label-sm font-semibold text-outline-variant">
                           {" "}
                           reps
                         </Text>
@@ -355,11 +355,10 @@ export default function SessionCompleteScreen() {
             ))}
           </View>
         )}
-
       </ScrollView>
 
       {/* Barra de ação fixa */}
-      <View className="absolute bottom-0 left-0 right-0 p-md bg-surface-low border-t border-outline-variant">
+      <View className="absolute bottom-0 left-0 right-0 border-t border-outline-variant bg-surface-low p-md">
         <Button
           label="Concluir"
           fullWidth

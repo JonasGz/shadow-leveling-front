@@ -77,7 +77,7 @@ export default function EmailAuthScreen() {
         >
           {step === "email" ? (
             <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">
+              <Text className="text-headline-mobile font-bold text-on-surface">
                 Entrar com e-mail
               </Text>
               <Text className="text-body-md text-on-surface-variant">
@@ -101,7 +101,7 @@ export default function EmailAuthScreen() {
             </View>
           ) : (
             <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">
+              <Text className="text-headline-mobile font-bold text-on-surface">
                 Digite o código
               </Text>
               <Text className="text-body-md text-on-surface-variant">
@@ -120,12 +120,12 @@ export default function EmailAuthScreen() {
                 loading={loading}
                 fullWidth
               />
-              <View className="flex-row justify-center gap-1 mt-1">
+              <View className="mt-1 flex-row justify-center gap-1">
                 <Text className="text-body-md text-on-surface-variant">
                   Não recebeu?
                 </Text>
                 <Pressable onPress={sendCode} disabled={loading}>
-                  <Text className="text-body-md text-secondary font-semibold">
+                  <Text className="text-body-md font-semibold text-secondary">
                     Reenviar
                   </Text>
                 </Pressable>

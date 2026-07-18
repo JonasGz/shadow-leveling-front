@@ -25,7 +25,7 @@ export function SessionClock({ running }: SessionClockProps) {
   }, [running]);
 
   return (
-    <View className="flex-row items-center gap-1 mt-1">
+    <View className="mt-1 flex-row items-center gap-1">
       <Clock size={15} color="#908D94" />
       <Text className="text-label-md text-on-surface-variant">
         {formatDuration(elapsed)}

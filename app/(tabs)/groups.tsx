@@ -34,7 +34,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       {shown.map((url, i) => (
         <View
           key={i}
-          className={`w-6 h-6 rounded-full overflow-hidden border-[1.5px] border-surface-container bg-surface-high ${
+          className={`h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-surface-container bg-surface-high ${
             i > 0 ? "-ml-2" : ""
           }`}
         >
@@ -47,7 +47,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       ))}
       {rest > 0 && (
         <View
-          className={`w-6 h-6 rounded-full border-[1.5px] border-surface-container bg-primary/25 items-center justify-center ${
+          className={`h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-surface-container bg-primary/25 ${
             shown.length > 0 ? "-ml-2" : ""
           }`}
         >
@@ -94,13 +94,13 @@ export default function GroupsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16">
-        <Text className="text-title-xxl text-white font-bold">Grupos</Text>
+      <View className="h-16 flex-row items-center justify-between px-md">
+        <Text className="text-title-xxl font-bold text-white">Grupos</Text>
         <Pressable
           onPress={() => setCreating(true)}
-          className="w-14 h-14 items-center justify-center rounded-full border bg-surface-container border-card-border active:bg-primary"
+          className="h-14 w-14 items-center justify-center rounded-full border border-card-border bg-surface-container active:bg-primary"
         >
-          <Text className="text-primary text-3xl">＋</Text>
+          <Text className="text-3xl text-primary">＋</Text>
         </Pressable>
       </View>
 
@@ -130,7 +130,7 @@ export default function GroupsScreen() {
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative bg-surface-container rounded-xl overflow-hidden pl-5 pr-md py-md flex-row items-center justify-between gap-3 active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-xl bg-surface-container py-md pl-5 pr-md active:opacity-80"
                 >
                   <LinearGradient
                     colors={["#B26CFF", "#8113D3"]}
@@ -143,10 +143,10 @@ export default function GroupsScreen() {
                     }}
                   />
                   <View className="flex-1">
-                    <Text className="text-title-md text-on-surface font-bold">
+                    <Text className="text-title-md font-bold text-on-surface">
                       {g.name}
                     </Text>
-                    <Text className="text-label-sm text-on-surface-variant mt-1">
+                    <Text className="mt-1 text-label-sm text-on-surface-variant">
                       Código:{" "}
                       <Text className="font-semibold text-on-surface">
                         {g.invite_code}
@@ -176,10 +176,10 @@ export default function GroupsScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 bg-black/70 items-center justify-center px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
-            <Text className="text-title-md text-on-surface font-bold">
+          <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
+            <Text className="text-title-md font-bold text-on-surface">
               Criar novo grupo
             </Text>
             <Input
@@ -190,16 +190,16 @@ export default function GroupsScreen() {
               maxLength={100}
               autoFocus
             />
-            <View className="flex-row gap-md mt-sm">
+            <View className="mt-sm flex-row gap-md">
               <Pressable
                 onPress={() => {
                   setName("");
                   setCreating(false);
                 }}
                 disabled={busy}
-                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase">
+                <Text className="text-label-md uppercase text-on-surface-variant">
                   Cancelar
                 </Text>
               </Pressable>

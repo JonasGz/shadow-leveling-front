@@ -14,8 +14,12 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
     <View className="gap-1.5">
       <View
         style={focused && !error ? FOCUS_RING : undefined}
-        className={`bg-surface-low border rounded-xl px-5 py-4 flex-row items-center gap-sm ${
-          error ? "border-error" : focused ? "border-primary" : "border-[#FFFFFF1F]"
+        className={`flex-row items-center gap-sm rounded-xl border bg-surface-low px-5 py-4 ${
+          error
+            ? "border-error"
+            : focused
+              ? "border-primary"
+              : "border-[#FFFFFF1F]"
         }`}
       >
         <Search size={20} color="#6c6971" />

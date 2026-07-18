@@ -41,14 +41,14 @@ const ExerciseRow = memo(function ExerciseRow({
   return (
     <Pressable
       onPress={() => onSelect(exercise)}
-      className="bg-surface-low border border-card-border rounded-xl text-on-surface-variant px-md py-md flex-row items-center justify-between active:opacity-80"
+      className="flex-row items-center justify-between rounded-xl border border-card-border bg-surface-low px-md py-md text-on-surface-variant active:opacity-80"
     >
       <View className="flex-1">
         <Text className="text-body-lg font-semibold text-on-surface">
           {exercise.name}
         </Text>
       </View>
-      <Text className="text-secondary text-title-lg">+</Text>
+      <Text className="text-title-lg text-secondary">+</Text>
     </Pressable>
   );
 });
@@ -182,7 +182,7 @@ export default function AddExerciseScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
           onPress={() =>
             stage === "configure" ? setStage("search") : router.back()
@@ -192,7 +192,7 @@ export default function AddExerciseScreen() {
         >
           <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">
+        <Text className="text-title-lg font-bold text-white">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
         </Text>
         {/* espaçador para manter o título centralizado */}
@@ -254,8 +254,8 @@ export default function AddExerciseScreen() {
           )}
 
           {showCreateOption && (
-            <View className="py-sm gap-sm pb-10">
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant text-center">
+            <View className="gap-sm py-sm pb-10">
+              <Text className="text-center text-label-sm uppercase tracking-widest text-on-surface-variant">
                 {`Criar "${query.trim()}" como:`}
               </Text>
               <View className="flex-row gap-sm">
@@ -286,12 +286,12 @@ export default function AddExerciseScreen() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1 justify-start"
         >
-          <View className="flex-1 px-md gap-md">
-            <View className="bg-surface-low border border-card-border rounded-2xl p-md px-lg">
-              <Text className="text-title-md text-on-surface font-semibold">
+          <View className="flex-1 gap-md px-md">
+            <View className="rounded-2xl border border-card-border bg-surface-low p-md px-lg">
+              <Text className="text-title-md font-semibold text-on-surface">
                 {selected?.name}
               </Text>
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-1">
+              <Text className="mt-1 text-label-sm uppercase tracking-widest text-on-surface-variant">
                 {isTimeBased ? "Baseado em tempo" : "Baseado em repetições"} ·{" "}
                 {selected?.unit}
               </Text>

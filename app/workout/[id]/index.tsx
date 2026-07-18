@@ -38,11 +38,11 @@ function repsLabel(ex: WorkoutExercise): string {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-1 bg-surface-low border border-card-border rounded-xl p-md items-center">
-      <Text className="text-title-xl text-on-surface font-extrabold">
+    <View className="flex-1 items-center rounded-xl border border-card-border bg-surface-low p-md">
+      <Text className="text-title-xl font-extrabold text-on-surface">
         {value}
       </Text>
-      <Text className="text-label-md text-on-surface-variant mt-1.5">
+      <Text className="mt-1.5 text-label-md text-on-surface-variant">
         {label}
       </Text>
     </View>
@@ -59,21 +59,21 @@ function ExerciseCard({
   onDelete: (item: WorkoutExercise) => void;
 }) {
   return (
-    <View className="bg-surface-low border border-card-border rounded-xl px-md py-md flex-row items-center gap-3">
-      <View className="w-10 h-10 rounded-[9px] bg-surface-highest items-center justify-center">
-        <Text className="text-label-md text-outline font-bold">
+    <View className="flex-row items-center gap-3 rounded-xl border border-card-border bg-surface-low px-md py-md">
+      <View className="h-10 w-10 items-center justify-center rounded-[9px] bg-surface-highest">
+        <Text className="text-label-md font-bold text-outline">
           {index + 1}
         </Text>
       </View>
 
       <View className="flex-1 items-center">
         <Text
-          className="text-title-md text-[#ECECEE] font-semibold"
+          className="text-title-md font-semibold text-[#ECECEE]"
           numberOfLines={1}
         >
           {item.exercise.name}
         </Text>
-        <Text className="text-body-sm font-light text-outline mt-0.5">
+        <Text className="mt-0.5 text-body-sm font-light text-outline">
           {repsLabel(item)}
         </Text>
       </View>
@@ -81,9 +81,9 @@ function ExerciseCard({
       <Pressable
         onPress={() => onDelete(item)}
         hitSlop={8}
-        className="w-8 h-8 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
+        className="h-8 w-8 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
       >
-        <Text className="text-error text-base font-bold">✕</Text>
+        <Text className="text-base font-bold text-error">✕</Text>
       </Pressable>
     </View>
   );
@@ -134,7 +134,7 @@ export default function WorkoutDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Top App Bar */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -142,7 +142,7 @@ export default function WorkoutDetailScreen() {
         >
           <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Treino</Text>
+        <Text className="text-title-lg font-bold text-white">Treino</Text>
         <IconButton
           icon={Play}
           variant="primary"
@@ -155,7 +155,7 @@ export default function WorkoutDetailScreen() {
           <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-md px-lg">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -171,12 +171,12 @@ export default function WorkoutDetailScreen() {
           {/* Status + dias */}
           <View className="flex-row items-center gap-2">
             <View
-              className={`flex-row items-center gap-1.5 px-3 py-1 rounded-full ${
+              className={`flex-row items-center gap-1.5 rounded-full px-3 py-1 ${
                 workout?.active ? "bg-success/15" : "bg-surface-variant"
               }`}
             >
               <View
-                className={`w-2 h-2 rounded-full ${
+                className={`h-2 w-2 rounded-full ${
                   workout?.active ? "bg-success" : "bg-outline"
                 }`}
               />
@@ -197,7 +197,7 @@ export default function WorkoutDetailScreen() {
 
           {/* Título + descrição */}
           <View className="gap-1">
-            <Text className="text-title-xl text-center text-white font-bold">
+            <Text className="text-center text-title-xl font-bold text-white">
               {workout?.name ?? "Treino"}
             </Text>
             {workout?.description ? (
@@ -230,7 +230,7 @@ export default function WorkoutDetailScreen() {
             />
           ) : (
             <>
-              <Text className="text-title-md text-center text-white font-bold mt-sm">
+              <Text className="mt-sm text-center text-title-md font-bold text-white">
                 Exercícios
               </Text>
               <View className="gap-sm">
@@ -247,7 +247,7 @@ export default function WorkoutDetailScreen() {
                   ))}
               </View>
 
-              <View className="items-center gap-sm mt-sm">
+              <View className="mt-sm items-center gap-sm">
                 <IconButton
                   icon={Plus}
                   onPress={() => router.push(`/workout/${id}/add-exercise`)}

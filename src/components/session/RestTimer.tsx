@@ -36,7 +36,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
 
   return (
     <View
-      className="absolute bottom-8 self-center bg-surface-high border border-secondary/40 rounded-2xl pl-3 pr-2.5 py-2.5 flex-row items-center gap-3"
+      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-secondary/40 bg-surface-high py-2.5 pl-3 pr-2.5"
       style={{
         left: 0,
         right: 0,
@@ -61,10 +61,10 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         <Timer size={20} color="#FFF" />
       </LinearGradient>
       <View className="flex-1">
-        <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest font-bold">
+        <Text className="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
           Descanso
         </Text>
-        <Text className="text-title-md text-secondary font-bold leading-none mt-0.5">
+        <Text className="mt-0.5 text-title-md font-bold leading-none text-secondary">
           {formatDuration(remaining)}
         </Text>
       </View>
@@ -72,7 +72,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Adicionar 15 segundos ao descanso"
         onPress={() => setRemaining((r) => r + 15)}
-        className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-xl border border-secondary/25 bg-surface-lowest active:opacity-70"
       >
         <Plus size={16} color="#B26CFF" strokeWidth={2.5} />
       </Pressable>
@@ -80,7 +80,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Encerrar descanso"
         onPress={onDismiss}
-        className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-xl border border-secondary/25 bg-surface-lowest active:opacity-70"
       >
         <X size={16} color="#B26CFF" strokeWidth={2.5} />
       </Pressable>

@@ -44,7 +44,7 @@ export const sessionsService = {
     const { data } = await api.post<WorkoutSession>(
       `/workout-sessions/${id}/photo`,
       buildImageForm(uri),
-      { headers: { "Content-Type": "multipart/form-data" } }
+      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return data;
   },
@@ -56,19 +56,19 @@ export const sessionsService = {
     return data;
   },
 
-  async missed(params: { from?: string; to?: string } = {}): Promise<
-    MissedWorkout[]
-  > {
+  async missed(
+    params: { from?: string; to?: string } = {},
+  ): Promise<MissedWorkout[]> {
     const { data } = await api.get<MissedWorkout[]>(
       "/workout-sessions/missed",
-      { params }
+      { params },
     );
     return data;
   },
 
   async get(id: string): Promise<WorkoutSessionDetail> {
     const { data } = await api.get<WorkoutSessionDetail>(
-      `/workout-sessions/${id}`
+      `/workout-sessions/${id}`,
     );
     // O backend pode omitir/retornar null em `sets` quando a sessão
     // não tem séries registradas. Normaliza para sempre ser um array.
@@ -77,19 +77,18 @@ export const sessionsService = {
 
   async updateStatus(
     id: string,
-    status: SessionStatus
+    status: SessionStatus,
   ): Promise<WorkoutSession> {
-    const { data } = await api.put<WorkoutSession>(
-      `/workout-sessions/${id}`,
-      { status }
-    );
+    const { data } = await api.put<WorkoutSession>(`/workout-sessions/${id}`, {
+      status,
+    });
     return data;
   },
 
   async addSet(sessionId: string, input: AddSetInput): Promise<ExerciseSet> {
     const { data } = await api.post<ExerciseSet>(
       `/workout-sessions/${sessionId}/sets`,
-      input
+      input,
     );
     return data;
   },
@@ -97,11 +96,11 @@ export const sessionsService = {
   async updateSet(
     sessionId: string,
     setId: string,
-    input: UpdateSetInput
+    input: UpdateSetInput,
   ): Promise<ExerciseSet> {
     const { data } = await api.put<ExerciseSet>(
       `/workout-sessions/${sessionId}/sets/${setId}`,
-      input
+      input,
     );
     return data;
   },
@@ -113,7 +112,7 @@ export const sessionsService = {
   // Última sessão COMPLETA do treino, com os sets — base do autopreenchimento
   // e da dica de progressão. null se o treino nunca foi concluído.
   async lastCompletedDetail(
-    workoutId: string
+    workoutId: string,
   ): Promise<WorkoutSessionDetail | null> {
     const sessions = await sessionsService.list({ workout_id: workoutId });
     const last = sessions

@@ -58,42 +58,42 @@ export const ExercisePage = memo(function ExercisePage({
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="bg-surface-low border border-card-border rounded-2xl overflow-hidden">
-        <View className="p-lg bg-primary/20">
+      <View className="overflow-hidden rounded-2xl border border-card-border bg-surface-low">
+        <View className="bg-primary/20 p-lg">
           {swapped && (
-            <View className="flex-row items-center gap-1.5 mb-2 bg-secondary/20 border border-secondary/40 rounded-full px-2.5 py-1 self-start">
+            <View className="mb-2 flex-row items-center gap-1.5 self-start rounded-full border border-secondary/40 bg-secondary/20 px-2.5 py-1">
               <RotateCcw size={11} color="#B26CFF" />
-              <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
+              <Text className="text-label-sm font-bold uppercase tracking-widest text-secondary">
                 Substituído p/ hoje
               </Text>
             </View>
           )}
           <Text
-            className="text-title-xl text-white font-extrabold"
+            className="text-title-xl font-extrabold text-white"
             numberOfLines={2}
           >
             {effective.name}
           </Text>
           {swapped && (
-            <Text className="text-label-sm text-white/50 mt-1 line-through">
+            <Text className="mt-1 text-label-sm text-white/50 line-through">
               {we.exercise.name}
             </Text>
           )}
-          <View className="flex-row items-center gap-2 mt-2.5 flex-wrap">
-            <View className="bg-black/30 px-2.5 py-1 rounded-full">
-              <Text className="text-[#E5D6FF] text-label-sm uppercase tracking-widest font-bold">
+          <View className="mt-2.5 flex-row flex-wrap items-center gap-2">
+            <View className="rounded-full bg-black/30 px-2.5 py-1">
+              <Text className="text-label-sm font-bold uppercase tracking-widest text-[#E5D6FF]">
                 {timed ? "Tempo" : "Força"}
               </Text>
             </View>
-            <Text className="text-on-surface-variant text-label-sm font-semibold">
+            <Text className="text-label-sm font-semibold text-on-surface-variant">
               {we.sets} séries
               {repsRangeLabel(we, timed)}
             </Text>
             <Pressable
               onPress={onRequestSwap}
-              className="bg-surface-lowest/60 border border-[#FFFFFF29] px-2.5 py-1 rounded-full active:opacity-70"
+              className="rounded-full border border-[#FFFFFF29] bg-surface-lowest/60 px-2.5 py-1 active:opacity-70"
             >
-              <Text className="text-white/90 text-label-sm uppercase tracking-widest font-bold">
+              <Text className="text-label-sm font-bold uppercase tracking-widest text-white/90">
                 Trocar (máquina ocupada)
               </Text>
             </Pressable>
@@ -103,9 +103,9 @@ export const ExercisePage = memo(function ExercisePage({
         {/* Dica de progressão (Diferencial 2): meta discreta no topo do
             exercício, baseada na última sessão. */}
         {hint && (
-          <View className="flex-row items-center gap-2 px-lg pt-3 pb-1">
+          <View className="flex-row items-center gap-2 px-lg pb-1 pt-3">
             <TrendingUp size={15} color="#5CE1E6" />
-            <Text className="flex-1 text-label-md text-info font-semibold">
+            <Text className="flex-1 text-label-md font-semibold text-info">
               {hint.text}
             </Text>
           </View>

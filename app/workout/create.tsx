@@ -81,7 +81,7 @@ export default function CreateWorkoutScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -89,7 +89,7 @@ export default function CreateWorkoutScreen() {
         >
           <ChevronLeft size={22} color="#DCDCDD" />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Criar treino</Text>
+        <Text className="text-title-lg font-bold text-white">Criar treino</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
@@ -138,7 +138,7 @@ export default function CreateWorkoutScreen() {
           />
 
           <View className="gap-1.5">
-            <Text className="text-label-md uppercase tracking-widest text-on-surface-variant text-center">
+            <Text className="text-center text-label-md uppercase tracking-widest text-on-surface-variant">
               Dias da semana
             </Text>
             <View className="flex-row flex-wrap gap-sm">
@@ -148,10 +148,10 @@ export default function CreateWorkoutScreen() {
                   <Pressable
                     key={d.value}
                     onPress={() => toggleDay(d.value)}
-                    className={`rounded-full px-4 py-2.5 border active:opacity-70 ${
+                    className={`rounded-full border px-4 py-2.5 active:opacity-70 ${
                       active
                         ? "bg-primary"
-                        : "bg-transparent border-outline-variant"
+                        : "border-outline-variant bg-transparent"
                     }`}
                   >
                     <Text
@@ -177,7 +177,7 @@ export default function CreateWorkoutScreen() {
               loading={loading}
               fullWidth
             />
-            <Text className="text-label-sm text-center mt-2 text-outline-variant">
+            <Text className="mt-2 text-center text-label-sm text-outline-variant">
               Você poderá adicionar exercícios no próximo passo.
             </Text>
           </View>

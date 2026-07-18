@@ -22,7 +22,8 @@ export interface Session {
 
 // Tasks
 export type TaskLevel = "easy" | "medium" | "hard" | "no_rank";
-export type RecurrenceType = "one_time" | "daily" | "weekly" | "monthly" | "custom";
+export type RecurrenceType =
+  "one_time" | "daily" | "weekly" | "monthly" | "custom";
 export type DayOfWeek =
   | "sunday"
   | "monday"
@@ -181,12 +182,7 @@ export interface WeeklySummary {
 
 // Nivelamento / XP
 export type Rank =
-  | "E-Rank"
-  | "D-Rank"
-  | "C-Rank"
-  | "B-Rank"
-  | "A-Rank"
-  | "S-Rank";
+  "E-Rank" | "D-Rank" | "C-Rank" | "B-Rank" | "A-Rank" | "S-Rank";
 
 export interface UserLevel {
   level: number;

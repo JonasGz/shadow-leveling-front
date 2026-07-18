@@ -24,7 +24,9 @@ export interface ListSubstitutesParams {
 
 export const exercisesService = {
   async list(params: ListExercisesParams = {}): Promise<PaginatedExercises> {
-    const { data } = await api.get<PaginatedExercises>("/exercises", { params });
+    const { data } = await api.get<PaginatedExercises>("/exercises", {
+      params,
+    });
     return data;
   },
 

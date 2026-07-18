@@ -100,16 +100,16 @@ export default function AuthScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background px-lg justify-center">
+    <SafeAreaView className="flex-1 justify-center bg-background px-lg">
       <View className="items-center">
-        <Text className="text-display-xxl text-primary font-extrabold">
+        <Text className="text-display-xxl font-extrabold text-primary">
           SHADOW
         </Text>
-        <Text className="text-display-xxl text-on-surface font-extrabold -mt-2">
+        <Text className="-mt-2 text-display-xxl font-extrabold text-on-surface">
           LEVELING
         </Text>
         <Text
-          className="text-label-md font-semibold uppercase text-on-surface-variant mt-4"
+          className="mt-4 text-label-md font-semibold uppercase text-on-surface-variant"
           style={{ letterSpacing: 2 }}
         >
           Entre para evoluir

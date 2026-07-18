@@ -63,7 +63,7 @@ export const groupsService = {
     const { data } = await api.patch<Group>(
       `/groups/${id}/cover`,
       buildImageForm(uri),
-      { headers: multipartHeaders }
+      { headers: multipartHeaders },
     );
     return data;
   },
@@ -74,10 +74,10 @@ export const groupsService = {
 
   async sessionDetail(
     groupId: string,
-    sessionId: string
+    sessionId: string,
   ): Promise<SessionSocialDetail> {
     const { data } = await api.get<SessionSocialDetail>(
-      `/groups/${groupId}/sessions/${sessionId}`
+      `/groups/${groupId}/sessions/${sessionId}`,
     );
     return data;
   },
@@ -86,21 +86,21 @@ export const groupsService = {
   async setReaction(
     groupId: string,
     sessionId: string,
-    emoji: string
+    emoji: string,
   ): Promise<SessionSocialDetail> {
     const { data } = await api.put<SessionSocialDetail>(
       `/groups/${groupId}/sessions/${sessionId}/reaction`,
-      { emoji }
+      { emoji },
     );
     return data;
   },
 
   async removeReaction(
     groupId: string,
-    sessionId: string
+    sessionId: string,
   ): Promise<SessionSocialDetail> {
     const { data } = await api.delete<SessionSocialDetail>(
-      `/groups/${groupId}/sessions/${sessionId}/reaction`
+      `/groups/${groupId}/sessions/${sessionId}/reaction`,
     );
     return data;
   },
@@ -108,11 +108,11 @@ export const groupsService = {
   async comments(
     groupId: string,
     sessionId: string,
-    cursor?: string
+    cursor?: string,
   ): Promise<CommentPage> {
     const { data } = await api.get<CommentPage>(
       `/groups/${groupId}/sessions/${sessionId}/comments`,
-      { params: cursor ? { cursor } : {} }
+      { params: cursor ? { cursor } : {} },
     );
     return data;
   },
@@ -120,11 +120,11 @@ export const groupsService = {
   async addComment(
     groupId: string,
     sessionId: string,
-    body: string
+    body: string,
   ): Promise<SessionComment> {
     const { data } = await api.post<SessionComment>(
       `/groups/${groupId}/sessions/${sessionId}/comments`,
-      { body }
+      { body },
     );
     return data;
   },
@@ -132,10 +132,10 @@ export const groupsService = {
   async deleteComment(
     groupId: string,
     sessionId: string,
-    commentId: string
+    commentId: string,
   ): Promise<void> {
     await api.delete(
-      `/groups/${groupId}/sessions/${sessionId}/comments/${commentId}`
+      `/groups/${groupId}/sessions/${sessionId}/comments/${commentId}`,
     );
   },
 };

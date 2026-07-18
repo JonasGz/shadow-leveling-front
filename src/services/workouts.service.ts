@@ -51,11 +51,11 @@ export const workoutsService = {
 
   async addExercise(
     workoutId: string,
-    input: AddExerciseInput
+    input: AddExerciseInput,
   ): Promise<WorkoutExercise> {
     const { data } = await api.post<WorkoutExercise>(
       `/workouts/${workoutId}/exercises`,
-      input
+      input,
     );
     return data;
   },

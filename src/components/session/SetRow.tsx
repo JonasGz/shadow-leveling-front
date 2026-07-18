@@ -49,8 +49,8 @@ export const SetRow = memo(function SetRow({
 
   return (
     <View
-      className={`flex-row gap-2 items-center px-2 py-4 mt-1 rounded-xl border ${
-        isActiveRow ? "bg-primary/10 border-primary/50" : "border-transparent"
+      className={`mt-1 flex-row items-center gap-2 rounded-xl border px-2 py-4 ${
+        isActiveRow ? "border-primary/50 bg-primary/10" : "border-transparent"
       }`}
     >
       <Text
@@ -91,9 +91,9 @@ export const SetRow = memo(function SetRow({
         <Pressable
           onPress={() => onToggleDone(index)}
           disabled={set.done}
-          className={`w-[22px] h-[22px] rounded-full items-center justify-center border-2 ${
+          className={`h-[22px] w-[22px] items-center justify-center rounded-full border-2 ${
             set.done
-              ? "bg-secondary/20 border-secondary"
+              ? "border-secondary bg-secondary/20"
               : isActiveRow
                 ? "border-outline active:border-primary"
                 : "border-[#3A393E]"

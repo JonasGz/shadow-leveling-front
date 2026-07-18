@@ -22,7 +22,7 @@ um resumo do que já está **pronto e funcional** para o Flutter consumir:
 | **Métricas do Dia**   | Dashboard com missões do dia (tarefas + treinos, todos os dias da semana)                     |
 | **Nivelamento**       | XP, níveis, ranks (E→S) e streak por conclusão de treino                                      |
 | **Grupos**            | Grupos por código de convite, ranking semanal (1 ponto/dia), feed com foto, capa opcional     |
-| **Foto de Treino**    | Foto opcional (multipart) anexada à sessão, exibida no feed dos grupos                         |
+| **Foto de Treino**    | Foto opcional (multipart) anexada à sessão, exibida no feed dos grupos                        |
 
 ---
 
@@ -1218,7 +1218,7 @@ Membros ordenados por pontos da semana (desc). `name` = nickname (ou email).
 ```json
 [
   { "user_id": "uuid", "name": "Sung", "points": 5 },
-  { "user_id": "uuid", "name": "Cha",  "points": 3 }
+  { "user_id": "uuid", "name": "Cha", "points": 3 }
 ]
 ```
 
@@ -1267,7 +1267,10 @@ Post de um treino visto dentro do grupo. Requer membro do grupo (`403`); a sess�
   "workout_name": "Ascensão do Monarca — Pernas",
   "photo_url": "https://.../photo.jpg",
   "created_at": "2026-07-10T12:00:00Z",
-  "reactions": [ { "emoji": "🔥", "count": 4 }, { "emoji": "💪", "count": 2 } ],
+  "reactions": [
+    { "emoji": "🔥", "count": 4 },
+    { "emoji": "💪", "count": 2 }
+  ],
   "my_reaction": "🔥",
   "comment_count": 2
 }
@@ -1345,9 +1348,9 @@ DELETE /groups/{id}/leave
 POST /me/push-token
 ```
 
-| Campo      | Tipo   | Obrigatório | Valores            |
-| ---------- | ------ | ----------- | ------------------ |
-| `token`    | string | sim         | Expo push token    |
+| Campo      | Tipo   | Obrigatório | Valores               |
+| ---------- | ------ | ----------- | --------------------- |
+| `token`    | string | sim         | Expo push token       |
 | `platform` | string | não         | `ios`,`android`,`web` |
 
 **Remover token** (no logout, `204 No Content`):
@@ -1398,61 +1401,61 @@ Retorna a especificação OpenAPI 3.0 em YAML.
 
 # Resumo de Endpoints para o Flutter
 
-| Método   | Endpoint                              | Auth | Descrição                      |
-| -------- | ------------------------------------- | ---- | ------------------------------ |
-| `POST`   | `/auth/register`                      | —    | Criar conta (retorna token)    |
-| `POST`   | `/auth/login`                         | —    | Login (retorna token)          |
-| `GET`    | `/auth/me`                            | sim  | Dados do usuário logado        |
-| `PATCH`  | `/auth/me`                            | sim  | Atualizar nickname             |
-| `POST`   | `/auth/logout`                        | sim  | Logout                         |
-| `GET`    | `/auth/sessions`                      | sim  | Listar sessões                 |
-| `DELETE` | `/auth/sessions/{id}`                 | sim  | Revogar sessão                 |
-| `POST`   | `/tasks`                              | sim  | Criar tarefa                   |
-| `GET`    | `/tasks/day`                          | sim  | Tarefas do dia                 |
-| `GET`    | `/tasks/uncompleted`                  | sim  | Tarefas pendentes do dia       |
-| `GET`    | `/tasks/month`                        | sim  | Tarefas do mês                 |
-| `PATCH`  | `/tasks/{id}/complete`                | sim  | Concluir tarefa                |
-| `GET`    | `/exercises`                          | —    | Listar exercícios              |
-| `GET`    | `/exercises/{id}`                     | —    | Detalhes de um exercício       |
-| `POST`   | `/exercises`                          | sim  | Criar exercício                |
-| `GET`    | `/workouts`                           | sim  | Listar workouts                |
-| `POST`   | `/workouts`                           | sim  | Criar workout                  |
-| `GET`    | `/workouts/{id}`                      | sim  | Detalhes do workout            |
-| `PUT`    | `/workouts/{id}`                      | sim  | Atualizar workout              |
-| `DELETE` | `/workouts/{id}`                      | sim  | Deletar workout                |
-| `POST`   | `/workouts/{id}/exercises`            | sim  | Adicionar exercício ao workout |
-| `PUT`    | `/workouts/{id}/exercises/{weId}`     | sim  | Atualizar exercício do workout |
-| `PATCH`  | `/workouts/{id}/exercises/reorder`    | sim  | Reordenar exercícios           |
-| `DELETE` | `/workouts/{id}/exercises/{weId}`     | sim  | Remover exercício do workout   |
-| `GET`    | `/workouts/{id}/progress`             | sim  | Histórico de progresso         |
-| `GET`    | `/workout-sessions`                   | sim  | Listar sessões de treino       |
-| `POST`   | `/workout-sessions`                   | sim  | Criar sessão de treino         |
-| `GET`    | `/workout-sessions/{id}`              | sim  | Detalhes da sessão             |
-| `PUT`    | `/workout-sessions/{id}`              | sim  | Atualizar status da sessão     |
-| `GET`    | `/workout-sessions/missed`            | sim  | Treinos perdidos               |
-| `POST`   | `/workout-sessions/{id}/sets`         | sim  | Registrar set                  |
-| `POST`   | `/workout-sessions/{id}/photo`        | sim  | Anexar foto (multipart)        |
-| `PUT`    | `/workout-sessions/{id}/sets/{setId}` | sim  | Atualizar set                  |
-| `DELETE` | `/workout-sessions/{id}/sets/{setId}` | sim  | Deletar set                    |
-| `GET`    | `/user-metrics/today`                 | sim  | Dashboard do dia               |
-| `GET`    | `/me/level`                           | sim  | XP, nível, rank e streak       |
-| `POST`   | `/groups`                             | sim  | Criar grupo                    |
-| `GET`    | `/groups`                             | sim  | Listar meus grupos             |
-| `POST`   | `/groups/join`                        | sim  | Entrar por código              |
-| `GET`    | `/groups/{id}`                        | sim  | Detalhe (header + scores)      |
-| `GET`    | `/groups/{id}/ranking`                | sim  | Ranking semanal                |
-| `GET`    | `/groups/{id}/feed`                   | sim  | Feed do grupo (cursor)         |
-| `GET`    | `/groups/{id}/sessions/{sid}`         | sim  | Detalhe da sessão (post social)|
-| `PUT`    | `/groups/{id}/sessions/{sid}/reaction`| sim  | Reagir (emoji, toggle)         |
-| `DELETE` | `/groups/{id}/sessions/{sid}/reaction`| sim  | Remover reação                 |
-| `GET`    | `/groups/{id}/sessions/{sid}/comments`| sim  | Listar comentários (cursor)    |
-| `POST`   | `/groups/{id}/sessions/{sid}/comments`| sim  | Comentar                       |
-| `DELETE` | `/groups/{id}/sessions/{sid}/comments/{cid}` | sim | Remover próprio comentário |
-| `PATCH`  | `/groups/{id}/cover`                  | sim  | Definir capa (multipart, owner)|
-| `DELETE` | `/groups/{id}/leave`                  | sim  | Sair do grupo                  |
-| `POST`   | `/me/push-token`                      | sim  | Registrar token de push        |
-| `DELETE` | `/me/push-token`                      | sim  | Remover token de push          |
-| `GET`    | `/health`                             | —    | Status da API                  |
+| Método   | Endpoint                                     | Auth | Descrição                       |
+| -------- | -------------------------------------------- | ---- | ------------------------------- |
+| `POST`   | `/auth/register`                             | —    | Criar conta (retorna token)     |
+| `POST`   | `/auth/login`                                | —    | Login (retorna token)           |
+| `GET`    | `/auth/me`                                   | sim  | Dados do usuário logado         |
+| `PATCH`  | `/auth/me`                                   | sim  | Atualizar nickname              |
+| `POST`   | `/auth/logout`                               | sim  | Logout                          |
+| `GET`    | `/auth/sessions`                             | sim  | Listar sessões                  |
+| `DELETE` | `/auth/sessions/{id}`                        | sim  | Revogar sessão                  |
+| `POST`   | `/tasks`                                     | sim  | Criar tarefa                    |
+| `GET`    | `/tasks/day`                                 | sim  | Tarefas do dia                  |
+| `GET`    | `/tasks/uncompleted`                         | sim  | Tarefas pendentes do dia        |
+| `GET`    | `/tasks/month`                               | sim  | Tarefas do mês                  |
+| `PATCH`  | `/tasks/{id}/complete`                       | sim  | Concluir tarefa                 |
+| `GET`    | `/exercises`                                 | —    | Listar exercícios               |
+| `GET`    | `/exercises/{id}`                            | —    | Detalhes de um exercício        |
+| `POST`   | `/exercises`                                 | sim  | Criar exercício                 |
+| `GET`    | `/workouts`                                  | sim  | Listar workouts                 |
+| `POST`   | `/workouts`                                  | sim  | Criar workout                   |
+| `GET`    | `/workouts/{id}`                             | sim  | Detalhes do workout             |
+| `PUT`    | `/workouts/{id}`                             | sim  | Atualizar workout               |
+| `DELETE` | `/workouts/{id}`                             | sim  | Deletar workout                 |
+| `POST`   | `/workouts/{id}/exercises`                   | sim  | Adicionar exercício ao workout  |
+| `PUT`    | `/workouts/{id}/exercises/{weId}`            | sim  | Atualizar exercício do workout  |
+| `PATCH`  | `/workouts/{id}/exercises/reorder`           | sim  | Reordenar exercícios            |
+| `DELETE` | `/workouts/{id}/exercises/{weId}`            | sim  | Remover exercício do workout    |
+| `GET`    | `/workouts/{id}/progress`                    | sim  | Histórico de progresso          |
+| `GET`    | `/workout-sessions`                          | sim  | Listar sessões de treino        |
+| `POST`   | `/workout-sessions`                          | sim  | Criar sessão de treino          |
+| `GET`    | `/workout-sessions/{id}`                     | sim  | Detalhes da sessão              |
+| `PUT`    | `/workout-sessions/{id}`                     | sim  | Atualizar status da sessão      |
+| `GET`    | `/workout-sessions/missed`                   | sim  | Treinos perdidos                |
+| `POST`   | `/workout-sessions/{id}/sets`                | sim  | Registrar set                   |
+| `POST`   | `/workout-sessions/{id}/photo`               | sim  | Anexar foto (multipart)         |
+| `PUT`    | `/workout-sessions/{id}/sets/{setId}`        | sim  | Atualizar set                   |
+| `DELETE` | `/workout-sessions/{id}/sets/{setId}`        | sim  | Deletar set                     |
+| `GET`    | `/user-metrics/today`                        | sim  | Dashboard do dia                |
+| `GET`    | `/me/level`                                  | sim  | XP, nível, rank e streak        |
+| `POST`   | `/groups`                                    | sim  | Criar grupo                     |
+| `GET`    | `/groups`                                    | sim  | Listar meus grupos              |
+| `POST`   | `/groups/join`                               | sim  | Entrar por código               |
+| `GET`    | `/groups/{id}`                               | sim  | Detalhe (header + scores)       |
+| `GET`    | `/groups/{id}/ranking`                       | sim  | Ranking semanal                 |
+| `GET`    | `/groups/{id}/feed`                          | sim  | Feed do grupo (cursor)          |
+| `GET`    | `/groups/{id}/sessions/{sid}`                | sim  | Detalhe da sessão (post social) |
+| `PUT`    | `/groups/{id}/sessions/{sid}/reaction`       | sim  | Reagir (emoji, toggle)          |
+| `DELETE` | `/groups/{id}/sessions/{sid}/reaction`       | sim  | Remover reação                  |
+| `GET`    | `/groups/{id}/sessions/{sid}/comments`       | sim  | Listar comentários (cursor)     |
+| `POST`   | `/groups/{id}/sessions/{sid}/comments`       | sim  | Comentar                        |
+| `DELETE` | `/groups/{id}/sessions/{sid}/comments/{cid}` | sim  | Remover próprio comentário      |
+| `PATCH`  | `/groups/{id}/cover`                         | sim  | Definir capa (multipart, owner) |
+| `DELETE` | `/groups/{id}/leave`                         | sim  | Sair do grupo                   |
+| `POST`   | `/me/push-token`                             | sim  | Registrar token de push         |
+| `DELETE` | `/me/push-token`                             | sim  | Remover token de push           |
+| `GET`    | `/health`                                    | —    | Status da API                   |
 
 ---
 

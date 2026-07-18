@@ -49,7 +49,9 @@ export async function registerForPush(): Promise<string | null> {
   if (!projectId) return null;
 
   try {
-    const { data: token } = await Notifications.getExpoPushTokenAsync({ projectId });
+    const { data: token } = await Notifications.getExpoPushTokenAsync({
+      projectId,
+    });
     await SecureStore.setItemAsync(PUSH_TOKEN_KEY, token);
     await notificationsService.registerToken(token, Platform.OS);
     return token;

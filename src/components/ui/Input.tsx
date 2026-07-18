@@ -68,17 +68,12 @@ export function Input({
             { fontSize: 18, lineHeight: 20, includeFontPadding: false },
             focused && !error ? FOCUS_RING : null,
           ]}
-          className={`
-            w-full rounded-xl px-5 py-5
-            bg-surface-low border
-            text-on-surface text-body-md
-            ${error ? "border-error" : focused ? "border-primary" : "border-[#FFFFFF1F]"}
-          `}
+          className={`w-full rounded-xl border bg-surface-low px-5 py-5 text-body-md text-on-surface ${error ? "border-error" : focused ? "border-primary" : "border-[#FFFFFF1F]"} `}
         />
         {secureToggle && (
           <Pressable
             onPress={() => setHidden((h) => !h)}
-            className="absolute right-4 top-0 bottom-0 justify-center"
+            className="absolute bottom-0 right-4 top-0 justify-center"
           >
             <Text className="text-label-sm text-on-surface-variant">
               {hidden ? "MOSTRAR" : "OCULTAR"}

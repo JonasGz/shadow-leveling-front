@@ -23,7 +23,7 @@ export function IconButton({
     <Pressable
       {...props}
       style={isPrimary ? PRIMARY_SHADOW : undefined}
-      className={`self-center p-3 rounded-[10px] items-center justify-center active:opacity-70 ${
+      className={`items-center justify-center self-center rounded-[10px] p-3 active:opacity-70 ${
         isPrimary ? "bg-primary" : "border border-[#FFFFFF24]"
       }`}
     >

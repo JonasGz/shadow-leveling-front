@@ -181,7 +181,7 @@ export default function ProfileScreen() {
         }
       >
         {/* Header */}
-        <Text className="text-title-xxl font-bold text-on-surface mt-2">
+        <Text className="mt-2 text-title-xxl font-bold text-on-surface">
           Perfil
         </Text>
 
@@ -190,7 +190,7 @@ export default function ProfileScreen() {
             <ActivityIndicator size="large" color="#c8a3ff" />
           </View>
         ) : error ? (
-          <View className="items-center justify-center py-xl gap-md">
+          <View className="items-center justify-center gap-md py-xl">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar o perfil"
@@ -208,10 +208,10 @@ export default function ProfileScreen() {
         ) : (
           <>
             {/* Avatar + identidade */}
-            <View className="items-center mt-5">
+            <View className="mt-5 items-center">
               <View className="relative">
                 <View
-                  className="w-[88px] h-[88px] rounded-full p-[3px]"
+                  className="h-[88px] w-[88px] rounded-full p-[3px]"
                   style={{
                     shadowColor: "#8113D3",
                     shadowOpacity: 0.45,
@@ -229,7 +229,7 @@ export default function ProfileScreen() {
                       borderRadius: 9999,
                     }}
                   />
-                  <View className="w-full h-full rounded-full bg-surface-high items-center justify-center overflow-hidden">
+                  <View className="h-full w-full items-center justify-center overflow-hidden rounded-full bg-surface-high">
                     {user?.avatar_url ? (
                       <Image
                         source={{ uri: user.avatar_url }}
@@ -247,7 +247,7 @@ export default function ProfileScreen() {
                 <Pressable
                   onPress={changeAvatar}
                   disabled={uploadingAvatar}
-                  className="absolute -right-0.5 -bottom-0.5 w-[30px] h-[30px] rounded-full bg-primary border-[3px] border-background items-center justify-center active:opacity-80"
+                  className="absolute -bottom-0.5 -right-0.5 h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-background bg-primary active:opacity-80"
                 >
                   {uploadingAvatar ? (
                     <ActivityIndicator size="small" color="#fff" />
@@ -259,20 +259,20 @@ export default function ProfileScreen() {
 
               <Pressable
                 onPress={openNicknameEditor}
-                className="flex-row items-center gap-2 mt-3.5 active:opacity-70"
+                className="mt-3.5 flex-row items-center gap-2 active:opacity-70"
               >
-                <Text className="text-title-lg font-bold text-on-surface capitalize">
+                <Text className="text-title-lg font-bold capitalize text-on-surface">
                   {displayName}
                 </Text>
                 <Pencil size={14} color="#B26CFF" strokeWidth={2} />
               </Pressable>
 
-              <Text className="text-body-md text-on-surface-variant mt-1.5">
+              <Text className="mt-1.5 text-body-md text-on-surface-variant">
                 {email}
               </Text>
 
               {user?.created_at ? (
-                <View className="mt-3 px-3.5 py-1.5 rounded-full border border-white/10">
+                <View className="mt-3 rounded-full border border-white/10 px-3.5 py-1.5">
                   <Text
                     className="text-label-sm font-semibold uppercase text-on-surface-variant"
                     style={TRACK}
@@ -286,33 +286,33 @@ export default function ProfileScreen() {
             {level ? (
               <>
                 {/* Rank / Nível */}
-                <View className="flex-row gap-3 mt-5">
-                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
+                <View className="mt-5 flex-row gap-3">
+                  <View className="flex-1 items-center rounded-2xl border border-card-border bg-surface-low p-4">
                     <Text
                       className="text-label-sm font-semibold uppercase text-on-surface-variant"
                       style={TRACK}
                     >
                       Rank
                     </Text>
-                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                    <Text className="mt-3 text-title-xl font-extrabold text-secondary">
                       {level.rank}
                     </Text>
                   </View>
-                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
+                  <View className="flex-1 items-center rounded-2xl border border-card-border bg-surface-low p-4">
                     <Text
                       className="text-label-sm font-semibold uppercase text-on-surface-variant"
                       style={TRACK}
                     >
                       Nível
                     </Text>
-                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                    <Text className="mt-3 text-title-xl font-extrabold text-secondary">
                       {level.level}
                     </Text>
                   </View>
                 </View>
 
                 {/* Progresso do nível */}
-                <View className="bg-surface-low border border-card-border rounded-2xl p-6 mt-3">
+                <View className="mt-3 rounded-2xl border border-card-border bg-surface-low p-6">
                   <View className="flex-row items-center justify-between">
                     <Text
                       className="text-label-sm font-semibold uppercase text-on-surface-variant"
@@ -325,7 +325,7 @@ export default function ProfileScreen() {
                     </Text>
                   </View>
 
-                  <View className="h-3 w-full bg-surface-high rounded-full overflow-hidden mt-3">
+                  <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-surface-high">
                     <LinearGradient
                       colors={["#6E00B3", "#8113D3"]}
                       start={{ x: 0, y: 0 }}
@@ -338,7 +338,7 @@ export default function ProfileScreen() {
                     />
                   </View>
 
-                  <View className="flex-row items-center justify-between mt-3">
+                  <View className="mt-3 flex-row items-center justify-between">
                     <Text className="text-label-md text-outline-variant">
                       {level.total_xp.toLocaleString("pt-BR")} XP total
                     </Text>
@@ -355,7 +355,7 @@ export default function ProfileScreen() {
             ) : null}
 
             {/* Menu */}
-            <View className="bg-surface-low border border-card-border rounded-xl mt-3 overflow-hidden">
+            <View className="mt-3 overflow-hidden rounded-xl border border-card-border bg-surface-low">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
@@ -388,7 +388,7 @@ export default function ProfileScreen() {
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
-              className="w-full h-[50px] mt-4 rounded-xl border border-error/40 bg-error/10 flex-row items-center justify-center gap-2.5 active:opacity-80"
+              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-2.5 rounded-xl border border-error/40 bg-error/10 active:opacity-80"
             >
               {loggingOut ? (
                 <ActivityIndicator size="small" color="#EF4444" />
@@ -417,10 +417,10 @@ export default function ProfileScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 bg-black/70 items-center justify-center px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
-            <Text className="text-title-md text-on-surface font-bold">
+          <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
+            <Text className="text-title-md font-bold text-on-surface">
               Editar nick
             </Text>
             <Text className="text-label-sm text-on-surface-variant">
@@ -435,15 +435,15 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3 text-on-surface text-body-lg"
+              className="rounded-xl border border-[#FFFFFF1F] bg-surface-low px-md py-3 text-body-lg text-on-surface"
             />
-            <View className="flex-row gap-md mt-sm">
+            <View className="mt-sm flex-row gap-md">
               <Pressable
                 onPress={() => setEditing(false)}
                 disabled={savingNick}
-                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase">
+                <Text className="text-label-md uppercase text-on-surface-variant">
                   Cancelar
                 </Text>
               </Pressable>

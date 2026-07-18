@@ -29,9 +29,9 @@ export default function LandingScreen() {
         locations={[0, 0.55, 1]}
         style={{ flex: 1 }}
       >
-        <SafeAreaView className="flex-1 px-lg justify-between">
+        <SafeAreaView className="flex-1 justify-between px-lg">
           <View className="items-center pt-xl">
-            <Text className="text-title-xl text-on-surface font-bold tracking-tight">
+            <Text className="text-title-xl font-bold tracking-tight text-on-surface">
               SHADOW{" "}
               <Text className="font-light text-on-surface-variant">
                 Leveling
@@ -40,22 +40,22 @@ export default function LandingScreen() {
           </View>
 
           <View className="pb-md">
-            <View className="flex-row justify-center gap-2 mb-4">
+            <View className="mb-4 flex-row justify-center gap-2">
               {ATTRIBUTES.map((attr) => (
                 <Badge key={attr} label={attr} tone="secondary" />
               ))}
             </View>
 
-            <Text className="text-display-xxl text-on-surface text-center tracking-tight">
+            <Text className="text-center text-display-xxl tracking-tight text-on-surface">
               Desperte{"\n"}Sua Força
             </Text>
-            <Text className="text-body-lg text-on-surface-variant text-center mt-3">
+            <Text className="mt-3 text-center text-body-lg text-on-surface-variant">
               Evolua seus atributos todos os dias.
             </Text>
 
             <Pressable
               onPress={goToLogin}
-              className="flex-row items-center justify-center gap-2 w-full h-16 mt-6 rounded-lg bg-primary active:opacity-80"
+              className="mt-6 h-16 w-full flex-row items-center justify-center gap-2 rounded-lg bg-primary active:opacity-80"
               style={{
                 shadowColor: "#8113D3",
                 shadowOpacity: 0.5,
@@ -64,7 +64,7 @@ export default function LandingScreen() {
                 elevation: 8,
               }}
             >
-              <Text className="text-body-lg uppercase text-on-primary font-bold">
+              <Text className="text-body-lg font-bold uppercase text-on-primary">
                 Evoluir Agora
               </Text>
               <ArrowRight size={18} color="#fff" />
@@ -72,9 +72,9 @@ export default function LandingScreen() {
 
             <Pressable
               onPress={goToLogin}
-              className="items-center mt-3 p-2 active:opacity-60"
+              className="mt-3 items-center p-2 active:opacity-60"
             >
-              <Text className="text-body-md text-on-surface font-semibold">
+              <Text className="text-body-md font-semibold text-on-surface">
                 Já tenho conta · <Text className="text-secondary">Entrar</Text>
               </Text>
             </Pressable>

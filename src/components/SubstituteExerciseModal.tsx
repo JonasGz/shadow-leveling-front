@@ -92,20 +92,17 @@ export function SubstituteExerciseModal({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <Pressable
-        className="flex-1 bg-black/70 justify-end"
-        onPress={onClose}
-      >
+      <Pressable className="flex-1 justify-end bg-black/70" onPress={onClose}>
         <Pressable
           onPress={() => {}}
-          className="bg-surface-container border-t border-outline-variant rounded-t-2xl pb-xl"
+          className="rounded-t-2xl border-t border-outline-variant bg-surface-container pb-xl"
           style={{ maxHeight: "85%" }}
         >
           {/* Header */}
-          <View className="px-lg pt-lg pb-md">
-            <View className="flex-row items-center gap-2 mb-1">
+          <View className="px-lg pb-md pt-lg">
+            <View className="mb-1 flex-row items-center gap-2">
               <ArrowLeftRight size={18} color="#c8a3ff" />
-              <Text className="text-title-md text-on-surface font-bold">
+              <Text className="text-title-md font-bold text-on-surface">
                 Trocar exercício
               </Text>
             </View>
@@ -118,14 +115,14 @@ export function SubstituteExerciseModal({
 
           {/* Manual search */}
           <View className="px-lg pb-md">
-            <View className="flex-row items-center gap-2 bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3">
+            <View className="flex-row items-center gap-2 rounded-xl border border-[#FFFFFF1F] bg-surface-low px-md py-3">
               <Search size={16} color="#958ea0" />
               <TextInput
                 value={search}
                 onChangeText={setSearch}
                 placeholder="Buscar outro exercício..."
                 placeholderTextColor="#958ea0"
-                className="flex-1 text-on-surface text-body-md"
+                className="flex-1 text-body-md text-on-surface"
               />
             </View>
           </View>
@@ -137,11 +134,11 @@ export function SubstituteExerciseModal({
             {/* Suggested substitutes (only when no active search) */}
             {search.trim().length < 2 && (
               <View className="mb-md">
-                <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant font-bold mb-2">
+                <Text className="mb-2 text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
                   Sugestões
                 </Text>
                 {loadingSuggestions ? (
-                  <View className="py-lg items-center">
+                  <View className="items-center py-lg">
                     <ActivityIndicator size="small" color="#c8a3ff" />
                   </View>
                 ) : suggestions.length === 0 ? (
@@ -160,7 +157,7 @@ export function SubstituteExerciseModal({
             {search.trim().length >= 2 && (
               <View>
                 {searching ? (
-                  <View className="py-lg items-center">
+                  <View className="items-center py-lg">
                     <ActivityIndicator size="small" color="#c8a3ff" />
                   </View>
                 ) : searchResults.length === 0 ? (
@@ -192,7 +189,11 @@ function SubstituteRow({
   // user-created. Display-only — the ranking query runs against EN columns.
   const equipment = exercise.equipment_pt ?? exercise.equipment ?? null;
   const mechanic = exercise.mechanic_pt ?? exercise.mechanic ?? null;
-  const muscles = (exercise.primary_muscles_pt ?? exercise.primary_muscles ?? []).slice(0, 3);
+  const muscles = (
+    exercise.primary_muscles_pt ??
+    exercise.primary_muscles ??
+    []
+  ).slice(0, 3);
 
   const chips: string[] = [];
   if (equipment) chips.push(equipment);
@@ -201,21 +202,21 @@ function SubstituteRow({
   return (
     <Pressable
       onPress={() => onPick(exercise)}
-      className="bg-surface-low border border-[#FFFFFF14] rounded-xl p-md mb-2 active:opacity-70 flex-row items-center gap-3"
+      className="mb-2 flex-row items-center gap-3 rounded-xl border border-[#FFFFFF14] bg-surface-low p-md active:opacity-70"
     >
-      <View className="w-10 h-10 rounded-lg bg-primary/20 items-center justify-center">
+      <View className="h-10 w-10 items-center justify-center rounded-lg bg-primary/20">
         <Dumbbell size={18} color="#c8a3ff" />
       </View>
       <View className="flex-1">
         <Text
-          className="text-body-md text-on-surface font-semibold"
+          className="text-body-md font-semibold text-on-surface"
           numberOfLines={2}
         >
           {exercise.name}
         </Text>
         {(muscles.length > 0 || chips.length > 0) && (
           <Text
-            className="text-label-sm text-on-surface-variant mt-1"
+            className="mt-1 text-label-sm text-on-surface-variant"
             numberOfLines={1}
           >
             {[...chips, ...muscles].join(" · ")}

@@ -73,7 +73,9 @@ export default function WorkoutSessionScreen() {
     Record<string, LocalSet[]>
   >({});
   // Dica de progressão por exercício (keyed by workoutExercise.id).
-  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>({});
+  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>(
+    {},
+  );
 
   // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
   // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
@@ -289,9 +291,9 @@ export default function WorkoutSessionScreen() {
 
   if (booting) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" color="#c8a3ff" />
-        <Text className="text-on-surface-variant text-label-md uppercase tracking-widest mt-md">
+        <Text className="mt-md text-label-md uppercase tracking-widest text-on-surface-variant">
           Preparando sessão...
         </Text>
       </SafeAreaView>
@@ -300,7 +302,7 @@ export default function WorkoutSessionScreen() {
 
   if (bootError || !workout) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
+      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-background px-lg">
         <EmptyState
           icon={TriangleAlert}
           title="Não foi possível iniciar"
@@ -313,7 +315,7 @@ export default function WorkoutSessionScreen() {
 
   if (exercises.length === 0) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
+      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-background px-lg">
         <EmptyState
           icon={Dumbbell}
           title="Treino sem exercícios"
@@ -332,8 +334,8 @@ export default function WorkoutSessionScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       {/* TopAppBar */}
       <View className="px-md pt-sm">
-        <View className="flex-row justify-between items-center gap-2">
-          <View className="flex-row items-center gap-3 flex-1">
+        <View className="flex-row items-center justify-between gap-2">
+          <View className="flex-1 flex-row items-center gap-3">
             <LinearGradient
               colors={["#8113D3", "#6E00B3"]}
               start={{ x: 0, y: 0 }}
@@ -351,7 +353,7 @@ export default function WorkoutSessionScreen() {
             </LinearGradient>
             <View className="flex-1">
               <Text
-                className="text-title-lg text-secondary uppercase font-bold"
+                className="text-title-lg font-bold uppercase text-secondary"
                 numberOfLines={1}
               >
                 {workout.name}
@@ -366,7 +368,7 @@ export default function WorkoutSessionScreen() {
             onPress={confirmQuit}
           />
         </View>
-        <View className="h-px bg-[#FFFFFF14] mt-md" />
+        <View className="mt-md h-px bg-[#FFFFFF14]" />
       </View>
 
       <ExerciseChips
@@ -379,15 +381,15 @@ export default function WorkoutSessionScreen() {
 
       {/* Progresso */}
       <View className="px-md pb-md">
-        <View className="flex-row justify-between items-end mb-2">
-          <Text className="text-label-sm font-bold text-on-surface-variant uppercase tracking-widest">
+        <View className="mb-2 flex-row items-end justify-between">
+          <Text className="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
             Exercício {current + 1} de {exercises.length}
           </Text>
           <Text className="text-label-sm font-bold text-secondary">
             {progressPct}% Concluído
           </Text>
         </View>
-        <View className="h-2 w-full bg-surface-high rounded-full overflow-hidden">
+        <View className="h-2 w-full overflow-hidden rounded-full bg-surface-high">
           <LinearGradient
             colors={["#6E00B3", "#8113D3"]}
             start={{ x: 0, y: 0 }}

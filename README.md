@@ -14,17 +14,17 @@ aqui.
 
 ## Stack
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | [Expo](https://expo.dev) SDK 54 + React Native 0.81 |
-| Linguagem | TypeScript (strict) |
-| Navegação | [Expo Router](https://docs.expo.dev/router/introduction/) (file-based) |
-| Estilização | [NativeWind v4](https://www.nativewind.dev/) (TailwindCSS) |
-| Estado global | [Zustand](https://github.com/pmndrs/zustand) |
-| HTTP | [Axios](https://axios-http.com/) com interceptors de Bearer Token |
-| Formulários | React Hook Form + [Zod](https://zod.dev/) |
-| Storage seguro | `expo-secure-store` (token de sessão) |
-| Animação/Visual | `expo-linear-gradient`, `react-native-reanimated` |
+| Camada          | Tecnologia                                                             |
+| --------------- | ---------------------------------------------------------------------- |
+| Framework       | [Expo](https://expo.dev) SDK 54 + React Native 0.81                    |
+| Linguagem       | TypeScript (strict)                                                    |
+| Navegação       | [Expo Router](https://docs.expo.dev/router/introduction/) (file-based) |
+| Estilização     | [NativeWind v4](https://www.nativewind.dev/) (TailwindCSS)             |
+| Estado global   | [Zustand](https://github.com/pmndrs/zustand)                           |
+| HTTP            | [Axios](https://axios-http.com/) com interceptors de Bearer Token      |
+| Formulários     | React Hook Form + [Zod](https://zod.dev/)                              |
+| Storage seguro  | `expo-secure-store` (token de sessão)                                  |
+| Animação/Visual | `expo-linear-gradient`, `react-native-reanimated`                      |
 
 ---
 
@@ -62,10 +62,10 @@ EXPO_PUBLIC_API_URL=http://localhost:8080
 
 **Atenção ao host conforme onde você roda:**
 
-| Ambiente | URL da API |
-|---|---|
-| Simulador iOS | `http://localhost:8080` |
-| Emulador Android | `http://10.0.2.2:8080` |
+| Ambiente           | URL da API                        |
+| ------------------ | --------------------------------- |
+| Simulador iOS      | `http://localhost:8080`           |
+| Emulador Android   | `http://10.0.2.2:8080`            |
 | Dispositivo físico | `http://<IP-da-sua-máquina>:8080` |
 
 ### 3. Rodar o app
@@ -134,14 +134,14 @@ src/
 
 ## Funcionalidades implementadas
 
-| Fluxo | Telas | Endpoints |
-|---|---|---|
-| **Autenticação** | Login, Registro, verificação OTP (2FA por e-mail) | `/auth/login`, `/auth/register`, `/auth/*/verify`, `/auth/*/resend` |
-| **Treinos** | Lista (Hoje / Biblioteca), detalhe, criar | `GET/POST /workouts`, `GET /workouts/{id}` |
-| **Exercícios** | Busca paginada (cursor) + criar inline | `GET/POST /exercises`, `POST /workouts/{id}/exercises` |
+| Fluxo                | Telas                                                                    | Endpoints                                                                                  |
+| -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **Autenticação**     | Login, Registro, verificação OTP (2FA por e-mail)                        | `/auth/login`, `/auth/register`, `/auth/*/verify`, `/auth/*/resend`                        |
+| **Treinos**          | Lista (Hoje / Biblioteca), detalhe, criar                                | `GET/POST /workouts`, `GET /workouts/{id}`                                                 |
+| **Exercícios**       | Busca paginada (cursor) + criar inline                                   | `GET/POST /exercises`, `POST /workouts/{id}/exercises`                                     |
 | **Sessão de treino** | Execução com registro de séries, timer de descanso, conclusão com resumo | `POST /workout-sessions`, `POST /workout-sessions/{id}/sets`, `PUT /workout-sessions/{id}` |
-| **Histórico** | Sessões realizadas + treinos perdidos, detalhe da sessão | `GET /workout-sessions`, `GET /workout-sessions/missed`, `GET /workout-sessions/{id}` |
-| **Perfil** | Dados do usuário, sessões ativas (revogar), logout | `GET /auth/me`, `GET /auth/sessions`, `DELETE /auth/sessions/{id}`, `POST /auth/logout` |
+| **Histórico**        | Sessões realizadas + treinos perdidos, detalhe da sessão                 | `GET /workout-sessions`, `GET /workout-sessions/missed`, `GET /workout-sessions/{id}`      |
+| **Perfil**           | Dados do usuário, sessões ativas (revogar), logout                       | `GET /auth/me`, `GET /auth/sessions`, `DELETE /auth/sessions/{id}`, `POST /auth/logout`    |
 
 > A **Home/Dashboard** ainda é um stub — próxima tela a ser implementada.
 > O sistema de **XP / níveis** está propositalmente fora do escopo atual.

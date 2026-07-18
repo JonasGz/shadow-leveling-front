@@ -17,15 +17,15 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <View className="bg-surface-low border border-dashed border-[#FFFFFF24] rounded-2xl p-lg items-center">
-      <View className="w-[52px] h-[52px] rounded-full bg-surface-highest items-center justify-center">
+    <View className="items-center rounded-2xl border border-dashed border-[#FFFFFF24] bg-surface-low p-lg">
+      <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-surface-highest">
         <Icon size={26} color="#6C6971" strokeWidth={1.6} />
       </View>
-      <Text className="text-title-md text-[#ECECEE] font-bold text-center mt-3">
+      <Text className="mt-3 text-center text-title-md font-bold text-[#ECECEE]">
         {title}
       </Text>
       {description ? (
-        <Text className="text-body-md text-on-surface-variant text-center mt-1.5">
+        <Text className="mt-1.5 text-center text-body-md text-on-surface-variant">
           {description}
         </Text>
       ) : null}

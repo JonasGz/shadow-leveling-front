@@ -117,12 +117,12 @@ function StatCard({
 }) {
   const Icon = icon;
   return (
-    <View className="flex-1 bg-surface-low rounded-2xl p-lg border border-card-border">
+    <View className="flex-1 rounded-2xl border border-card-border bg-surface-low p-lg">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
-      <Text className="text-on-surface text-center font-extrabold text-title-xl mt-2">
+      <Text className="mt-2 text-center text-title-xl font-extrabold text-on-surface">
         {value}
       </Text>
-      <Text className="text-center text-label-md text-on-surface-variant mt-1">
+      <Text className="mt-1 text-center text-label-md text-on-surface-variant">
         {label}
       </Text>
     </View>
@@ -190,13 +190,13 @@ export default function HomeScreen() {
       {/* Header */}
       <View className="flex-row items-center justify-between px-md py-md">
         <View>
-          <Text className="text-title-xxl text-white font-bold">
+          <Text className="text-title-xxl font-bold text-white">
             Hey, {name} 👋
           </Text>
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
-          className="w-14 h-14 rounded-full items-center justify-center overflow-hidden active:opacity-70"
+          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full active:opacity-70"
           style={{ backgroundColor: "#8113D3" }}
         >
           {user?.avatar_url ? (
@@ -206,7 +206,7 @@ export default function HomeScreen() {
               resizeMode="cover"
             />
           ) : (
-            <Text className="text-white font-bold">{initials}</Text>
+            <Text className="font-bold text-white">{initials}</Text>
           )}
         </Pressable>
       </View>
@@ -216,17 +216,13 @@ export default function HomeScreen() {
           <ActivityIndicator size="large" color="#c8a3ff" />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-md px-lg">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Button
-            label="Tentar novamente"
-            size="sm"
-            onPress={reload}
-          />
+          <Button label="Tentar novamente" size="sm" onPress={reload} />
         </View>
       ) : (
         <ScrollView
@@ -264,11 +260,11 @@ export default function HomeScreen() {
               >
                 <WeeklyGoalRing pct={goalPct} />
                 <View className="flex-1">
-                  <Text className="text-title-lg text-on-surface font-bold text-center">
+                  <Text className="text-center text-title-lg font-bold text-on-surface">
                     Meta semanal
                   </Text>
                   <Text
-                    className="text-body-sm mt-1 text-center"
+                    className="mt-1 text-center text-body-sm"
                     style={{ color: "#B5B4B8" }}
                   >
                     {goalScheduled === 0
@@ -304,14 +300,14 @@ export default function HomeScreen() {
 
           {/* Today's workout */}
           <View>
-            <Text className="text-title-lg text-white text-center font-bold mb-md">
+            <Text className="mb-md text-center text-title-lg font-bold text-white">
               Treino de hoje
             </Text>
 
             {featured ? (
               <Pressable
                 onPress={() => router.push(`/workout/${featured.id}`)}
-                className="rounded-2xl overflow-hidden border border-card-border active:opacity-80"
+                className="overflow-hidden rounded-2xl border border-card-border active:opacity-80"
                 style={{ backgroundColor: "#1A191C" }}
               >
                 <View
@@ -319,29 +315,29 @@ export default function HomeScreen() {
                   style={{ backgroundColor: "#6E00B3" }}
                 >
                   <View
-                    className="self-start px-2 py-1 mt-6 rounded-full"
+                    className="mt-6 self-start rounded-full px-2 py-1"
                     style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
                   >
-                    <Text className="text-white text-label-sm uppercase">
+                    <Text className="text-label-sm uppercase text-white">
                       {featured.is_completed ? "Concluído" : "Próximo"}
                     </Text>
                   </View>
                 </View>
 
-                <View className="p-lg items-center">
+                <View className="items-center p-lg">
                   <Text
-                    className="text-title-xl text-on-surface font-bold"
+                    className="text-title-xl font-bold text-on-surface"
                     numberOfLines={1}
                   >
                     {featured.name}
                   </Text>
-                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                  <Text className="mt-1 text-body-sm text-on-surface-variant">
                     {featured.estimated_duration_min} min ·{" "}
                     {featured.exercise_count} exercício
                     {featured.exercise_count === 1 ? "" : "s"}
                   </Text>
 
-                  <View className="w-full mt-md">
+                  <View className="mt-md w-full">
                     <StartWorkoutButton
                       workoutId={featured.id}
                       done={featured.is_completed}
@@ -351,15 +347,15 @@ export default function HomeScreen() {
               </Pressable>
             ) : (
               <View
-                className="rounded-2xl p-lg items-center gap-md border border-card-border"
+                className="items-center gap-md rounded-2xl border border-card-border p-lg"
                 style={{ backgroundColor: "#1A191C" }}
               >
                 <Calendar size={36} color="#908D94" strokeWidth={1.5} />
                 <View className="items-center">
-                  <Text className="text-title-md text-on-surface font-semibold">
+                  <Text className="text-title-md font-semibold text-on-surface">
                     Nenhum treino para hoje
                   </Text>
-                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                  <Text className="mt-1 text-body-sm text-on-surface-variant">
                     Aproveite para descansar ou criar um novo treino.
                   </Text>
                 </View>

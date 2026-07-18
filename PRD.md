@@ -74,12 +74,13 @@ superior de si mesmo.
 | `surface-tint`              | `#d0bcff` | Tint dos surfaces (igual ao primary)               |
 
 **Dificuldade de tarefas (semântico):**
-| Nível | Cor | Uso |
-|---|---|---|
-| `easy` | `#22c55e` (green-500) | Badge verde |
-| `medium` | `#eab308` (yellow-500) | Badge âmbar |
-| `hard` | `#ef4444` (red-500) | Badge vermelho |
-| `no_rank` | `#958ea0` (outline) | Badge cinza |
+
+| Nível     | Cor                    | Uso            |
+| --------- | ---------------------- | -------------- |
+| `easy`    | `#22c55e` (green-500)  | Badge verde    |
+| `medium`  | `#eab308` (yellow-500) | Badge âmbar    |
+| `hard`    | `#ef4444` (red-500)    | Badge vermelho |
+| `no_rank` | `#958ea0` (outline)    | Badge cinza    |
 
 ---
 
@@ -781,19 +782,19 @@ Modais / Stacks sobre as tabs:
     </style>
   </head>
   <body
-    class="bg-surface text-on-surface font-body-md overflow-hidden selection:bg-primary selection:text-on-primary"
+    class="font-body-md overflow-hidden bg-surface text-on-surface selection:bg-primary selection:text-on-primary"
   >
     <!-- Splash Screen Canvas -->
     <main
-      class="relative flex flex-col items-center justify-center min-h-screen w-full px-margin-mobile overflow-hidden"
+      class="px-margin-mobile relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden"
     >
       <!-- Background Texture/Shadows -->
       <div class="absolute inset-0 z-0 bg-[#131314]">
         <div
-          class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-surface-container-low/40 via-surface to-surface"
+          class="from-surface-container-low/40 absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] via-surface to-surface"
         ></div>
         <div
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] brand-glow opacity-60 pointer-events-none"
+          class="brand-glow pointer-events-none absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 opacity-60"
         ></div>
       </div>
       <!-- Central Branding Section -->
@@ -801,18 +802,18 @@ Modais / Stacks sobre as tabs:
         class="relative z-10 flex flex-col items-center gap-lg text-center"
       >
         <!-- Logo Container with Shadow Elevation Logic -->
-        <div class="relative group">
+        <div class="group relative">
           <!-- Inner Glow -->
           <div
-            class="absolute inset-0 bg-primary/20 blur-3xl rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-1000 scale-125"
+            class="absolute inset-0 scale-125 rounded-full bg-primary/20 opacity-50 blur-3xl transition-opacity duration-1000 group-hover:opacity-75"
           ></div>
           <!-- Main Logo Image -->
           <div
-            class="relative w-40 h-40 md:w-56 md:h-56 p-xs bg-surface-container rounded-xl overflow-hidden shadow-2xl border border-outline-variant/30"
+            class="relative h-40 w-40 overflow-hidden rounded-xl border border-outline-variant/30 bg-surface-container p-xs shadow-2xl md:h-56 md:w-56"
           >
             <img
               alt="Shadow Leveling Logo"
-              class="w-full h-full object-contain"
+              class="h-full w-full object-contain"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-d_ggX67TyM-dlCn9YAX39-e3w8beQLlFUhrjcEeeHRqkvgfgzYZmPDs5X9xAfzx5hYMqAnD1KYRMH6ypa0NRdbc2SGTaJeqjm8a2aQ4scnfijxAyJtQQRL5TLbkCiASvgTWWKfrOQPgu8fs2k4a7y84qU1Utn_G9_c72rMzuSD5EOhuEPc0PzyJFRiTyg6OW2wyvJ92fyLFDdY2ljnSZN8SZPiROReQ8NsYOMH3CRKZ8UakW2lAme8DBH8LKJo4J_lWcIARlnpk"
             />
           </div>
@@ -820,12 +821,12 @@ Modais / Stacks sobre as tabs:
         <!-- Brand Headline (Styled as Premium Anchor) -->
         <div class="mt-md">
           <h1
-            class="font-display-md text-display-md text-primary italic tracking-tighter uppercase"
+            class="font-display-md text-display-md uppercase italic tracking-tighter text-primary"
           >
             SHADOW LEVELING
           </h1>
           <p
-            class="font-label-md text-label-md text-on-surface-variant tracking-[0.4em] mt-xs opacity-80"
+            class="font-label-md mt-xs text-label-md tracking-[0.4em] text-on-surface-variant opacity-80"
           >
             PREMIUM ATHLETIC PROTOCOL
           </p>
@@ -833,19 +834,19 @@ Modais / Stacks sobre as tabs:
       </section>
       <!-- Bottom Loading State (As requested) -->
       <footer
-        class="absolute bottom-16 left-0 w-full px-xl z-20 flex flex-col items-center gap-md"
+        class="absolute bottom-16 left-0 z-20 flex w-full flex-col items-center gap-md px-xl"
       >
         <!-- Minimalist Status Text -->
         <div class="animate-protocol-pulse">
           <span
-            class="font-label-sm text-label-sm text-primary-fixed-dim uppercase tracking-[0.5em]"
+            class="font-label-sm text-label-sm uppercase tracking-[0.5em] text-primary-fixed-dim"
           >
             INITIALIZING PROTOCOL...
           </span>
         </div>
         <!-- Progress Track -->
         <div
-          class="w-full max-w-xs h-[2px] bg-surface-container-highest overflow-hidden rounded-full border border-outline-variant/10"
+          class="bg-surface-container-highest h-[2px] w-full max-w-xs overflow-hidden rounded-full border border-outline-variant/10"
         >
           <div
             class="loading-progress-bar h-full bg-primary shadow-[0_0_12px_rgba(208,188,255,0.6)]"
@@ -854,7 +855,7 @@ Modais / Stacks sobre as tabs:
         <!-- Sub-status / Versioning -->
         <div class="mt-xs">
           <span
-            class="font-label-sm text-[10px] text-on-surface-variant opacity-40 tracking-widest"
+            class="font-label-sm text-[10px] tracking-widest text-on-surface-variant opacity-40"
           >
             VERSION 4.2.0-S // SECURE_LINK_ESTABLISHED
           </span>
@@ -862,16 +863,16 @@ Modais / Stacks sobre as tabs:
       </footer>
       <!-- Decorative Corner Elements (Cyber-Athletic Aesthetic) -->
       <div
-        class="absolute top-8 left-8 border-t border-l border-outline-variant/40 w-12 h-12 pointer-events-none"
+        class="pointer-events-none absolute left-8 top-8 h-12 w-12 border-l border-t border-outline-variant/40"
       ></div>
       <div
-        class="absolute top-8 right-8 border-t border-r border-outline-variant/40 w-12 h-12 pointer-events-none"
+        class="pointer-events-none absolute right-8 top-8 h-12 w-12 border-r border-t border-outline-variant/40"
       ></div>
       <div
-        class="absolute bottom-8 left-8 border-b border-l border-outline-variant/40 w-12 h-12 pointer-events-none"
+        class="pointer-events-none absolute bottom-8 left-8 h-12 w-12 border-b border-l border-outline-variant/40"
       ></div>
       <div
-        class="absolute bottom-8 right-8 border-b border-r border-outline-variant/40 w-12 h-12 pointer-events-none"
+        class="pointer-events-none absolute bottom-8 right-8 h-12 w-12 border-b border-r border-outline-variant/40"
       ></div>
     </main>
     <!-- Note: Navigation Shells (TopAppBar, BottomNavBar) are suppressed per request for Splash Screen -->
@@ -1064,48 +1065,48 @@ Modais / Stacks sobre as tabs:
     </style>
   </head>
   <body
-    class="min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop bg-surface-dim overflow-hidden relative"
+    class="p-margin-mobile md:p-margin-desktop relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-surface-dim"
   >
     <!-- Background Decor -->
     <div
-      class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20"
+      class="pointer-events-none absolute left-0 top-0 h-full w-full overflow-hidden opacity-20"
     >
       <div
-        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary rounded-full blur-[120px]"
+        class="absolute left-[-10%] top-[-10%] h-[40%] w-[40%] rounded-full bg-primary blur-[120px]"
       ></div>
       <div
-        class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-secondary rounded-full blur-[100px]"
+        class="absolute bottom-[-5%] right-[-5%] h-[30%] w-[30%] rounded-full bg-secondary blur-[100px]"
       ></div>
     </div>
-    <main class="w-full max-w-[440px] z-10">
+    <main class="z-10 w-full max-w-[440px]">
       <!-- Logo/Identity Area -->
-      <div class="flex flex-col items-center mb-xl">
+      <div class="mb-xl flex flex-col items-center">
         <div
-          class="w-16 h-16 bg-surface-container-high rounded-xl flex items-center justify-center mb-md border border-outline-variant/30 cyber-glow"
+          class="bg-surface-container-high cyber-glow mb-md flex h-16 w-16 items-center justify-center rounded-xl border border-outline-variant/30"
         >
           <span
-            class="material-symbols-outlined text-primary text-[40px]"
+            class="material-symbols-outlined text-[40px] text-primary"
             data-icon="sword"
             >swords</span
           >
         </div>
         <h1
-          class="font-display-md text-display-md text-primary tracking-widest uppercase drop-shadow-[0_0_8px_rgba(208,188,255,0.5)]"
+          class="font-display-md text-display-md uppercase tracking-widest text-primary drop-shadow-[0_0_8px_rgba(208,188,255,0.5)]"
         >
           SHADOW LEVELING
         </h1>
         <p
-          class="font-label-sm text-label-sm text-outline uppercase tracking-[0.2em] mt-2"
+          class="font-label-sm mt-2 text-label-sm uppercase tracking-[0.2em] text-outline"
         >
           Elite Task Protocol
         </p>
       </div>
       <!-- Auth Card -->
       <div
-        class="bg-surface-container-low border border-outline-variant/20 rounded-xl p-lg md:p-xl shadow-2xl relative overflow-hidden"
+        class="bg-surface-container-low relative overflow-hidden rounded-xl border border-outline-variant/20 p-lg shadow-2xl md:p-xl"
       >
         <!-- Subtle Texture -->
-        <div class="absolute top-0 right-0 p-4 opacity-10">
+        <div class="absolute right-0 top-0 p-4 opacity-10">
           <span
             class="material-symbols-outlined text-display-lg"
             data-icon="shield"
@@ -1114,21 +1115,21 @@ Modais / Stacks sobre as tabs:
         </div>
         <div class="mb-lg">
           <h2
-            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface"
+            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile text-on-surface md:text-headline-lg"
           >
             Entrar
           </h2>
-          <div class="h-1 w-12 bg-primary mt-2 rounded-full"></div>
+          <div class="mt-2 h-1 w-12 rounded-full bg-primary"></div>
         </div>
         <form class="space-y-lg" onsubmit="return false;">
           <!-- Email Field -->
           <div class="space-y-sm">
             <label
-              class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider"
+              class="font-label-md block text-label-md uppercase tracking-wider text-on-surface-variant"
               >Email</label
             >
             <div
-              class="relative group input-focus-glow rounded-lg border border-outline-variant/50 bg-surface-container-lowest transition-all"
+              class="input-focus-glow bg-surface-container-lowest group relative rounded-lg border border-outline-variant/50 transition-all"
             >
               <span
                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary"
@@ -1136,7 +1137,7 @@ Modais / Stacks sobre as tabs:
                 >mail</span
               >
               <input
-                class="w-full bg-transparent border-none py-4 pl-12 pr-4 text-on-surface focus:ring-0 font-body-md placeholder:text-outline/50"
+                class="font-body-md w-full border-none bg-transparent py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/50 focus:ring-0"
                 placeholder="nome@exemplo.com"
                 type="email"
               />
@@ -1144,19 +1145,19 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Password Field -->
           <div class="space-y-sm">
-            <div class="flex justify-between items-end">
+            <div class="flex items-end justify-between">
               <label
-                class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider"
+                class="font-label-md block text-label-md uppercase tracking-wider text-on-surface-variant"
                 >Senha</label
               >
               <a
-                class="font-label-sm text-label-sm text-primary hover:underline transition-all"
+                class="font-label-sm text-label-sm text-primary transition-all hover:underline"
                 href="#"
                 >Esqueci minha senha</a
               >
             </div>
             <div
-              class="relative group input-focus-glow rounded-lg border border-outline-variant/50 bg-surface-container-lowest transition-all"
+              class="input-focus-glow bg-surface-container-lowest group relative rounded-lg border border-outline-variant/50 transition-all"
             >
               <span
                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary"
@@ -1164,12 +1165,12 @@ Modais / Stacks sobre as tabs:
                 >lock</span
               >
               <input
-                class="w-full bg-transparent border-none py-4 pl-12 pr-12 text-on-surface focus:ring-0 font-body-md placeholder:text-outline/50"
+                class="font-body-md w-full border-none bg-transparent py-4 pl-12 pr-12 text-on-surface placeholder:text-outline/50 focus:ring-0"
                 placeholder="••••••••"
                 type="password"
               />
               <button
-                class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-outline transition-colors hover:text-primary"
                 type="button"
               >
                 <span class="material-symbols-outlined" data-icon="visibility"
@@ -1180,7 +1181,7 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Submit Button -->
           <button
-            class="w-full bg-primary hover:bg-primary-container text-on-primary font-title-md py-4 rounded-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-all cyber-glow mt-lg"
+            class="font-title-md cyber-glow mt-lg flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-4 text-on-primary transition-all hover:bg-primary-container active:scale-[0.98]"
             type="submit"
           >
             <span>Enviar código</span>
@@ -1188,11 +1189,11 @@ Modais / Stacks sobre as tabs:
           </button>
         </form>
         <!-- Secondary Action -->
-        <div class="mt-xl pt-lg border-t border-outline-variant/10 text-center">
+        <div class="mt-xl border-t border-outline-variant/10 pt-lg text-center">
           <p class="font-body-md text-on-surface-variant">
             Novo no Shadow?
             <a
-              class="text-secondary font-semibold hover:text-secondary-fixed transition-colors ml-1"
+              class="ml-1 font-semibold text-secondary transition-colors hover:text-secondary-fixed"
               href="#"
               >Criar conta</a
             >
@@ -1200,21 +1201,21 @@ Modais / Stacks sobre as tabs:
         </div>
       </div>
       <!-- System Status Footer -->
-      <div class="mt-lg flex justify-between items-center px-4">
+      <div class="mt-lg flex items-center justify-between px-4">
         <div class="flex items-center gap-2">
-          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <div class="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
           <span class="font-label-sm text-label-sm text-outline"
             >PROTOCOLO ATIVO</span
           >
         </div>
         <div class="flex gap-4">
           <span
-            class="material-symbols-outlined text-outline text-sm"
+            class="material-symbols-outlined text-sm text-outline"
             data-icon="shield_lock"
             >shield_lock</span
           >
           <span
-            class="material-symbols-outlined text-outline text-sm"
+            class="material-symbols-outlined text-sm text-outline"
             data-icon="verified_user"
             >verified_user</span
           >
@@ -1223,10 +1224,10 @@ Modais / Stacks sobre as tabs:
     </main>
     <!-- Visual Anchor - Cyber Athlete Imagery (Hidden on small screens, decorative on large) -->
     <div
-      class="hidden lg:block absolute bottom-10 right-10 w-[300px] h-[300px] opacity-10 pointer-events-none"
+      class="pointer-events-none absolute bottom-10 right-10 hidden h-[300px] w-[300px] opacity-10 lg:block"
     >
       <img
-        class="w-full h-full object-contain grayscale"
+        class="h-full w-full object-contain grayscale"
         data-alt="A futuristic, high-contrast digital illustration of a cybernetic athlete performing a focused sprint within a dark void. Glowing purple neon data streams and polygonal geometric patterns swirl around the figure, emphasizing speed and technological enhancement. The aesthetic is clean, minimalist, and intensely modern, mirroring the deep blacks and electric purple accents of the Shadow Leveling brand identity. Dramatic side-lighting creates sharp silhouettes and a professional gaming command center atmosphere."
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3r7PVG1xXBZYjFqPZNHHf56061tGU-Dywl61jHjiBZbZ0XMUm7YwWxCC-cBthI2TnDOMYtaemJe2-5DjVjANTYLZyFYU8al6qk9Sb7tqJgXtNwRdUxlXnHom3iMBKsqIj4tKqoMxWOh5_TRc-iCEwt1dSZX62EOCg6nEy41OeZ5na-y9zM8LuIn-8GVa0qupMhmTm98UcEaeqY9A5z7Uw3mauNLn4w7WycHIzyIf6tGf7bOeAOJxzU-9TAHh3okZYx-4vMFNVTPo"
       />
@@ -1421,29 +1422,29 @@ Modais / Stacks sobre as tabs:
     </style>
   </head>
   <body
-    class="bg-background text-on-background min-h-screen flex flex-col font-body-md selection:bg-primary selection:text-on-primary"
+    class="text-on-background font-body-md flex min-h-screen flex-col bg-background selection:bg-primary selection:text-on-primary"
   >
     <!-- Hero Branding Section (Transactional Suppression of Nav) -->
-    <header class="w-full flex justify-center pt-xl pb-lg">
+    <header class="flex w-full justify-center pb-lg pt-xl">
       <h1
-        class="font-display-md text-display-md text-primary uppercase tracking-widest drop-shadow-[0_0_12px_rgba(208,188,255,0.4)]"
+        class="font-display-md text-display-md uppercase tracking-widest text-primary drop-shadow-[0_0_12px_rgba(208,188,255,0.4)]"
       >
         SHADOW LEVELING
       </h1>
     </header>
-    <main class="flex-grow flex items-center justify-center px-margin-mobile">
+    <main class="px-margin-mobile flex flex-grow items-center justify-center">
       <div
-        class="w-full max-w-[440px] bg-surface-container-low p-lg md:p-xl rounded-xl border border-outline-variant/20 relative overflow-hidden"
+        class="bg-surface-container-low relative w-full max-w-[440px] overflow-hidden rounded-xl border border-outline-variant/20 p-lg md:p-xl"
       >
         <!-- Cyber Decor Elements -->
         <div
-          class="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2"
+          class="absolute right-0 top-0 h-24 w-24 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/5 blur-3xl"
         ></div>
         <div
-          class="absolute bottom-0 left-0 w-32 h-32 bg-secondary/5 blur-3xl rounded-full translate-y-1/2 -translate-x-1/2"
+          class="absolute bottom-0 left-0 h-32 w-32 -translate-x-1/2 translate-y-1/2 rounded-full bg-secondary/5 blur-3xl"
         ></div>
         <!-- Title & Subtitle -->
-        <div class="text-center mb-xl">
+        <div class="mb-xl text-center">
           <h2
             class="font-headline-lg-mobile text-headline-lg-mobile text-on-background mb-sm uppercase tracking-tight"
           >
@@ -1451,7 +1452,7 @@ Modais / Stacks sobre as tabs:
           </h2>
           <p class="font-body-md text-on-surface-variant">
             Insira o código de 6 dígitos enviado para
-            <span class="text-secondary font-semibold">jo***@gmail.com</span>
+            <span class="font-semibold text-secondary">jo***@gmail.com</span>
           </p>
         </div>
         <!-- OTP Input Section -->
@@ -1459,42 +1460,42 @@ Modais / Stacks sobre as tabs:
           <div class="flex justify-between gap-2 md:gap-sm">
             <!-- Individual digit boxes -->
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
               type="text"
             />
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
               type="text"
             />
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
               type="text"
             />
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
               type="text"
             />
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
               type="text"
             />
             <input
-              class="otp-input w-full aspect-square text-center font-display-md text-display-md bg-surface-container-highest border border-outline-variant rounded-lg text-primary transition-all duration-200 outline-none focus:ring-0"
+              class="otp-input font-display-md bg-surface-container-highest aspect-square w-full rounded-lg border border-outline-variant text-center text-display-md text-primary outline-none transition-all duration-200 focus:ring-0"
               inputmode="numeric"
               maxlength="1"
               pattern="[0-9]*"
@@ -1503,7 +1504,7 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Action Button -->
           <button
-            class="w-full bg-primary text-on-primary py-md px-lg rounded-lg font-label-md text-label-md uppercase tracking-widest hover:brightness-110 active:scale-[0.98] transition-all glow-primary flex items-center justify-center gap-sm"
+            class="font-label-md glow-primary flex w-full items-center justify-center gap-sm rounded-lg bg-primary px-lg py-md text-label-md uppercase tracking-widest text-on-primary transition-all hover:brightness-110 active:scale-[0.98]"
             type="submit"
           >
             <span>Verificar</span>
@@ -1513,40 +1514,40 @@ Modais / Stacks sobre as tabs:
           </button>
         </form>
         <!-- Re-send Section -->
-        <div class="mt-xl text-center space-y-md">
+        <div class="mt-xl space-y-md text-center">
           <p class="font-body-md text-on-surface-variant">
             Não recebeu o código?
           </p>
           <a
-            class="inline-block text-secondary font-label-md text-label-md uppercase tracking-wider hover:text-primary transition-colors duration-200 relative group"
+            class="font-label-md group relative inline-block text-label-md uppercase tracking-wider text-secondary transition-colors duration-200 hover:text-primary"
             href="#"
           >
             Reenviar código
             <span
-              class="absolute bottom-0 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full"
+              class="absolute bottom-0 left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full"
             ></span>
           </a>
         </div>
       </div>
     </main>
     <!-- Footer Visual Accents -->
-    <footer class="py-lg flex flex-col items-center gap-sm">
+    <footer class="flex flex-col items-center gap-sm py-lg">
       <div class="flex items-center gap-xs">
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary/40"></span>
-        <span class="w-1.5 h-1.5 rounded-full bg-secondary/20"></span>
+        <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+        <span class="h-1.5 w-1.5 rounded-full bg-secondary/40"></span>
+        <span class="h-1.5 w-1.5 rounded-full bg-secondary/20"></span>
       </div>
       <p
-        class="font-label-sm text-label-sm text-outline uppercase tracking-tighter opacity-50"
+        class="font-label-sm text-label-sm uppercase tracking-tighter text-outline opacity-50"
       >
         Quest Authorization Module v2.4.0
       </p>
     </footer>
     <!-- Background Atmospheric Image -->
-    <div class="fixed inset-0 -z-10 pointer-events-none opacity-20">
+    <div class="pointer-events-none fixed inset-0 -z-10 opacity-20">
       <img
         alt=""
-        class="w-full h-full object-cover grayscale brightness-[0.2]"
+        class="h-full w-full object-cover brightness-[0.2] grayscale"
         data-alt="A dark cinematic background featuring blurred digital HUD elements and high-tech interface lines in a deep space setting. The lighting is dominated by subtle, moody purple and cyan glows that bleed from the edges of the frame. The overall atmosphere is intense and high-performance, reflecting a futuristic cyber-athletic command center aesthetic with clean minimalist structures."
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbUcmTW9xpeAjKj5jPlWRgM5ck371GB5wB15U2QDOrVsl7cnyOM1z2fNBQNYJa2dbuv9Hs0aL4VxReUHr4i7mm2Z-UWCZxeHfDO4of8dPWyfutsaJgj-XS1d2hPMSTy6iqOnoMS5fy14KA7kHOU81hkDrClICL17XI6iwyQS7H3zb6pP6uD7IGZ8LwSWRDOnb8i4nFGoZGebDYiRXqkEnz70WtD6-jEsjk1Bnkvx5InBt8FtCk7rTyNDxeA1dfEt6gg9EBuCedJzk"
       />
@@ -1756,48 +1757,48 @@ Modais / Stacks sobre as tabs:
     </style>
   </head>
   <body
-    class="bg-background text-on-background min-h-screen font-body-md flex flex-col"
+    class="text-on-background font-body-md flex min-h-screen flex-col bg-background"
   >
     <!-- Hero Backdrop / Visual Decoration -->
-    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-      <div class="absolute inset-0 cyber-grid"></div>
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      <div class="cyber-grid absolute inset-0"></div>
       <div
-        class="absolute -top-1/4 -right-1/4 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full"
+        class="absolute -right-1/4 -top-1/4 h-[600px] w-[600px] rounded-full bg-primary/10 blur-[120px]"
       ></div>
       <div
-        class="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-secondary/5 blur-[120px] rounded-full"
+        class="absolute -bottom-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-secondary/5 blur-[120px]"
       ></div>
     </div>
     <main
-      class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile py-xl"
+      class="px-margin-mobile relative z-10 flex flex-grow items-center justify-center py-xl"
     >
       <div class="w-full max-w-md">
         <!-- Brand Identity -->
         <div class="mb-xl text-center">
           <h2
-            class="font-display-md text-display-md text-primary drop-shadow-[0_0_12px_rgba(208,188,255,0.4)] tracking-tight mb-sm"
+            class="font-display-md mb-sm text-display-md tracking-tight text-primary drop-shadow-[0_0_12px_rgba(208,188,255,0.4)]"
           >
             SHADOW LEVELING
           </h2>
           <div
-            class="inline-flex items-center gap-base px-md py-xs rounded-full bg-surface-container-high border border-outline-variant/30"
+            class="gap-base bg-surface-container-high inline-flex items-center rounded-full border border-outline-variant/30 px-md py-xs"
           >
             <span class="material-symbols-outlined text-[14px] text-secondary"
               >shield</span
             >
             <span
-              class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-widest"
+              class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant"
               >Iniciando Protocolo de Registro</span
             >
           </div>
         </div>
         <!-- Registration Card -->
         <div
-          class="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-lg shadow-2xl backdrop-blur-sm"
+          class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 p-lg shadow-2xl backdrop-blur-sm"
         >
           <header class="mb-lg">
             <h1
-              class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs"
+              class="font-headline-lg-mobile text-headline-lg-mobile mb-xs text-on-surface"
             >
               Criar Conta
             </h1>
@@ -1809,7 +1810,7 @@ Modais / Stacks sobre as tabs:
             <!-- Email Field -->
             <div class="space-y-xs">
               <label
-                class="block font-label-md text-label-md uppercase text-on-surface-variant tracking-wider"
+                class="font-label-md block text-label-md uppercase tracking-wider text-on-surface-variant"
               >
                 Email de Recrutamento
               </label>
@@ -1819,7 +1820,7 @@ Modais / Stacks sobre as tabs:
                   >mail</span
                 >
                 <input
-                  class="w-full bg-background border border-outline-variant/30 rounded-lg py-md pl-xl pr-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none"
+                  class="w-full rounded-lg border border-outline-variant/30 bg-background py-md pl-xl pr-md text-on-surface outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
                   placeholder="nome@exemplo.com"
                   type="email"
                 />
@@ -1828,7 +1829,7 @@ Modais / Stacks sobre as tabs:
             <!-- Password Field -->
             <div class="space-y-xs">
               <label
-                class="block font-label-md text-label-md uppercase text-on-surface-variant tracking-wider"
+                class="font-label-md block text-label-md uppercase tracking-wider text-on-surface-variant"
               >
                 Código de Acesso
               </label>
@@ -1838,20 +1839,20 @@ Modais / Stacks sobre as tabs:
                   >lock</span
                 >
                 <input
-                  class="w-full bg-background border border-outline-variant/30 rounded-lg py-md pl-xl pr-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none"
+                  class="w-full rounded-lg border border-outline-variant/30 bg-background py-md pl-xl pr-md text-on-surface outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
                   placeholder="••••••••"
                   type="password"
                 />
               </div>
               <!-- Strength Indicator -->
               <div class="pt-sm">
-                <div class="flex justify-between items-center mb-xs">
+                <div class="mb-xs flex items-center justify-between">
                   <span
-                    class="font-label-sm text-label-sm text-on-surface-variant uppercase"
+                    class="font-label-sm text-label-sm uppercase text-on-surface-variant"
                     >Nível de Segurança</span
                   >
                   <span
-                    class="font-label-sm text-label-sm text-primary uppercase"
+                    class="font-label-sm text-label-sm uppercase text-primary"
                     >Intermediário</span
                   >
                 </div>
@@ -1866,7 +1867,7 @@ Modais / Stacks sobre as tabs:
             <!-- Confirm Password Field -->
             <div class="space-y-xs">
               <label
-                class="block font-label-md text-label-md uppercase text-on-surface-variant tracking-wider"
+                class="font-label-md block text-label-md uppercase tracking-wider text-on-surface-variant"
               >
                 Confirmar Código
               </label>
@@ -1876,7 +1877,7 @@ Modais / Stacks sobre as tabs:
                   >verified_user</span
                 >
                 <input
-                  class="w-full bg-background border border-outline-variant/30 rounded-lg py-md pl-xl pr-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none"
+                  class="w-full rounded-lg border border-outline-variant/30 bg-background py-md pl-xl pr-md text-on-surface outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary"
                   placeholder="••••••••"
                   type="password"
                 />
@@ -1885,7 +1886,7 @@ Modais / Stacks sobre as tabs:
             <!-- Primary Action -->
             <div class="pt-md">
               <button
-                class="w-full bg-primary text-on-primary font-title-md text-title-md py-lg rounded-lg shadow-[0_4px_15px_rgba(208,188,255,0.3)] active:scale-[0.98] transition-all hover:brightness-110 flex justify-center items-center gap-sm"
+                class="font-title-md flex w-full items-center justify-center gap-sm rounded-lg bg-primary py-lg text-title-md text-on-primary shadow-[0_4px_15px_rgba(208,188,255,0.3)] transition-all hover:brightness-110 active:scale-[0.98]"
                 type="submit"
               >
                 Criar conta
@@ -1895,12 +1896,12 @@ Modais / Stacks sobre as tabs:
           </form>
           <!-- Alternative Action -->
           <div
-            class="mt-xl pt-lg border-t border-outline-variant/10 text-center"
+            class="mt-xl border-t border-outline-variant/10 pt-lg text-center"
           >
             <p class="font-body-md text-on-surface-variant">
               Já possui credenciais?
               <a
-                class="text-secondary font-title-md hover:underline decoration-secondary/30 ml-xs"
+                class="font-title-md ml-xs text-secondary decoration-secondary/30 hover:underline"
                 href="#"
                 >Já tenho conta</a
               >
@@ -1909,21 +1910,21 @@ Modais / Stacks sobre as tabs:
         </div>
         <!-- Decorative Footer -->
         <div
-          class="mt-xl flex justify-center gap-xl opacity-40 grayscale contrast-125"
+          class="mt-xl flex justify-center gap-xl opacity-40 contrast-125 grayscale"
         >
           <img
             alt="Energy"
-            class="w-6 h-6"
+            class="h-6 w-6"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb3h4Zx_yc5zhAmCyuRp6bPWOHB3xNc3zd3cpBTUpD1MxhBLBHwKATOu4srYJ9nfC2ZSBquuI8GR47TpysS9AnWTO0xJDaR7oi2cF62xMrvj0Xh_joj7tyM_V3gsRbTpwMLxPuGLtA3lDpaoet7QaDkF1By5m_3pK7m1O3YYnWqWOwDRQqHbR-w8r4BgeJ3Kcx_gx9hICeHAHxRveKhEWdxz_BpdOVKxUjWHVmw2Z9ctmAeLa11Fb7mG4tdF8hfg2nz5iJuy8fQdE"
           />
           <img
             alt="Def"
-            class="w-6 h-6"
+            class="h-6 w-6"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM6hGTlIzruRy9-I4sH-z-BuTITIwQjXfXrdCcz7Uj8NRsJH9w7JJC2Y1E5-D54ODcHWdTyIWfVS7YrjQm7iGFGvfao-NAgiDIlTiNDR3xIBK6RAlgpPSEnU005eJ_w_CDjtHn_NQA2UhMw44QbJ8989r5c6JTudjCiZ1PdDuQJHcF1MpeX-d1WjhYUVJK1fM9cThJj5x4AKTUZY12UEylwcHwOCtGwYfVHMjuJ6eUfsX7vJWvtEoa98JcJ9c8bWG99q462MS5QEo"
           />
           <img
             alt="Atk"
-            class="w-6 h-6"
+            class="h-6 w-6"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxwBOLeqi_s5Hv0iEra7w4LRz_MGbySJaFPZyjlg_bvT8EtmIR1On955OFWudyxzKGMOSxieSNcafvJB99mWgCWJmQ3NDN51sJbhnCuLrMnhIAHK0184NGrBrSoawQzAbfB5TmnAfe-s3r_ND7al7_5RbM2J3Y1Wvre44-UcaB4Z1h356FOVmwuixWD72eV3mSsnIKD3ygcKbGecT5o7BF9pap3YrMvztRXlzqpuFMAhhrmjjvSWZGQRiew0CUmi1rzxv0uq2ch84"
           />
         </div>
@@ -1931,10 +1932,10 @@ Modais / Stacks sobre as tabs:
     </main>
     <!-- Background Decoration Image -->
     <div
-      class="fixed bottom-0 right-0 w-full md:w-1/2 h-full opacity-10 pointer-events-none z-[-1]"
+      class="pointer-events-none fixed bottom-0 right-0 z-[-1] h-full w-full opacity-10 md:w-1/2"
     >
       <img
-        class="w-full h-full object-cover object-center"
+        class="h-full w-full object-cover object-center"
         data-alt="A moody, high-contrast dark gym interior with glowing purple LED strips outlining the modern equipment. The atmosphere is intense and elite, with a polished concrete floor reflecting the neon lights. The aesthetic is cyber-athletic, clean, and futuristic, perfectly matching a high-end RPG fitness application's dark mode visual language."
         src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoJD57nG-vkq5jKfDdKdxtoRBYMWK458SAAVFftRnKO9-XEDedUti3jtXiL__jgCJbSciJmCphxIM30bhFBh5Lbtyzbyt2YLzaTEe4fdGSSksuBOe5ImDXIA5sstxnBdh9N0cBp5HD5FiHyoQSnfB-3UinVRbLWxT3GFGhqblqru1tha7Yz1pr61KC6q9FzW92P9zNpmFx6WTxbWJvGrU-TRiKYW94AiEokWfclzx0y5BsSUShexVLBWjRnnPvX0WjSqmgoi9xGHw"
       />
@@ -2131,23 +2132,23 @@ Modais / Stacks sobre as tabs:
       }
     </style>
   </head>
-  <body class="bg-background text-on-background min-h-screen pb-24">
+  <body class="text-on-background min-h-screen bg-background pb-24">
     <!-- TopAppBar -->
     <header
-      class="bg-background dark:bg-background text-primary dark:text-primary border-b border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-50"
+      class="px-margin-mobile md:px-margin-desktop sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-background text-primary dark:bg-background dark:text-primary"
     >
       <div class="flex items-center gap-3">
         <div
-          class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-primary transition-all duration-200 active:scale-95"
+          class="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary transition-all duration-200 active:scale-95"
         >
           <img
             alt="User avatar"
-            class="w-full h-full object-cover"
+            class="h-full w-full object-cover"
             data-alt="A professional close-up portrait of a determined young man with short hair, lit by dramatic cinematic side lighting in a dark gym environment. The color palette is dominated by deep blacks and cool purples, echoing a high-performance cyber-athletic aesthetic. The focus is sharp on his confident expression, conveying a sense of discipline and elite focus."
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjSamdS0fesJ81-JFy6z0eJZowA-8mw6_d3QUvXBqPSlfzS_s2MfqVVBJgA24IzipPOM-OzTkmUvZgHGq0ZLXWC3GtJ06g4vR80ID_eVJDYKohrBxCWYV4cjhmhAbaPyDQe8QipEf2WPhMYucwXIRc9WbxIJC70J-3_hiZ6MpSPDKK4lLmNNETg1R9kQXVnRN0VBfFDJbW8b7Q8MNkg1ptpOTSrzA6h74B-xM3f8hxfsxEuhmr77Wq0WuPjXZp9OpnrmKF0kWPKpM"
           />
           <div
-            class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary rounded-full border border-background"
+            class="absolute bottom-0 right-0 h-3 w-3 rounded-full border border-background bg-tertiary"
           ></div>
         </div>
         <div class="flex flex-col">
@@ -2160,24 +2161,24 @@ Modais / Stacks sobre as tabs:
         </div>
       </div>
       <button
-        class="material-symbols-outlined text-primary hover:bg-surface-container-high p-2 rounded-full transition-all duration-200 active:scale-95"
+        class="material-symbols-outlined hover:bg-surface-container-high rounded-full p-2 text-primary transition-all duration-200 active:scale-95"
         data-icon="notifications"
       >
         notifications
       </button>
     </header>
     <main
-      class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-lg space-y-xl"
+      class="px-margin-mobile md:px-margin-desktop mx-auto max-w-4xl space-y-xl py-lg"
     >
       <!-- XP / Progress Section -->
       <section
-        class="bg-surface-container-low rounded-xl p-lg border border-outline-variant inner-glow relative overflow-hidden"
+        class="bg-surface-container-low inner-glow relative overflow-hidden rounded-xl border border-outline-variant p-lg"
       >
-        <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-        <div class="flex flex-col md:flex-row items-center gap-xl">
+        <div class="absolute left-0 top-0 h-full w-1 bg-primary"></div>
+        <div class="flex flex-col items-center gap-xl md:flex-row">
           <!-- Circular Progress -->
-          <div class="relative w-48 h-48 flex items-center justify-center">
-            <svg class="w-full h-full transform -rotate-90">
+          <div class="relative flex h-48 w-48 items-center justify-center">
+            <svg class="h-full w-full -rotate-90 transform">
               <circle
                 class="text-surface-container-highest"
                 cx="96"
@@ -2188,7 +2189,7 @@ Modais / Stacks sobre as tabs:
                 stroke-width="12"
               ></circle>
               <circle
-                class="text-primary ring-glow"
+                class="ring-glow text-primary"
                 cx="96"
                 cy="96"
                 fill="transparent"
@@ -2204,7 +2205,7 @@ Modais / Stacks sobre as tabs:
               class="absolute inset-0 flex flex-col items-center justify-center"
             >
               <span
-                class="font-display-md text-display-md text-primary italic uppercase"
+                class="font-display-md text-display-md uppercase italic text-primary"
                 >3 / 8</span
               >
               <span
@@ -2216,26 +2217,26 @@ Modais / Stacks sobre as tabs:
           <div class="flex-1 space-y-md">
             <div>
               <h2
-                class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg italic uppercase text-primary"
+                class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile uppercase italic text-primary md:text-headline-lg"
               >
                 Próximo Nível
               </h2>
               <p
-                class="font-body-md text-body-md text-on-surface-variant mt-base"
+                class="font-body-md mt-base text-body-md text-on-surface-variant"
               >
                 Complete as missões de hoje para atingir o Nível 24.
               </p>
             </div>
             <div class="space-y-sm">
-              <div class="flex justify-between font-label-md text-label-md">
+              <div class="font-label-md flex justify-between text-label-md">
                 <span>RANK: ELITE</span>
                 <span>1,240 / 1,500 XP</span>
               </div>
               <div
-                class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden"
+                class="bg-surface-container-highest h-3 w-full overflow-hidden rounded-full"
               >
                 <div
-                  class="h-full bg-secondary w-[82%] shadow-[0_0_10px_rgba(76,215,246,0.5)]"
+                  class="h-full w-[82%] bg-secondary shadow-[0_0_10px_rgba(76,215,246,0.5)]"
                 ></div>
               </div>
             </div>
@@ -2244,25 +2245,25 @@ Modais / Stacks sobre as tabs:
       </section>
       <!-- Treinos do Dia -->
       <section class="space-y-md">
-        <div class="flex justify-between items-end">
+        <div class="flex items-end justify-between">
           <h3
             class="font-label-md text-label-md uppercase tracking-widest text-primary"
           >
             Treinos do Dia
           </h3>
           <a
-            class="font-label-sm text-label-sm text-secondary hover:underline uppercase"
+            class="font-label-sm text-label-sm uppercase text-secondary hover:underline"
             href="#"
             >Ver Tudo</a
           >
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <div class="grid grid-cols-1 gap-md md:grid-cols-2">
           <!-- Training Card 1 -->
           <div
-            class="bg-surface-container rounded-xl p-md flex items-center gap-md border border-outline-variant hover:border-secondary transition-all duration-300"
+            class="flex items-center gap-md rounded-xl border border-outline-variant bg-surface-container p-md transition-all duration-300 hover:border-secondary"
           >
             <div
-              class="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center"
+              class="bg-surface-container-highest flex h-16 w-16 items-center justify-center rounded-lg"
             >
               <span
                 class="material-symbols-outlined text-secondary"
@@ -2274,28 +2275,28 @@ Modais / Stacks sobre as tabs:
               <h4 class="font-title-md text-title-md text-on-surface">
                 Full Body A
               </h4>
-              <div class="flex gap-sm items-center mt-xs">
+              <div class="mt-xs flex items-center gap-sm">
                 <span
-                  class="bg-error-container/10 text-error font-label-sm text-label-sm px-2 py-0.5 rounded uppercase"
+                  class="font-label-sm rounded bg-error-container/10 px-2 py-0.5 text-label-sm uppercase text-error"
                   >Pendente</span
                 >
-                <span class="text-on-surface-variant text-label-md"
+                <span class="text-label-md text-on-surface-variant"
                   >45 min</span
                 >
               </div>
             </div>
             <button
-              class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-colors"
+              class="flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant transition-colors hover:bg-secondary hover:text-on-secondary"
             >
               <span class="material-symbols-outlined">play_arrow</span>
             </button>
           </div>
           <!-- Training Card 2 -->
           <div
-            class="bg-surface-container/50 rounded-xl p-md flex items-center gap-md border border-outline-variant opacity-80"
+            class="flex items-center gap-md rounded-xl border border-outline-variant bg-surface-container/50 p-md opacity-80"
           >
             <div
-              class="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center"
+              class="bg-surface-container-highest flex h-16 w-16 items-center justify-center rounded-lg"
             >
               <span class="material-symbols-outlined text-on-surface-variant"
                 >directions_run</span
@@ -2305,12 +2306,12 @@ Modais / Stacks sobre as tabs:
               <h4 class="font-title-md text-title-md text-on-surface">
                 Cardio Leve
               </h4>
-              <div class="flex gap-sm items-center mt-xs">
+              <div class="mt-xs flex items-center gap-sm">
                 <span
-                  class="bg-secondary-container/10 text-secondary font-label-sm text-label-sm px-2 py-0.5 rounded uppercase"
+                  class="font-label-sm rounded bg-secondary-container/10 px-2 py-0.5 text-label-sm uppercase text-secondary"
                   >Concluído</span
                 >
-                <span class="text-on-surface-variant text-label-md"
+                <span class="text-label-md text-on-surface-variant"
                   >20 min</span
                 >
               </div>
@@ -2333,10 +2334,10 @@ Modais / Stacks sobre as tabs:
         <div class="space-y-sm">
           <!-- Mission 1 -->
           <div
-            class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:bg-surface-container transition-colors cursor-pointer"
+            class="bg-surface-container-lowest group flex cursor-pointer items-center gap-md rounded-xl border border-outline-variant p-md transition-colors hover:bg-surface-container"
           >
             <div
-              class="w-10 h-10 flex items-center justify-center rounded-full bg-[#1b5e20]/20"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-[#1b5e20]/20"
             >
               <span
                 class="material-symbols-outlined text-[#4caf50]"
@@ -2345,7 +2346,7 @@ Modais / Stacks sobre as tabs:
               >
             </div>
             <div class="flex-1">
-              <span class="font-label-sm text-label-sm text-[#4caf50] uppercase"
+              <span class="font-label-sm text-label-sm uppercase text-[#4caf50]"
                 >Fácil</span
               >
               <h5 class="font-body-md text-body-md font-bold text-on-surface">
@@ -2358,10 +2359,10 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Mission 2 -->
           <div
-            class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:bg-surface-container transition-colors cursor-pointer"
+            class="bg-surface-container-lowest group flex cursor-pointer items-center gap-md rounded-xl border border-outline-variant p-md transition-colors hover:bg-surface-container"
           >
             <div
-              class="w-10 h-10 flex items-center justify-center rounded-full bg-[#fbc02d]/20"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-[#fbc02d]/20"
             >
               <span
                 class="material-symbols-outlined text-[#fbc02d]"
@@ -2370,7 +2371,7 @@ Modais / Stacks sobre as tabs:
               >
             </div>
             <div class="flex-1">
-              <span class="font-label-sm text-label-sm text-[#fbc02d] uppercase"
+              <span class="font-label-sm text-label-sm uppercase text-[#fbc02d]"
                 >Médio</span
               >
               <h5 class="font-body-md text-body-md font-bold text-on-surface">
@@ -2383,10 +2384,10 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Mission 3 (Done) -->
           <div
-            class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md opacity-40"
+            class="bg-surface-container-lowest group flex items-center gap-md rounded-xl border border-outline-variant p-md opacity-40"
           >
             <div
-              class="w-10 h-10 flex items-center justify-center rounded-full bg-[#4caf50]/10"
+              class="flex h-10 w-10 items-center justify-center rounded-full bg-[#4caf50]/10"
             >
               <span
                 class="material-symbols-outlined text-[#4caf50]"
@@ -2395,7 +2396,7 @@ Modais / Stacks sobre as tabs:
               >
             </div>
             <div class="flex-1">
-              <span class="font-label-sm text-label-sm text-[#4caf50] uppercase"
+              <span class="font-label-sm text-label-sm uppercase text-[#4caf50]"
                 >Fácil</span
               >
               <h5
@@ -2413,11 +2414,11 @@ Modais / Stacks sobre as tabs:
     </main>
     <!-- BottomNavBar -->
     <nav
-      class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-4 pb-safe bg-surface-container dark:bg-surface-container border-t border-outline-variant bg-surface-container-low shadow-[0_-4px_10px_rgba(208,188,255,0.1)] rounded-t-xl"
+      class="pb-safe bg-surface-container-low fixed bottom-0 left-0 z-50 flex h-20 w-full items-center justify-around rounded-t-xl border-t border-outline-variant bg-surface-container px-4 shadow-[0_-4px_10px_rgba(208,188,255,0.1)] dark:bg-surface-container"
     >
       <!-- Hoje (Active) -->
       <a
-        class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center font-bold text-primary transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-primary"
         href="#"
       >
         <span
@@ -2431,7 +2432,7 @@ Modais / Stacks sobre as tabs:
       </a>
       <!-- Missões -->
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:opacity-100 hover:text-secondary dark:hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary hover:opacity-100 active:scale-90 dark:text-on-surface-variant dark:hover:text-secondary"
         href="#"
       >
         <span class="material-symbols-outlined mb-1">swords</span>
@@ -2441,7 +2442,7 @@ Modais / Stacks sobre as tabs:
       </a>
       <!-- Treinos -->
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:opacity-100 hover:text-secondary dark:hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary hover:opacity-100 active:scale-90 dark:text-on-surface-variant dark:hover:text-secondary"
         href="#"
       >
         <span class="material-symbols-outlined mb-1">fitness_center</span>
@@ -2451,7 +2452,7 @@ Modais / Stacks sobre as tabs:
       </a>
       <!-- Progresso -->
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:opacity-100 hover:text-secondary dark:hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary hover:opacity-100 active:scale-90 dark:text-on-surface-variant dark:hover:text-secondary"
         href="#"
       >
         <span class="material-symbols-outlined mb-1">monitoring</span>
@@ -2461,7 +2462,7 @@ Modais / Stacks sobre as tabs:
       </a>
       <!-- Perfil -->
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:opacity-100 hover:text-secondary dark:hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary hover:opacity-100 active:scale-90 dark:text-on-surface-variant dark:hover:text-secondary"
         href="#"
       >
         <span class="material-symbols-outlined mb-1">person</span>
@@ -2472,7 +2473,7 @@ Modais / Stacks sobre as tabs:
     </nav>
     <!-- Contextual FAB -->
     <button
-      class="fixed right-margin-mobile bottom-24 w-14 h-14 bg-primary text-on-primary rounded-xl shadow-lg flex items-center justify-center transition-all duration-200 active:scale-95 z-40"
+      class="right-margin-mobile fixed bottom-24 z-40 flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg transition-all duration-200 active:scale-95"
     >
       <span
         class="material-symbols-outlined"
@@ -2683,18 +2684,18 @@ Modais / Stacks sobre as tabs:
       }
     </style>
   </head>
-  <body class="bg-background text-on-background min-h-screen pb-24">
+  <body class="text-on-background min-h-screen bg-background pb-24">
     <!-- TopAppBar -->
     <header
-      class="bg-background dark:bg-background border-b border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40"
+      class="px-margin-mobile md:px-margin-desktop sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-background dark:bg-background"
     >
       <div class="flex items-center gap-3">
         <div
-          class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-primary"
+          class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-primary bg-primary-container"
         >
           <img
             alt="User avatar"
-            class="w-full h-full object-cover"
+            class="h-full w-full object-cover"
             data-alt="A professional close-up portrait of a determined athlete in a dark gym environment. Soft neon purple backlighting highlights the contours of the face and shoulders, creating a high-performance cyber-athletic aesthetic. The lighting is moody and focused, with deep shadows and vibrant lavender accents that reflect the elite fitness brand identity."
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDX7xAVt6_eBmWqTph2GPRom_rj-mBMnRrep7AcaqcaJZ67HhkEDlRJey9vKdERUCj-2a5T1HnyqIwTyJq0NeFUOCgVYu43ZYDxwO7zuW50iaCQnfoajKu_J1Koo0nrpydXNG4Fd-Hm8F4UtJUotBwgxbm65lE2GZ1ZsRQgUUZcGi2-8JZN5G-4-agfaRg2LTIbDu6eibDqovY7Df77CramaBpyQp8w2Ae9Nvwaj9nK4_i6kxTiWJlA4pEWnguPiN-y4oPBs_JSmjQ"
           />
@@ -2706,69 +2707,69 @@ Modais / Stacks sobre as tabs:
         </h1>
       </div>
       <button
-        class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-primary hover:bg-primary hover:text-on-primary transition-all duration-200 active:scale-95 shadow-sm"
+        class="bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-full text-primary shadow-sm transition-all duration-200 hover:bg-primary hover:text-on-primary active:scale-95"
       >
         <span class="material-symbols-outlined">add</span>
       </button>
     </header>
     <!-- Main Content Canvas -->
-    <main class="px-margin-mobile md:px-margin-desktop py-lg max-w-5xl mx-auto">
+    <main class="px-margin-mobile md:px-margin-desktop mx-auto max-w-5xl py-lg">
       <!-- Search & Filter Row -->
-      <div class="flex gap-md mb-lg">
+      <div class="mb-lg flex gap-md">
         <div
-          class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-sm flex items-center gap-sm"
+          class="bg-surface-container-lowest flex flex-1 items-center gap-sm rounded-xl border border-outline-variant px-md py-sm"
         >
           <span class="material-symbols-outlined text-on-surface-variant"
             >search</span
           >
           <input
-            class="bg-transparent border-none focus:ring-0 text-body-md w-full placeholder:text-on-surface-variant"
+            class="w-full border-none bg-transparent text-body-md placeholder:text-on-surface-variant focus:ring-0"
             placeholder="Buscar treino..."
             type="text"
           />
         </div>
         <button
-          class="bg-surface-container border border-outline-variant rounded-xl px-md flex items-center justify-center text-primary"
+          class="flex items-center justify-center rounded-xl border border-outline-variant bg-surface-container px-md text-primary"
         >
           <span class="material-symbols-outlined">tune</span>
         </button>
       </div>
       <!-- Section: Treinos Hoje -->
       <section class="mb-xl">
-        <div class="flex items-center justify-between mb-md">
+        <div class="mb-md flex items-center justify-between">
           <h2
-            class="font-label-md text-label-md uppercase text-secondary tracking-[0.2em]"
+            class="font-label-md text-label-md uppercase tracking-[0.2em] text-secondary"
           >
             Programado para Hoje
           </h2>
-          <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+          <span class="h-2 w-2 animate-pulse rounded-full bg-secondary"></span>
         </div>
         <!-- Active Workout Card -->
         <div
-          class="bg-surface-container rounded-xl border-l-4 border-secondary overflow-hidden shadow-xl transition-all duration-300 hover:translate-x-1"
+          class="overflow-hidden rounded-xl border-l-4 border-secondary bg-surface-container shadow-xl transition-all duration-300 hover:translate-x-1"
         >
-          <div class="p-md flex flex-col gap-lg items-start">
+          <div class="flex flex-col items-start gap-lg p-md">
             <div class="flex-1">
-              <div class="flex justify-between items-start mb-base">
+              <div class="mb-base flex items-start justify-between">
                 <h3
-                  class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface"
+                  class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile text-on-surface md:text-headline-lg"
                 >
                   Hipertrofia A
                 </h3>
                 <span
-                  class="font-label-sm text-label-sm text-secondary uppercase tracking-widest"
+                  class="font-label-sm text-label-sm uppercase tracking-widest text-secondary"
                   >Ativo</span
                 >
               </div>
               <p
-                class="font-label-md text-label-md text-on-surface-variant mb-md"
+                class="font-label-md mb-md text-label-md text-on-surface-variant"
               >
                 Peito, Tríceps e Ombro
               </p>
-              <div class="flex gap-xl mb-lg">
+              <div class="mb-lg flex gap-xl">
                 <div class="flex items-center gap-xs">
                   <span
-                    class="material-symbols-outlined text-outline text-[18px]"
+                    class="material-symbols-outlined text-[18px] text-outline"
                     >fitness_center</span
                   >
                   <span class="font-label-sm text-label-sm text-on-surface"
@@ -2777,7 +2778,7 @@ Modais / Stacks sobre as tabs:
                 </div>
                 <div class="flex items-center gap-xs">
                   <span
-                    class="material-symbols-outlined text-outline text-[18px]"
+                    class="material-symbols-outlined text-[18px] text-outline"
                     >schedule</span
                   >
                   <span class="font-label-sm text-label-sm text-on-surface"
@@ -2788,7 +2789,7 @@ Modais / Stacks sobre as tabs:
             </div>
 
             <button
-              class="w-full md:w-auto bg-secondary text-on-secondary font-label-md text-label-md px-xl py-md rounded-xl flex items-center justify-center gap-sm transition-all duration-200 active:scale-95 shadow-[0_0_20px_rgba(76,215,246,0.3)]"
+              class="font-label-md flex w-full items-center justify-center gap-sm rounded-xl bg-secondary px-xl py-md text-label-md text-on-secondary shadow-[0_0_20px_rgba(76,215,246,0.3)] transition-all duration-200 active:scale-95 md:w-auto"
             >
               <span
                 class="material-symbols-outlined"
@@ -2802,24 +2803,24 @@ Modais / Stacks sobre as tabs:
       <!-- Section: Todos os Treinos -->
       <section>
         <h2
-          class="font-label-md text-label-md uppercase text-on-surface-variant tracking-[0.2em] mb-md"
+          class="font-label-md mb-md text-label-md uppercase tracking-[0.2em] text-on-surface-variant"
         >
           Sua Biblioteca
         </h2>
         <!-- Bento Grid for Workouts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <div class="grid grid-cols-1 gap-md md:grid-cols-2">
           <!-- Card Treino B -->
           <div
-            class="bg-surface-container border border-outline-variant rounded-xl p-md transition-all duration-300 hover:bg-surface-container-high group"
+            class="hover:bg-surface-container-high group rounded-xl border border-outline-variant bg-surface-container p-md transition-all duration-300"
           >
-            <div class="flex justify-between items-start mb-md">
+            <div class="mb-md flex items-start justify-between">
               <div>
                 <h3
-                  class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors"
+                  class="font-title-md text-title-md text-on-surface transition-colors group-hover:text-primary"
                 >
                   Hipertrofia B
                 </h3>
-                <div class="flex gap-xs mt-base">
+                <div class="mt-base flex gap-xs">
                   <span
                     class="font-label-sm text-label-sm text-on-surface-variant"
                     >Ter, Qui, Sáb</span
@@ -2827,22 +2828,22 @@ Modais / Stacks sobre as tabs:
                 </div>
               </div>
               <button
-                class="text-on-surface-variant hover:text-primary transition-colors"
+                class="text-on-surface-variant transition-colors hover:text-primary"
               >
                 <span class="material-symbols-outlined">more_vert</span>
               </button>
             </div>
             <div
-              class="flex items-center justify-between bg-surface-container-lowest rounded-lg p-md mb-md"
+              class="bg-surface-container-lowest mb-md flex items-center justify-between rounded-lg p-md"
             >
               <div class="flex flex-col">
-                <span class="font-label-sm text-label-sm text-outline uppercase"
+                <span class="font-label-sm text-label-sm uppercase text-outline"
                   >Exercícios</span
                 >
                 <span class="font-title-md text-title-md">10</span>
               </div>
               <div class="flex flex-col text-right">
-                <span class="font-label-sm text-label-sm text-outline uppercase"
+                <span class="font-label-sm text-label-sm uppercase text-outline"
                   >Frequência</span
                 >
                 <span class="font-title-md text-title-md">3x / sem</span>
@@ -2850,31 +2851,31 @@ Modais / Stacks sobre as tabs:
             </div>
             <div class="flex gap-sm">
               <span
-                class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded"
+                class="bg-surface-variant font-label-sm rounded px-2 py-1 text-label-sm text-on-surface-variant"
                 >Costas</span
               >
               <span
-                class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded"
+                class="bg-surface-variant font-label-sm rounded px-2 py-1 text-label-sm text-on-surface-variant"
                 >Bíceps</span
               >
               <span
-                class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded"
+                class="bg-surface-variant font-label-sm rounded px-2 py-1 text-label-sm text-on-surface-variant"
                 >Abdômen</span
               >
             </div>
           </div>
           <!-- Card Treino C -->
           <div
-            class="bg-surface-container border border-outline-variant rounded-xl p-md transition-all duration-300 hover:bg-surface-container-high group"
+            class="hover:bg-surface-container-high group rounded-xl border border-outline-variant bg-surface-container p-md transition-all duration-300"
           >
-            <div class="flex justify-between items-start mb-md">
+            <div class="mb-md flex items-start justify-between">
               <div>
                 <h3
-                  class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors"
+                  class="font-title-md text-title-md text-on-surface transition-colors group-hover:text-primary"
                 >
                   Lower Body Alpha
                 </h3>
-                <div class="flex gap-xs mt-base">
+                <div class="mt-base flex gap-xs">
                   <span
                     class="font-label-sm text-label-sm text-on-surface-variant"
                     >Seg, Sex</span
@@ -2882,22 +2883,22 @@ Modais / Stacks sobre as tabs:
                 </div>
               </div>
               <button
-                class="text-on-surface-variant hover:text-primary transition-colors"
+                class="text-on-surface-variant transition-colors hover:text-primary"
               >
                 <span class="material-symbols-outlined">more_vert</span>
               </button>
             </div>
             <div
-              class="flex items-center justify-between bg-surface-container-lowest rounded-lg p-md mb-md"
+              class="bg-surface-container-lowest mb-md flex items-center justify-between rounded-lg p-md"
             >
               <div class="flex flex-col">
-                <span class="font-label-sm text-label-sm text-outline uppercase"
+                <span class="font-label-sm text-label-sm uppercase text-outline"
                   >Exercícios</span
                 >
                 <span class="font-title-md text-title-md">7</span>
               </div>
               <div class="flex flex-col text-right">
-                <span class="font-label-sm text-label-sm text-outline uppercase"
+                <span class="font-label-sm text-label-sm uppercase text-outline"
                   >Frequência</span
                 >
                 <span class="font-title-md text-title-md">2x / sem</span>
@@ -2905,21 +2906,21 @@ Modais / Stacks sobre as tabs:
             </div>
             <div class="flex gap-sm">
               <span
-                class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded"
+                class="bg-surface-variant font-label-sm rounded px-2 py-1 text-label-sm text-on-surface-variant"
                 >Quadríceps</span
               >
               <span
-                class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded"
+                class="bg-surface-variant font-label-sm rounded px-2 py-1 text-label-sm text-on-surface-variant"
                 >Posterior</span
               >
             </div>
           </div>
           <!-- Empty/New Slot Card -->
           <div
-            class="border-2 border-dashed border-outline-variant rounded-xl p-md flex flex-col items-center justify-center min-h-[160px] group hover:border-primary transition-colors cursor-pointer"
+            class="group flex min-h-[160px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant p-md transition-colors hover:border-primary"
           >
             <span
-              class="material-symbols-outlined text-outline group-hover:text-primary mb-sm text-4xl"
+              class="material-symbols-outlined mb-sm text-4xl text-outline group-hover:text-primary"
               >add_circle</span
             >
             <span
@@ -2932,10 +2933,10 @@ Modais / Stacks sobre as tabs:
     </main>
     <!-- BottomNavBar -->
     <nav
-      class="fixed bottom-0 left-0 w-full z-50 bg-surface-container border-t border-outline-variant bg-surface-container-low shadow-[0_-4px_10px_rgba(208,188,255,0.1)] flex justify-around items-center h-20 px-4 pb-safe rounded-t-xl"
+      class="bg-surface-container-low pb-safe fixed bottom-0 left-0 z-50 flex h-20 w-full items-center justify-around rounded-t-xl border-t border-outline-variant bg-surface-container px-4 shadow-[0_-4px_10px_rgba(208,188,255,0.1)]"
     >
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">home</span>
@@ -2944,7 +2945,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">swords</span>
@@ -2953,7 +2954,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center font-bold text-primary transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-primary"
         href="#"
       >
         <span
@@ -2966,7 +2967,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">monitoring</span>
@@ -2975,7 +2976,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 hover:text-secondary"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:text-secondary active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">person</span>
@@ -3467,29 +3468,29 @@ Modais / Stacks sobre as tabs:
     </style>
   </head>
   <body
-    class="bg-background text-on-background min-h-screen font-body-md flex flex-col"
+    class="text-on-background font-body-md flex min-h-screen flex-col bg-background"
   >
     <!-- TopAppBar -->
     <header
-      class="docked full-width top-0 z-50 flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 bg-background dark:bg-background border-b border-outline-variant"
+      class="docked full-width px-margin-mobile md:px-margin-desktop top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-background dark:bg-background"
     >
       <div class="flex items-center gap-3">
         <div
-          class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden relative"
+          class="relative h-10 w-10 overflow-hidden rounded-full border-2 border-primary"
         >
           <img
             alt="User avatar"
-            class="w-full h-full object-cover"
+            class="h-full w-full object-cover"
             data-alt="A high-contrast profile portrait of a focused athlete in a dark gym environment, illuminated by sharp purple rim lighting. The style is sleek and professional, mirroring the cyber-athletic brand identity with a deep black background and electric purple highlights. The athlete has a disciplined expression, embodying personal growth and peak performance."
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpvtutERtg6v5Gf0F8YUbX6GH6qpm1yLLDuepUnqHaFFdj6TLgbToaVxUVMMuTjaOT-CWL-5aCy9uJxNIBpaEOyaxAi6qrHZv-tUfdrD4tAac-W2ohqdCBODs81BZADRtr8qR4kQA-XloD3FO_gX8IjPdbEjCl1hOSoDqbQt0LLeG6SAbeuiJjxbbi1-tNFfzkpMw7k5jTgnzFwk-PjdDpj-K1nbnxx6ShZxq2KWSUqgeG3MJYkGRYdoutB2-xzlw8200eKe4xV-Y"
           />
           <div
-            class="absolute bottom-0 right-0 w-3 h-3 bg-secondary rounded-full border-2 border-background"
+            class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-secondary"
           ></div>
         </div>
         <div class="flex flex-col">
           <h1
-            class="font-title-md text-title-md text-primary tracking-tighter uppercase italic"
+            class="font-title-md text-title-md uppercase italic tracking-tighter text-primary"
           >
             PULL DAY
           </h1>
@@ -3500,17 +3501,17 @@ Modais / Stacks sobre as tabs:
         </div>
       </div>
       <button
-        class="bg-error-container text-on-error-container px-4 py-1.5 rounded-lg font-label-md text-label-md transition-all duration-200 active:scale-95"
+        class="font-label-md rounded-lg bg-error-container px-4 py-1.5 text-label-md text-on-error-container transition-all duration-200 active:scale-95"
       >
         Encerrar
       </button>
     </header>
-    <main class="flex-1 px-margin-mobile py-6 pb-32">
+    <main class="px-margin-mobile flex-1 py-6 pb-32">
       <!-- Progress Indicator -->
       <div class="mb-8">
-        <div class="flex justify-between items-end mb-2">
+        <div class="mb-2 flex items-end justify-between">
           <span
-            class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest"
+            class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant"
             >Exercício 2 de 6</span
           >
           <span class="font-label-sm text-label-sm text-primary"
@@ -3518,48 +3519,48 @@ Modais / Stacks sobre as tabs:
           >
         </div>
         <div
-          class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden"
+          class="bg-surface-container-high h-2 w-full overflow-hidden rounded-full"
         >
           <div
-            class="h-full bg-primary w-1/3 shadow-[0_0_10px_rgba(208,188,255,0.4)]"
+            class="h-full w-1/3 bg-primary shadow-[0_0_10px_rgba(208,188,255,0.4)]"
           ></div>
         </div>
       </div>
       <!-- Active Exercise Card -->
       <section
-        class="bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden mb-6"
+        class="bg-surface-container-low mb-6 overflow-hidden rounded-xl border border-outline-variant"
       >
         <div class="relative h-48 w-full">
           <img
             alt="Remada Curvada"
-            class="w-full h-full object-cover opacity-60"
+            class="h-full w-full object-cover opacity-60"
             data-alt="A cinematic, low-angle shot of a gym athlete performing a barbell row with perfect form. The lighting is dramatic and dark-mode oriented, with vibrant cyan and electric purple light streaks cutting through the smoky gym atmosphere. The focus is on the muscular tension and the metallic texture of the weight plates, maintaining a high-performance cyber-athletic aesthetic."
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP6gVTaJrwhOR_KZFWbPTnAbArpvwWQz4rKEn-0uhwW_0Z6uUDUgomlQ7rHRwZo2-2UhgBKomUGdkf8MudVYA1CwntW5O9e0gkDlhSQW3-VGfshSRcucZhR8nP3HY1htizL5QU1rJwVvYMx5fEiSeIfMqem8JmzoKYzw46dxfBIfp26-z6vlRUYQF-Kkz8V5QqXWUkeMpPxE3q5eC0y-NQdl85Pq7ymr-T2lCv5PclYyP3Iu9IN7V9vBBSwV_EYnqCMDOVA4x0i7E"
           />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"
+            class="from-surface-container-low absolute inset-0 bg-gradient-to-t to-transparent"
           ></div>
           <div class="absolute bottom-4 left-4">
             <h2
-              class="font-display-md text-display-md text-on-surface uppercase tracking-tighter"
+              class="font-display-md text-display-md uppercase tracking-tighter text-on-surface"
             >
               REMADA CURVADA
             </h2>
-            <div class="flex items-center gap-2 mt-1">
+            <div class="mt-1 flex items-center gap-2">
               <span
-                class="bg-primary/20 text-primary px-2 py-0.5 rounded font-label-sm text-label-sm"
+                class="font-label-sm rounded bg-primary/20 px-2 py-0.5 text-label-sm text-primary"
                 >COSTA</span
               >
-              <span class="text-on-surface-variant font-label-md text-label-md"
+              <span class="font-label-md text-label-md text-on-surface-variant"
                 >3 séries × 12 reps</span
               >
             </div>
           </div>
         </div>
-        <div class="p-4 space-y-4">
+        <div class="space-y-4 p-4">
           <!-- Sets Header -->
           <div
-            class="grid grid-cols-12 gap-2 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-widest px-2"
+            class="font-label-sm grid grid-cols-12 gap-2 px-2 text-label-sm uppercase tracking-widest text-on-surface-variant"
           >
             <div class="col-span-2 text-center">Série</div>
             <div class="col-span-4 text-center">Peso (kg)</div>
@@ -3568,16 +3569,16 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Set 1 (Completed) -->
           <div
-            class="grid grid-cols-12 gap-2 items-center bg-surface-container-high/30 p-2 rounded-lg border border-transparent"
+            class="bg-surface-container-high/30 grid grid-cols-12 items-center gap-2 rounded-lg border border-transparent p-2"
           >
             <div
-              class="col-span-2 text-center font-label-md text-label-md text-on-surface-variant"
+              class="font-label-md col-span-2 text-center text-label-md text-on-surface-variant"
             >
               1
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-outline-variant rounded p-2 text-center font-title-md text-on-surface-variant opacity-50"
+                class="font-title-md w-full rounded border border-outline-variant bg-background p-2 text-center text-on-surface-variant opacity-50"
                 disabled=""
                 type="text"
                 value="60"
@@ -3585,7 +3586,7 @@ Modais / Stacks sobre as tabs:
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-outline-variant rounded p-2 text-center font-title-md text-on-surface-variant opacity-50"
+                class="font-title-md w-full rounded border border-outline-variant bg-background p-2 text-center text-on-surface-variant opacity-50"
                 disabled=""
                 type="text"
                 value="12"
@@ -3593,7 +3594,7 @@ Modais / Stacks sobre as tabs:
             </div>
             <div class="col-span-2 flex justify-center">
               <div
-                class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary border border-secondary"
+                class="flex h-8 w-8 items-center justify-center rounded-full border border-secondary bg-secondary/20 text-secondary"
               >
                 <span class="material-symbols-outlined text-[20px]">check</span>
               </div>
@@ -3601,30 +3602,30 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Set 2 (Active Focus) -->
           <div
-            class="grid grid-cols-12 gap-2 items-center bg-surface-container-high p-2 rounded-lg border border-primary shadow-[0_0_15px_rgba(208,188,255,0.1)] scale-[1.02] transition-transform"
+            class="bg-surface-container-high grid scale-[1.02] grid-cols-12 items-center gap-2 rounded-lg border border-primary p-2 shadow-[0_0_15px_rgba(208,188,255,0.1)] transition-transform"
           >
             <div
-              class="col-span-2 text-center font-label-md text-label-md text-primary"
+              class="font-label-md col-span-2 text-center text-label-md text-primary"
             >
               2
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-primary rounded p-2 text-center font-title-md text-primary focus:ring-2 focus:ring-primary/50 outline-none"
+                class="font-title-md w-full rounded border border-primary bg-background p-2 text-center text-primary outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="60"
                 type="number"
               />
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-primary rounded p-2 text-center font-title-md text-primary focus:ring-2 focus:ring-primary/50 outline-none"
+                class="font-title-md w-full rounded border border-primary bg-background p-2 text-center text-primary outline-none focus:ring-2 focus:ring-primary/50"
                 placeholder="12"
                 type="number"
               />
             </div>
             <div class="col-span-2 flex justify-center">
               <button
-                class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
+                class="bg-surface-container-lowest flex h-8 w-8 items-center justify-center rounded-full border border-outline-variant text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
               >
                 <span class="material-symbols-outlined text-[20px]"
                   >radio_button_unchecked</span
@@ -3634,30 +3635,30 @@ Modais / Stacks sobre as tabs:
           </div>
           <!-- Set 3 -->
           <div
-            class="grid grid-cols-12 gap-2 items-center bg-surface-container-high/30 p-2 rounded-lg border border-transparent"
+            class="bg-surface-container-high/30 grid grid-cols-12 items-center gap-2 rounded-lg border border-transparent p-2"
           >
             <div
-              class="col-span-2 text-center font-label-md text-label-md text-on-surface-variant"
+              class="font-label-md col-span-2 text-center text-label-md text-on-surface-variant"
             >
               3
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-outline-variant rounded p-2 text-center font-title-md text-on-surface-variant"
+                class="font-title-md w-full rounded border border-outline-variant bg-background p-2 text-center text-on-surface-variant"
                 placeholder="--"
                 type="number"
               />
             </div>
             <div class="col-span-4">
               <input
-                class="w-full bg-background border border-outline-variant rounded p-2 text-center font-title-md text-on-surface-variant"
+                class="font-title-md w-full rounded border border-outline-variant bg-background p-2 text-center text-on-surface-variant"
                 placeholder="--"
                 type="number"
               />
             </div>
             <div class="col-span-2 flex justify-center">
               <button
-                class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-on-surface-variant"
+                class="bg-surface-container-lowest flex h-8 w-8 items-center justify-center rounded-full border border-outline-variant text-on-surface-variant"
               >
                 <span class="material-symbols-outlined text-[20px]"
                   >radio_button_unchecked</span
@@ -3668,14 +3669,14 @@ Modais / Stacks sobre as tabs:
         </div>
       </section>
       <!-- Exercise Navigation -->
-      <div class="flex justify-between items-center gap-4 mt-8">
+      <div class="mt-8 flex items-center justify-between gap-4">
         <button
-          class="flex-1 border border-outline-variant text-on-surface py-3 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md hover:bg-surface-container-high active:scale-95 transition-all"
+          class="font-label-md hover:bg-surface-container-high flex flex-1 items-center justify-center gap-2 rounded-xl border border-outline-variant py-3 text-label-md text-on-surface transition-all active:scale-95"
         >
           <span class="material-symbols-outlined">chevron_left</span> Anterior
         </button>
         <button
-          class="flex-1 bg-primary text-on-primary py-3 rounded-xl flex items-center justify-center gap-2 font-label-md text-label-md shadow-[0_4px_10px_rgba(208,188,255,0.3)] active:scale-95 transition-all"
+          class="font-label-md flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary py-3 text-label-md text-on-primary shadow-[0_4px_10px_rgba(208,188,255,0.3)] transition-all active:scale-95"
         >
           Próximo <span class="material-symbols-outlined">chevron_right</span>
         </button>
@@ -3683,10 +3684,10 @@ Modais / Stacks sobre as tabs:
     </main>
     <!-- Floating Rest Timer Overlay -->
     <div
-      class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-surface-container-high border border-secondary/50 rounded-full px-6 py-3 flex items-center gap-4 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md"
+      class="bg-surface-container-high fixed bottom-24 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 rounded-full border border-secondary/50 px-6 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md"
     >
       <div class="relative flex items-center justify-center">
-        <svg class="w-10 h-10 rotate-[-90deg]">
+        <svg class="h-10 w-10 rotate-[-90deg]">
           <circle
             cx="20"
             cy="20"
@@ -3707,31 +3708,31 @@ Modais / Stacks sobre as tabs:
           ></circle>
         </svg>
         <span
-          class="absolute material-symbols-outlined text-secondary text-[18px]"
+          class="material-symbols-outlined absolute text-[18px] text-secondary"
           >coffee</span
         >
       </div>
       <div class="flex flex-col">
         <span
-          class="font-label-sm text-label-sm text-on-surface-variant uppercase"
+          class="font-label-sm text-label-sm uppercase text-on-surface-variant"
           >Descanso</span
         >
-        <span class="font-title-md text-title-md text-secondary leading-none"
+        <span class="font-title-md text-title-md leading-none text-secondary"
           >00:45</span
         >
       </div>
       <button
-        class="bg-surface-container-lowest text-secondary w-8 h-8 rounded-full flex items-center justify-center border border-secondary/20 hover:bg-secondary/10"
+        class="bg-surface-container-lowest flex h-8 w-8 items-center justify-center rounded-full border border-secondary/20 text-secondary hover:bg-secondary/10"
       >
         <span class="material-symbols-outlined text-[18px]">add</span>
       </button>
     </div>
     <!-- BottomNavBar -->
     <nav
-      class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-4 pb-safe bg-surface-container dark:bg-surface-container border-t border-outline-variant bg-surface-container-low shadow-[0_-4px_10px_rgba(208,188,255,0.1)] rounded-t-xl"
+      class="pb-safe bg-surface-container-low fixed bottom-0 left-0 z-50 flex h-20 w-full items-center justify-around rounded-t-xl border-t border-outline-variant bg-surface-container px-4 shadow-[0_-4px_10px_rgba(208,188,255,0.1)] dark:bg-surface-container"
     >
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">home</span>
@@ -3740,7 +3741,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">swords</span>
@@ -3749,7 +3750,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center font-bold text-primary transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-primary"
         href="#"
       >
         <span
@@ -3762,7 +3763,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">monitoring</span>
@@ -3771,7 +3772,7 @@ Modais / Stacks sobre as tabs:
         >
       </a>
       <a
-        class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90"
+        class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 transition-all duration-300 ease-in-out hover:-translate-y-1 active:scale-90 dark:text-on-surface-variant"
         href="#"
       >
         <span class="material-symbols-outlined">person</span>
