@@ -33,6 +33,7 @@ import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import type { User, UserLevel } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
+import { Card } from "../../src/components/ui/Card";
 
 export default function ProfileScreen() {
   const { showToast } = useToast();
@@ -285,26 +286,26 @@ export default function ProfileScreen() {
               <>
                 {/* Rank / Nível */}
                 <View className="mt-5 flex-row gap-3">
-                  <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
+                  <Card className="flex-1 items-center">
                     <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Rank
                     </Text>
                     <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
                       {level.rank}
                     </Text>
-                  </View>
-                  <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
+                  </Card>
+                  <Card className="flex-1 items-center">
                     <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Nível
                     </Text>
                     <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
                       {level.level}
                     </Text>
-                  </View>
+                  </Card>
                 </View>
 
                 {/* Progresso do nível */}
-                <View className="mt-3 rounded-2xl border border-white/7 bg-gray-600 p-6">
+                <Card className="mt-3">
                   <View className="flex-row items-center justify-between">
                     <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                       Progresso do nível
@@ -343,12 +344,12 @@ export default function ProfileScreen() {
                       </Text>
                     </View>
                   </View>
-                </View>
+                </Card>
               </>
             ) : null}
 
             {/* Menu */}
-            <View className="mt-3 overflow-hidden rounded-2xl border border-white/7 bg-gray-600">
+            <Card className="mt-3 overflow-hidden p-0">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
@@ -391,7 +392,7 @@ export default function ProfileScreen() {
                   strokeWidth={2}
                 />
               </Pressable>
-            </View>
+            </Card>
 
             {/* Sair */}
             <Pressable

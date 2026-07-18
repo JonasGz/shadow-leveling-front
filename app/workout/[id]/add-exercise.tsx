@@ -23,6 +23,7 @@ import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import { useDebouncedSearch } from "../../../src/hooks/useDebouncedSearch";
 import type { Exercise, ExerciseType } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
+import { Card } from "../../../src/components/ui/Card";
 
 type Stage = "search" | "configure";
 
@@ -40,9 +41,9 @@ const ExerciseRow = memo(function ExerciseRow({
   onSelect: (exercise: Exercise) => void;
 }) {
   return (
-    <Pressable
+    <Card
       onPress={() => onSelect(exercise)}
-      className="flex-row items-center justify-between rounded-2xl border border-white/7 bg-gray-600 px-4 py-4 text-gray-200 active:opacity-80"
+      className="flex-row items-center justify-between text-gray-200"
     >
       <View className="flex-1">
         <Text className="text-body-lg font-semibold text-white">
@@ -50,7 +51,7 @@ const ExerciseRow = memo(function ExerciseRow({
         </Text>
       </View>
       <Text className="text-title-lg text-purple-200">+</Text>
-    </Pressable>
+    </Card>
   );
 });
 
@@ -291,7 +292,7 @@ export default function AddExerciseScreen() {
           className="flex-1 justify-start"
         >
           <View className="flex-1 gap-4 px-4">
-            <View className="rounded-2xl border border-white/7 bg-gray-600 p-4 px-6">
+            <Card>
               <Text className="text-title-md font-semibold text-white">
                 {selected?.name}
               </Text>
@@ -299,7 +300,7 @@ export default function AddExerciseScreen() {
                 {isTimeBased ? "Baseado em tempo" : "Baseado em repetições"} ·{" "}
                 {selected?.unit}
               </Text>
-            </View>
+            </Card>
 
             <Input
               label="Séries"

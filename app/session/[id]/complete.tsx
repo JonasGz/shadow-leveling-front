@@ -24,6 +24,7 @@ import { pickImage } from "../../../src/lib/pickImage";
 import { buildSessionSummary } from "../../../src/features/sets";
 import type { WorkoutSessionDetail } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
+import { Card } from "../../../src/components/ui/Card";
 
 export default function SessionCompleteScreen() {
   // A sessão já foi finalizada na tela de treino — aqui é só o resumo.
@@ -292,10 +293,7 @@ export default function SessionCompleteScreen() {
         ) : (
           <View className="gap-2">
             {summaries.map((ex) => (
-              <View
-                key={ex.exerciseId}
-                className="rounded-2xl border border-white/7 bg-gray-600 p-4"
-              >
+              <Card key={ex.exerciseId}>
                 <View className="flex-row items-center gap-3">
                   <View className="h-[38px] w-[38px] items-center justify-center rounded-lg bg-gray-500">
                     <Dumbbell
@@ -352,7 +350,7 @@ export default function SessionCompleteScreen() {
                     </View>
                   )}
                 </View>
-              </View>
+              </Card>
             ))}
           </View>
         )}

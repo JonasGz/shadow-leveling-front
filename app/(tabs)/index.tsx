@@ -31,6 +31,7 @@ import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import { color } from "../../src/theme/palette";
+import { Card } from "../../src/components/ui/Card";
 
 function titleCase(s: string) {
   return s
@@ -118,7 +119,7 @@ function StatCard({
 }) {
   const Icon = icon;
   return (
-    <View className="flex-1 rounded-2xl border border-white/7 bg-gray-600 p-6">
+    <Card className="flex-1">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
       <Text className="mt-2 text-center text-title-xl font-extrabold text-white">
         {value}
@@ -126,7 +127,7 @@ function StatCard({
       <Text className="mt-1 text-center text-label-md text-gray-200">
         {label}
       </Text>
-    </View>
+    </Card>
   );
 }
 
@@ -303,9 +304,9 @@ export default function HomeScreen() {
             </Text>
 
             {featured ? (
-              <Pressable
+              <Card
                 onPress={() => router.push(`/workout/${featured.id}`)}
-                className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600 active:opacity-80"
+                className="overflow-hidden p-0"
               >
                 <View className="bg-purple-400 px-4 py-4">
                   <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
@@ -335,9 +336,9 @@ export default function HomeScreen() {
                     />
                   </View>
                 </View>
-              </Pressable>
+              </Card>
             ) : (
-              <View className="items-center gap-4 rounded-2xl border border-white/7 bg-gray-600 p-6">
+              <Card className="items-center gap-4">
                 <Calendar
                   size={36}
                   color={color["gray-200"]}
@@ -356,7 +357,7 @@ export default function HomeScreen() {
                   size="sm"
                   onPress={() => router.push("/workout/create")}
                 />
-              </View>
+              </Card>
             )}
           </View>
         </ScrollView>

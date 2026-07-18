@@ -25,6 +25,7 @@ import { useScreenData } from "../../../src/hooks/useScreenData";
 import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
 import { color } from "../../../src/theme/palette";
 import { cn } from "../../../src/lib/cn";
+import { Card } from "../../../src/components/ui/Card";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -106,7 +107,7 @@ export default function SessionDetailScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Resumo */}
-          <View className="rounded-2xl border border-white/7 bg-gray-600 p-[18px]">
+          <Card className="p-[18px]">
             <Text className="text-title-lg font-bold text-white">
               {workoutName}
             </Text>
@@ -119,7 +120,7 @@ export default function SessionDetailScreen() {
                 {status.label}
               </Text>
             </View>
-          </View>
+          </Card>
 
           {/* Estatísticas da sessão */}
           <View className="flex-row gap-3">
@@ -128,17 +129,14 @@ export default function SessionDetailScreen() {
               { value: totals.reps, label: "Reps" },
               { value: totals.volume, label: "kg vol." },
             ].map((stat) => (
-              <View
-                key={stat.label}
-                className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-3"
-              >
+              <Card key={stat.label} className="flex-1 items-center">
                 <Text className="text-title-xl font-extrabold text-white">
                   {stat.value}
                 </Text>
                 <Text className="mt-1 text-label-sm text-gray-200">
                   {stat.label}
                 </Text>
-              </View>
+              </Card>
             ))}
           </View>
 
@@ -158,10 +156,7 @@ export default function SessionDetailScreen() {
               const bestId = bestSetId(ordered);
               const best = ordered.find((s) => s.id === bestId);
               return (
-                <View
-                  key={exerciseId}
-                  className="rounded-2xl border border-white/7 bg-gray-600 p-4"
-                >
+                <Card key={exerciseId}>
                   <View className="flex-row items-center justify-between">
                     <Text className="text-label-sm font-bold uppercase tracking-label text-gray-200">
                       Exercício
@@ -224,7 +219,7 @@ export default function SessionDetailScreen() {
                       </Text>
                     </View>
                   ) : null}
-                </View>
+                </Card>
               );
             })
           )}

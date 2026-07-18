@@ -31,6 +31,7 @@ import {
 import type { SessionStatus } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
+import { Card } from "../../src/components/ui/Card";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -242,10 +243,10 @@ export default function HistoryScreen() {
                   const meta = STATUS_META[s.status];
                   const StatusIcon = meta.Icon;
                   return (
-                    <Pressable
+                    <Card
                       key={s.id}
                       onPress={() => router.push(`/session/${s.id}`)}
-                      className="w-[200px] rounded-2xl border border-white/7 bg-gray-600 p-4 active:opacity-80"
+                      className="w-[200px]"
                     >
                       <View className="flex-row items-center justify-between">
                         <View
@@ -292,7 +293,7 @@ export default function HistoryScreen() {
                           />
                         </View>
                       </View>
-                    </Pressable>
+                    </Card>
                   );
                 })}
               </ScrollView>

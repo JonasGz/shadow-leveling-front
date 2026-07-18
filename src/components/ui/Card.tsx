@@ -24,7 +24,7 @@ export function Card({
 }: CardProps) {
   // className vem por último para vencer a base no merge.
   const base = cn(
-    "rounded-md border border-gray-300 bg-gray-600 p-4",
+    "rounded-2xl border border-white/7 bg-gray-600 p-4",
     variantStyles[variant],
   );
 

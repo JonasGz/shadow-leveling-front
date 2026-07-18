@@ -6,6 +6,7 @@ import { SetRow, type LocalSet, type SetField } from "./SetRow";
 import type { Hint } from "../../features/progression";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
 import { color } from "../../theme/palette";
+import { Card } from "../ui/Card";
 
 interface ExercisePageProps {
   workoutExercise: WorkoutExercise;
@@ -59,7 +60,7 @@ export const ExercisePage = memo(function ExercisePage({
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600">
+      <Card className="overflow-hidden p-0">
         <View className="bg-purple-300/20 p-6">
           {swapped && (
             <View className="mb-2 flex-row items-center gap-2 self-start rounded-full border border-purple-200/40 bg-purple-200/20 px-3 py-1">
@@ -144,7 +145,7 @@ export const ExercisePage = memo(function ExercisePage({
             />
           ))}
         </View>
-      </View>
+      </Card>
     </ScrollView>
   );
 });

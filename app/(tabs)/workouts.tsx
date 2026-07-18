@@ -26,6 +26,7 @@ import { DAY_SHORT, dayOfWeekFromDate } from "../../src/lib/date";
 import type { DayOfWeek, Workout } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
+import { Card } from "../../src/components/ui/Card";
 
 function exerciseCountLabel(w: Workout) {
   const n = w.exercises?.length ?? 0;
@@ -99,12 +100,9 @@ function LibraryWorkoutCard({
   const daysLabel = workout.days_of_week.map((d) => DAY_SHORT[d]).join(", ");
 
   return (
-    <Pressable
+    <Card
       onPress={() => router.push(`/workout/${workout.id}`)}
-      className={cn(
-        "rounded-2xl border border-white/7 bg-gray-600 p-4 active:bg-gray-500",
-        workout.active ? "" : "opacity-60",
-      )}
+      className={cn("active:bg-gray-500", !workout.active && "opacity-60")}
     >
       <View className="mb-4 flex-row items-start justify-between">
         <View className="flex-1 pr-2">
@@ -159,7 +157,7 @@ function LibraryWorkoutCard({
           </View>
         ) : null}
       </View>
-    </Pressable>
+    </Card>
   );
 }
 

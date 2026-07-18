@@ -22,6 +22,7 @@ import type { WorkoutExercise } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { color } from "../../../src/theme/palette";
 import { cn } from "../../../src/lib/cn";
+import { Card } from "../../../src/components/ui/Card";
 
 function repsLabel(ex: WorkoutExercise): string {
   if (ex.exercise.type === "time") {
@@ -40,10 +41,10 @@ function repsLabel(ex: WorkoutExercise): string {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
+    <Card className="flex-1 items-center">
       <Text className="text-title-xl font-extrabold text-white">{value}</Text>
       <Text className="mt-2 text-label-md text-gray-200">{label}</Text>
-    </View>
+    </Card>
   );
 }
 
@@ -57,7 +58,7 @@ function ExerciseCard({
   onDelete: (item: WorkoutExercise) => void;
 }) {
   return (
-    <View className="flex-row items-center gap-3 rounded-2xl border border-white/7 bg-gray-600 px-4 py-4">
+    <Card className="flex-row items-center gap-3">
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-gray-500">
         <Text className="text-label-md font-bold text-gray-400">
           {index + 1}
@@ -83,7 +84,7 @@ function ExerciseCard({
       >
         <Text className="text-base font-bold text-error">✕</Text>
       </Pressable>
-    </View>
+    </Card>
   );
 }
 

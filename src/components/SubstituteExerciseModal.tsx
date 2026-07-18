@@ -15,6 +15,7 @@ import { exercisesService } from "../services/exercises.service";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import type { Exercise } from "../types/api.types";
 import { color } from "../theme/palette";
+import { Card } from "./ui/Card";
 
 interface SubstituteExerciseModalProps {
   visible: boolean;
@@ -206,9 +207,9 @@ function SubstituteRow({
   if (mechanic) chips.push(mechanic);
 
   return (
-    <Pressable
+    <Card
       onPress={() => onPick(exercise)}
-      className="mb-2 flex-row items-center gap-3 rounded-2xl border border-white/12 bg-gray-600 p-4 active:opacity-70"
+      className="mb-2 flex-row items-center gap-3 border-white/12"
     >
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-purple-300/20">
         <Dumbbell size={18} color={color["purple-100"]} />
@@ -226,6 +227,6 @@ function SubstituteRow({
           </Text>
         )}
       </View>
-    </Pressable>
+    </Card>
   );
 }
