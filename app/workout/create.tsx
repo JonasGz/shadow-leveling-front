@@ -83,7 +83,7 @@ export default function CreateWorkoutScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="h-16 flex-row items-center justify-between px-md">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -101,7 +101,7 @@ export default function CreateWorkoutScreen() {
         className="flex-1"
       >
         <ScrollView
-          contentContainerClassName="px-md py-md gap-lg"
+          contentContainerClassName="px-4 py-4 gap-6"
           keyboardShouldPersistTaps="handled"
         >
           <Controller
@@ -139,11 +139,11 @@ export default function CreateWorkoutScreen() {
             )}
           />
 
-          <View className="gap-1.5">
+          <View className="gap-2">
             <Text className="text-center text-label-md uppercase tracking-widest text-gray-200">
               Dias da semana
             </Text>
-            <View className="flex-row flex-wrap gap-sm">
+            <View className="flex-row flex-wrap gap-2">
               {DAYS.map((d) => {
                 const active = days.includes(d.value);
                 return (
@@ -151,7 +151,7 @@ export default function CreateWorkoutScreen() {
                     key={d.value}
                     onPress={() => toggleDay(d.value)}
                     className={cn(
-                      "rounded-full border px-4 py-2.5 active:opacity-70",
+                      "rounded-full border px-4 py-3 active:opacity-70",
                       active
                         ? "bg-purple-300"
                         : "border-gray-300 bg-transparent",
@@ -174,7 +174,7 @@ export default function CreateWorkoutScreen() {
             ) : null}
           </View>
 
-          <View className="mt-md">
+          <View className="mt-4">
             <Button
               label="Criar treino"
               onPress={handleSubmit(onSubmit)}

@@ -31,14 +31,14 @@ export default function LandingScreen() {
         // LinearGradient não tem cssInterop registrado: só aceita style.
         style={{ flex: 1 }}
       >
-        <SafeAreaView className="flex-1 justify-between px-lg">
-          <View className="items-center pt-xl">
+        <SafeAreaView className="flex-1 justify-between px-6">
+          <View className="items-center pt-10">
             <Text className="text-title-xl font-bold tracking-tight text-white">
               SHADOW <Text className="font-light text-gray-200">Leveling</Text>
             </Text>
           </View>
 
-          <View className="pb-md">
+          <View className="pb-4">
             <View className="mb-4 flex-row justify-center gap-2">
               {ATTRIBUTES.map((attr) => (
                 <Badge key={attr} label={attr} tone="secondary" />

@@ -55,14 +55,14 @@ export const ExercisePage = memo(function ExercisePage({
   return (
     <ScrollView
       style={{ width: pageWidth }}
-      contentContainerClassName="px-md py-sm pb-6"
+      contentContainerClassName="px-4 py-2 pb-6"
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
       <View className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600">
-        <View className="bg-purple-300/20 p-lg">
+        <View className="bg-purple-300/20 p-6">
           {swapped && (
-            <View className="mb-2 flex-row items-center gap-1.5 self-start rounded-full border border-purple-200/40 bg-purple-200/20 px-2.5 py-1">
+            <View className="mb-2 flex-row items-center gap-2 self-start rounded-full border border-purple-200/40 bg-purple-200/20 px-3 py-1">
               <RotateCcw size={11} color={color["purple-200"]} />
               <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-200">
                 Substituído p/ hoje
@@ -80,8 +80,8 @@ export const ExercisePage = memo(function ExercisePage({
               {we.exercise.name}
             </Text>
           )}
-          <View className="mt-2.5 flex-row flex-wrap items-center gap-2">
-            <View className="rounded-full bg-black/30 px-2.5 py-1">
+          <View className="mt-3 flex-row flex-wrap items-center gap-2">
+            <View className="rounded-full bg-black/30 px-3 py-1">
               <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-50">
                 {timed ? "Tempo" : "Força"}
               </Text>
@@ -92,7 +92,7 @@ export const ExercisePage = memo(function ExercisePage({
             </Text>
             <Pressable
               onPress={onRequestSwap}
-              className="rounded-full border border-white/12 bg-gray-700/60 px-2.5 py-1 active:opacity-70"
+              className="rounded-full border border-white/12 bg-gray-700/60 px-3 py-1 active:opacity-70"
             >
               <Text className="text-label-sm font-bold uppercase tracking-widest text-white/90">
                 Trocar (máquina ocupada)
@@ -104,7 +104,7 @@ export const ExercisePage = memo(function ExercisePage({
         {/* Dica de progressão (Diferencial 2): meta discreta no topo do
             exercício, baseada na última sessão. */}
         {hint && (
-          <View className="flex-row items-center gap-2 px-lg pb-1 pt-3">
+          <View className="flex-row items-center gap-2 px-6 pb-1 pt-3">
             <TrendingUp size={15} color="#5CE1E6" />
             <Text className="flex-1 text-label-md font-semibold text-info">
               {hint.text}
@@ -112,7 +112,7 @@ export const ExercisePage = memo(function ExercisePage({
           </View>
         )}
 
-        <View className="p-3.5">
+        <View className="p-4">
           <View className="flex-row items-center gap-2 px-2 pb-3">
             <Text className="w-10 text-center text-label-sm uppercase tracking-widest text-gray-300">
               Série

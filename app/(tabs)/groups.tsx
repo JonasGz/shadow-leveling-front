@@ -98,7 +98,7 @@ export default function GroupsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="h-16 flex-row items-center justify-between px-md">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Text className="text-title-xxl font-bold text-white">Grupos</Text>
         <Pressable
           onPress={() => setCreating(true)}
@@ -109,8 +109,8 @@ export default function GroupsScreen() {
       </View>
 
       <ScrollView
-        className="flex-1 px-md"
-        contentContainerClassName="pb-[112px] pt-md"
+        className="flex-1 px-4"
+        contentContainerClassName="pb-[112px] pt-4"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -120,7 +120,7 @@ export default function GroupsScreen() {
         }
       >
         {loading ? (
-          <ActivityIndicator className="mt-xl" color={color["purple-100"]} />
+          <ActivityIndicator className="mt-10" color={color["purple-100"]} />
         ) : groups.length === 0 ? (
           <EmptyState
             icon={Swords}
@@ -128,13 +128,13 @@ export default function GroupsScreen() {
             description="Crie um grupo no + ou entre pelo link de convite de um amigo."
           />
         ) : (
-          <View className="pb-xl">
-            <View className="gap-md">
+          <View className="pb-10">
+            <View className="gap-4">
               {groups.map((g) => (
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-md pl-5 pr-md active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-4 pl-5 pr-4 active:opacity-80"
                 >
                   <LinearGradient
                     colors={[color["purple-200"], color["purple-300"]]}
@@ -180,9 +180,9 @@ export default function GroupsScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 items-center justify-center bg-black/70 px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full gap-md rounded-2xl border border-gray-300 bg-gray-600 p-lg">
+          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
             <Text className="text-title-md font-bold text-white">
               Criar novo grupo
             </Text>
@@ -194,7 +194,7 @@ export default function GroupsScreen() {
               maxLength={100}
               autoFocus
             />
-            <View className="mt-sm flex-row gap-md">
+            <View className="mt-2 flex-row gap-4">
               <Pressable
                 onPress={() => {
                   setName("");

@@ -40,9 +40,9 @@ function repsLabel(ex: WorkoutExercise): string {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-md">
+    <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
       <Text className="text-title-xl font-extrabold text-white">{value}</Text>
-      <Text className="mt-1.5 text-label-md text-gray-200">{label}</Text>
+      <Text className="mt-2 text-label-md text-gray-200">{label}</Text>
     </View>
   );
 }
@@ -57,8 +57,8 @@ function ExerciseCard({
   onDelete: (item: WorkoutExercise) => void;
 }) {
   return (
-    <View className="flex-row items-center gap-3 rounded-2xl border border-white/7 bg-gray-600 px-md py-md">
-      <View className="rounded-lg h-10 w-10 items-center justify-center bg-gray-500">
+    <View className="flex-row items-center gap-3 rounded-2xl border border-white/7 bg-gray-600 px-4 py-4">
+      <View className="h-10 w-10 items-center justify-center rounded-lg bg-gray-500">
         <Text className="text-label-md font-bold text-gray-400">
           {index + 1}
         </Text>
@@ -71,7 +71,7 @@ function ExerciseCard({
         >
           {item.exercise.name}
         </Text>
-        <Text className="mt-0.5 text-body-sm font-light text-gray-400">
+        <Text className="mt-1 text-body-sm font-light text-gray-400">
           {repsLabel(item)}
         </Text>
       </View>
@@ -132,7 +132,7 @@ export default function WorkoutDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar */}
-      <View className="h-16 flex-row items-center justify-between px-md">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -153,7 +153,7 @@ export default function WorkoutDetailScreen() {
           <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center gap-md px-lg">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -163,14 +163,14 @@ export default function WorkoutDetailScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-md gap-md pb-xl"
+          contentContainerClassName="px-4 py-4 gap-4 pb-10"
           showsVerticalScrollIndicator={false}
         >
           {/* Status + dias */}
           <View className="flex-row items-center gap-2">
             <View
               className={cn(
-                "flex-row items-center gap-1.5 rounded-full px-3 py-1",
+                "flex-row items-center gap-2 rounded-full px-3 py-1",
                 workout?.active ? "bg-success/15" : "",
               )}
             >
@@ -209,7 +209,7 @@ export default function WorkoutDetailScreen() {
           </View>
 
           {/* Stats */}
-          <View className="flex-row gap-md">
+          <View className="flex-row gap-4">
             <StatCard label="Exercícios" value={String(exercises.length)} />
             <StatCard label="Séries" value={String(totalSets)} />
             <StatCard
@@ -231,10 +231,10 @@ export default function WorkoutDetailScreen() {
             />
           ) : (
             <>
-              <Text className="mt-sm text-center text-title-md font-bold text-white">
+              <Text className="mt-2 text-center text-title-md font-bold text-white">
                 Exercícios
               </Text>
-              <View className="gap-sm">
+              <View className="gap-2">
                 {exercises
                   .slice()
                   .sort((a, b) => a.sort_order - b.sort_order)
@@ -248,7 +248,7 @@ export default function WorkoutDetailScreen() {
                   ))}
               </View>
 
-              <View className="mt-sm items-center gap-sm">
+              <View className="mt-2 items-center gap-2">
                 <IconButton
                   icon={Plus}
                   onPress={() => router.push(`/workout/${id}/add-exercise`)}

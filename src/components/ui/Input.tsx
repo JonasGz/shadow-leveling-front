@@ -43,7 +43,7 @@ export function Input({
   const [focused, setFocused] = useState(false);
 
   return (
-    <View className="gap-1.5">
+    <View className="gap-2">
       <Text
         className={cn(
           labelSizes[labelSize],

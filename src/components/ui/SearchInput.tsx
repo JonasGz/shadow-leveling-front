@@ -13,11 +13,11 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <View className="gap-1.5">
+    <View className="gap-2">
       <View
         style={focused && !error ? FOCUS_RING : undefined}
         className={cn(
-          "flex-row items-center gap-sm rounded-lg border bg-gray-600 px-5 py-4",
+          "flex-row items-center gap-2 rounded-lg border bg-gray-600 px-5 py-4",
           controlBorder(focused, error),
         )}
       >

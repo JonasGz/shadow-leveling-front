@@ -101,9 +101,10 @@ module.exports = {
         "2xl": "28px", // container: card, painel, modal, sheet
         full: "9999px", // pílula, avatar, círculo, track
       },
+      // Escala única, numérica (1=4px … 16=64px). Os antigos xs/sm/md/lg/xl
+      // eram apelidos exatos de 1/2/4/6/10 e conviviam com ela, então o mesmo
+      // 16px atendia por `p-md` e `p-4` sem critério de qual usar.
       spacing: {
-        // PULSE numeric scale (1=4 … 16=64) in addition to the legacy named
-        // tokens, which are kept as a subset so existing class names still work.
         1: "4px",
         2: "8px",
         3: "12px",
@@ -120,12 +121,6 @@ module.exports = {
         14: "56px",
         15: "60px",
         16: "64px",
-        // Legacy named subset of the same scale.
-        xs: "4px",
-        sm: "8px",
-        md: "16px",
-        lg: "24px",
-        xl: "40px",
       },
       boxShadow: elevation,
       transitionDuration: motion.duration,

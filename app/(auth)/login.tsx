@@ -102,7 +102,7 @@ export default function AuthScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 justify-center bg-gray-700 px-lg">
+    <SafeAreaView className="flex-1 justify-center bg-gray-700 px-6">
       <View className="items-center">
         <Text className="text-display-xxl font-extrabold text-purple-300">
           SHADOW

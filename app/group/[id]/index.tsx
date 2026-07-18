@@ -77,7 +77,7 @@ const FeedRow = memo(function FeedRow({
         <Text className="text-body-lg font-bold text-white">
           {item.workout_name}
         </Text>
-        <Text className="mt-0.5 text-label-sm text-gray-200">{item.name}</Text>
+        <Text className="mt-1 text-label-sm text-gray-200">{item.name}</Text>
         {hasSocial && (
           <Text className="mt-1 text-label-sm text-gray-200">
             {item.reaction_count > 0 &&
@@ -147,7 +147,7 @@ function PodiumItem({
             style={{ marginTop: 3 }}
           />
         ) : (
-          <Text className="mt-0.5 text-label-sm text-gray-200">Você</Text>
+          <Text className="mt-1 text-label-sm text-gray-200">Você</Text>
         )}
       </View>
     </View>
@@ -303,7 +303,7 @@ export default function GroupDetailScreen() {
 
   if (!group) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700 px-md">
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700 px-4">
         <Text className="text-gray-200">Grupo indisponível.</Text>
       </SafeAreaView>
     );
@@ -314,7 +314,7 @@ export default function GroupDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma das outras telas) */}
-      <View className="h-16 flex-row items-center px-md">
+      <View className="h-16 flex-row items-center px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -337,7 +337,7 @@ export default function GroupDetailScreen() {
         {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
-          className="h-[140px] items-center justify-center overflow-hidden px-md"
+          className="h-[140px] items-center justify-center overflow-hidden px-4"
         >
           {group.cover_url ? (
             <Image
@@ -361,7 +361,7 @@ export default function GroupDetailScreen() {
         </Pressable>
 
         {/* Title row */}
-        <View className="flex-row items-center justify-between px-md pb-1 pt-md">
+        <View className="flex-row items-center justify-between px-4 pb-1 pt-4">
           <View className="flex-1 pr-2">
             <Text className="text-title-xxl font-bold text-white">
               {group.name}
@@ -406,16 +406,16 @@ export default function GroupDetailScreen() {
         </View>
 
         {/* Feed grouped by day */}
-        <View className="px-md">
+        <View className="px-4">
           {sections.length === 0 ? (
-            <Text className="py-lg text-gray-200">
+            <Text className="py-6 text-gray-200">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
-            <View className="pb-xl">
+            <View className="pb-10">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="mb-2 ml-1 mt-md text-center text-label-sm uppercase tracking-widest text-gray-200">
+                  <Text className="mb-2 ml-1 mt-4 text-center text-label-sm uppercase tracking-widest text-gray-200">
                     {label}
                   </Text>
                   <View className="flex flex-col gap-2">

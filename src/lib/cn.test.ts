@@ -9,10 +9,10 @@ describe("cn", () => {
     expect(cn("p-2", "p-4")).toBe("p-4");
   });
 
-  it("resolve conflito na escala de espaçamento nomeada do config", () => {
-    expect(cn("p-md", "p-lg")).toBe("p-lg");
-    expect(cn("px-sm", "px-xl")).toBe("px-xl");
-    expect(cn("gap-xs", "gap-md")).toBe("gap-md");
+  it("resolve conflito em toda a escala de espaçamento", () => {
+    expect(cn("p-4", "p-6")).toBe("p-6");
+    expect(cn("px-2", "px-10")).toBe("px-10");
+    expect(cn("gap-1", "gap-4")).toBe("gap-4");
   });
 
   it("resolve conflito entre os fontSize custom", () => {
@@ -41,13 +41,13 @@ describe("cn", () => {
   it("aceita condicionais do clsx", () => {
     expect(cn("bg-gray-600", false && "bg-purple-300")).toBe("bg-gray-600");
     expect(cn("bg-gray-600", true && "bg-purple-300")).toBe("bg-purple-300");
-    expect(cn("p-md", undefined, null, "p-lg")).toBe("p-lg");
+    expect(cn("p-4", undefined, null, "p-6")).toBe("p-6");
   });
 
   it("deixa a classe recebida de fora vencer a base do componente", () => {
     // Padrão de Card/Button: base + className da prop.
-    expect(cn("rounded-lg bg-gray-600 p-md", "bg-purple-300")).toBe(
-      "rounded-lg p-md bg-purple-300",
+    expect(cn("rounded-lg bg-gray-600 p-4", "bg-purple-300")).toBe(
+      "rounded-lg p-4 bg-purple-300",
     );
   });
 });

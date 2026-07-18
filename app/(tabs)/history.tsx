@@ -157,8 +157,8 @@ export default function HistoryScreen() {
         </View>
 
         {/* De / Até */}
-        <View className="mt-4 flex-row gap-2.5">
-          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-2.5">
+        <View className="mt-4 flex-row gap-3">
+          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
             <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
               De
             </Text>
@@ -166,7 +166,7 @@ export default function HistoryScreen() {
               {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
-          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-2.5">
+          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
             <Text className="text-label-sm font-bold uppercase tracking-label text-gray-300">
               Até
             </Text>
@@ -189,7 +189,7 @@ export default function HistoryScreen() {
                 key={p.key}
                 onPress={() => setPreset(p.key)}
                 className={cn(
-                  "rounded-full border px-3.5 py-2",
+                  "rounded-full border px-4 py-2",
                   active ? "bg-purple-300" : "border-white/12 bg-transparent",
                 )}
               >
@@ -207,11 +207,11 @@ export default function HistoryScreen() {
         </ScrollView>
 
         {loading ? (
-          <View className="items-center justify-center py-xl">
+          <View className="items-center justify-center py-10">
             <ActivityIndicator size="large" color={color["purple-100"]} />
           </View>
         ) : error ? (
-          <View className="items-center justify-center gap-md py-xl">
+          <View className="items-center justify-center gap-4 py-10">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar"
@@ -249,7 +249,7 @@ export default function HistoryScreen() {
                     >
                       <View className="flex-row items-center justify-between">
                         <View
-                          className={cn("rounded-full px-2.5 py-1", meta.badge)}
+                          className={cn("rounded-full px-3 py-1", meta.badge)}
                         >
                           <Text
                             className={cn(
@@ -267,13 +267,13 @@ export default function HistoryScreen() {
                       </View>
 
                       <Text
-                        className="mt-3.5 text-title-lg font-bold text-white"
+                        className="mt-4 text-title-lg font-bold text-white"
                         numberOfLines={1}
                       >
                         {workoutName(s.workout_id)}
                       </Text>
 
-                      <View className="my-3.5 h-px bg-white/10" />
+                      <View className="my-4 h-px bg-white/10" />
 
                       <View className="flex-row items-center justify-between">
                         <StatusIcon
@@ -332,7 +332,7 @@ export default function HistoryScreen() {
                     >
                       {m.workout_name}
                     </Text>
-                    <Text className="mt-2.5 text-label-sm font-semibold uppercase tracking-label text-error/80">
+                    <Text className="mt-3 text-label-sm font-semibold uppercase tracking-label text-error/80">
                       Missão falhada
                     </Text>
                   </View>

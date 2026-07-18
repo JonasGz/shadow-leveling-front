@@ -72,9 +72,9 @@ export function WeeklyGoalModal({
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1 items-center justify-center bg-black/70 px-lg"
+        className="flex-1 items-center justify-center bg-black/70 px-6"
       >
-        <View className="w-full gap-md rounded-2xl border border-gray-300 bg-gray-600 p-lg">
+        <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
           <Text className="text-title-md font-bold text-white">
             Meta semanal
           </Text>
@@ -88,9 +88,9 @@ export function WeeklyGoalModal({
             placeholderTextColor={color["gray-200"]}
             keyboardType="number-pad"
             autoFocus
-            className="rounded-lg border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
+            className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-body-lg text-white"
           />
-          <View className="mt-sm flex-row gap-md">
+          <View className="mt-2 flex-row gap-4">
             {!required && (
               <Pressable
                 onPress={onClose}

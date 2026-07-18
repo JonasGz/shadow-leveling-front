@@ -96,7 +96,7 @@ function CommentRow({
             {relativeTime(comment.created_at)}
           </Text>
         </View>
-        <Text className="mt-0.5 text-body-sm text-white">{comment.body}</Text>
+        <Text className="mt-1 text-body-sm text-white">{comment.body}</Text>
       </View>
     </Pressable>
   );
@@ -214,7 +214,7 @@ export default function SessionPostScreen() {
 
   if (!detail) {
     return (
-      <View className="flex-1 items-center justify-center bg-gray-700 px-md">
+      <View className="flex-1 items-center justify-center bg-gray-700 px-4">
         <Text className="text-gray-200">Treino indisponível.</Text>
       </View>
     );
@@ -268,11 +268,11 @@ export default function SessionPostScreen() {
           {/* 2. Author */}
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
-            <View className="flex-1 pt-0.5">
+            <View className="flex-1 pt-1">
               <Text className="text-body-lg font-bold text-white">
                 {detail.name}
               </Text>
-              <Text className="mt-0.5 text-body-sm font-semibold text-purple-200">
+              <Text className="mt-1 text-body-sm font-semibold text-purple-200">
                 {detail.workout_name}
               </Text>
             </View>
@@ -282,7 +282,7 @@ export default function SessionPostScreen() {
           </View>
 
           {/* 3. Reactions */}
-          <View className="flex-row flex-wrap items-center gap-2.5 px-5 pt-5">
+          <View className="flex-row flex-wrap items-center gap-3 px-5 pt-5">
             {detail.reactions.map((rc) => {
               const active = rc.emoji === detail.my_reaction;
               return (
@@ -290,7 +290,7 @@ export default function SessionPostScreen() {
                   key={rc.emoji}
                   onPress={() => react(rc.emoji)}
                   className={cn(
-                    "h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 active:opacity-70",
+                    "h-9 flex-row items-center gap-2 rounded-full border px-4 active:opacity-70",
                     active
                       ? "border-purple-300 bg-purple-300/15"
                       : "border-white/7 bg-gray-600",
@@ -350,7 +350,7 @@ export default function SessionPostScreen() {
         {/* 5. Fixed composer */}
         <View
           style={{ paddingBottom: insets.bottom + 12 }}
-          className="flex-row items-center gap-2.5 border-t border-white/7 bg-gray-700 px-5 pt-3"
+          className="flex-row items-center gap-3 border-t border-white/7 bg-gray-700 px-5 pt-3"
         >
           <View className="h-12 flex-1 flex-row items-center rounded-full border border-white/7 bg-gray-600 px-4">
             <TextInput

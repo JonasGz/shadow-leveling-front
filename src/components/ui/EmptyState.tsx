@@ -18,7 +18,7 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <View className="items-center rounded-2xl border border-dashed border-white/12 bg-gray-600 p-lg">
+    <View className="items-center rounded-2xl border border-dashed border-white/12 bg-gray-600 p-6">
       <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-gray-500">
         <Icon size={26} color={color["gray-300"]} strokeWidth={1.6} />
       </View>
@@ -26,12 +26,12 @@ export function EmptyState({
         {title}
       </Text>
       {description ? (
-        <Text className="mt-1.5 text-center text-body-md text-gray-200">
+        <Text className="mt-2 text-center text-body-md text-gray-200">
           {description}
         </Text>
       ) : null}
       {action ? (
-        <View className="mt-md">
+        <View className="mt-4">
           <Button
             label={action.label}
             variant="tonal"

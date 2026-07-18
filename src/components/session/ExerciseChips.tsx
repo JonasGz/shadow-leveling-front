@@ -26,7 +26,7 @@ export function ExerciseChips({
       horizontal
       showsHorizontalScrollIndicator={false}
       className="grow-0"
-      contentContainerClassName="px-md pb-8 gap-2 py-3"
+      contentContainerClassName="px-4 pb-8 gap-2 py-3"
       keyboardShouldPersistTaps="handled"
     >
       {exercises.map((we, i) => {

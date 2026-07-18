@@ -44,7 +44,7 @@ export default function JoinGroupScreen() {
   }, [code, user, showToast]);
 
   return (
-    <View className="flex-1 items-center justify-center gap-md bg-gray-700">
+    <View className="flex-1 items-center justify-center gap-4 bg-gray-700">
       <ActivityIndicator color={color["purple-100"]} />
       <Text className="text-label-md text-gray-200">Entrando no grupo…</Text>
     </View>

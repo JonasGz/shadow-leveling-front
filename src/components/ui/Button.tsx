@@ -26,7 +26,7 @@ interface ButtonProps extends PressableProps {
 }
 
 const sizePad: Record<Size, string> = {
-  sm: "px-5 py-2.5",
+  sm: "px-5 py-3",
   md: "px-6 py-5",
 };
 

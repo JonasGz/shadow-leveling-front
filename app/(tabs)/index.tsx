@@ -118,7 +118,7 @@ function StatCard({
 }) {
   const Icon = icon;
   return (
-    <View className="flex-1 rounded-2xl border border-white/7 bg-gray-600 p-lg">
+    <View className="flex-1 rounded-2xl border border-white/7 bg-gray-600 p-6">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
       <Text className="mt-2 text-center text-title-xl font-extrabold text-white">
         {value}
@@ -189,7 +189,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-md py-md">
+      <View className="flex-row items-center justify-between px-4 py-4">
         <View>
           <Text className="text-title-xxl font-bold text-white">
             Hey, {name} 👋
@@ -216,7 +216,7 @@ export default function HomeScreen() {
           <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center gap-md px-lg">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -226,7 +226,7 @@ export default function HomeScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-md gap-lg pb-[112px]"
+          contentContainerClassName="px-4 py-4 gap-6 pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -280,7 +280,7 @@ export default function HomeScreen() {
           ) : null}
 
           {/* Stat cards */}
-          <View className="flex-row gap-md">
+          <View className="flex-row gap-4">
             <StatCard
               icon={Flame}
               iconColor={color.warning}
@@ -298,7 +298,7 @@ export default function HomeScreen() {
 
           {/* Today's workout */}
           <View>
-            <Text className="mb-md text-center text-title-lg font-bold text-white">
+            <Text className="mb-4 text-center text-title-lg font-bold text-white">
               Treino de hoje
             </Text>
 
@@ -307,7 +307,7 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/workout/${featured.id}`)}
                 className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600 active:opacity-80"
               >
-                <View className="bg-purple-400 px-md py-md">
+                <View className="bg-purple-400 px-4 py-4">
                   <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
                     <Text className="text-label-sm uppercase text-white">
                       {featured.is_completed ? "Concluído" : "Próximo"}
@@ -315,7 +315,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
 
-                <View className="items-center p-lg">
+                <View className="items-center p-6">
                   <Text
                     className="text-title-xl font-bold text-white"
                     numberOfLines={1}
@@ -328,7 +328,7 @@ export default function HomeScreen() {
                     {featured.exercise_count === 1 ? "" : "s"}
                   </Text>
 
-                  <View className="mt-md w-full">
+                  <View className="mt-4 w-full">
                     <StartWorkoutButton
                       workoutId={featured.id}
                       done={featured.is_completed}
@@ -337,7 +337,7 @@ export default function HomeScreen() {
                 </View>
               </Pressable>
             ) : (
-              <View className="items-center gap-md rounded-2xl border border-white/7 bg-gray-600 p-lg">
+              <View className="items-center gap-4 rounded-2xl border border-white/7 bg-gray-600 p-6">
                 <Calendar
                   size={36}
                   color={color["gray-200"]}

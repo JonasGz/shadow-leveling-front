@@ -133,7 +133,7 @@ export default function SessionCompleteScreen() {
 
   if (error || !session) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-gray-700 px-lg">
+      <SafeAreaView className="flex-1 items-center justify-center gap-4 bg-gray-700 px-6">
         <EmptyState
           icon={TriangleAlert}
           title="Não foi possível carregar o resumo"
@@ -155,11 +155,11 @@ export default function SessionCompleteScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       <ScrollView
-        contentContainerClassName="px-md py-lg pb-40"
+        contentContainerClassName="px-4 py-6 pb-40"
         showsVerticalScrollIndicator={false}
       >
         {/* Header de celebração */}
-        <View className="mb-lg items-center">
+        <View className="mb-6 items-center">
           <LinearGradient
             colors={[color["purple-200"], color["purple-400"]]}
             start={{ x: 0.32, y: 0.26 }}
@@ -205,7 +205,7 @@ export default function SessionCompleteScreen() {
               <Text className="text-title-xxl font-extrabold text-white">
                 +{earnedXp}
               </Text>
-              <Text className="mb-0.5 text-title-md font-bold text-white">
+              <Text className="mb-1 text-title-md font-bold text-white">
                 XP
               </Text>
             </View>
@@ -216,12 +216,12 @@ export default function SessionCompleteScreen() {
         <Pressable
           onPress={handlePickPhoto}
           disabled={uploadingPhoto}
-          className="mt-md h-[140px] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/12 bg-gray-600 active:opacity-70"
+          className="mt-4 h-[140px] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/12 bg-gray-600 active:opacity-70"
         >
           {photoUri ? (
             <Image source={{ uri: photoUri }} className="h-full w-full" />
           ) : (
-            <View className="items-center gap-2 px-md">
+            <View className="items-center gap-2 px-4">
               <Camera size={26} color={color["gray-300"]} strokeWidth={1.6} />
               <Text className="text-label-md uppercase tracking-widest text-gray-200">
                 Adicionar foto do treino
@@ -238,7 +238,7 @@ export default function SessionCompleteScreen() {
           ) : null}
         </Pressable>
         {photoUri && !uploadingPhoto ? (
-          <Pressable onPress={handlePickPhoto} className="mt-sm items-center">
+          <Pressable onPress={handlePickPhoto} className="mt-2 items-center">
             <Text className="text-label-sm uppercase tracking-widest text-purple-200">
               Trocar foto
             </Text>
@@ -246,8 +246,8 @@ export default function SessionCompleteScreen() {
         ) : null}
 
         {/* Stats */}
-        <View className="mt-md flex-row gap-2.5">
-          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
+        <View className="mt-4 flex-row gap-3">
+          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-4">
             <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Volume total
             </Text>
@@ -256,14 +256,14 @@ export default function SessionCompleteScreen() {
                 {totalVolume > 0 ? totalVolume.toLocaleString("pt-BR") : "—"}
               </Text>
               {totalVolume > 0 ? (
-                <Text className="mb-0.5 text-label-md font-semibold text-gray-300">
+                <Text className="mb-1 text-label-md font-semibold text-gray-300">
                   kg
                 </Text>
               ) : null}
             </View>
           </View>
 
-          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-md">
+          <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-4">
             <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Séries
             </Text>
@@ -271,7 +271,7 @@ export default function SessionCompleteScreen() {
               <Text className="text-title-xl font-extrabold text-purple-200">
                 {session.sets?.length ?? 0}
               </Text>
-              <Text className="mb-0.5 text-label-md font-semibold text-gray-300">
+              <Text className="mb-1 text-label-md font-semibold text-gray-300">
                 total
               </Text>
             </View>
@@ -279,7 +279,7 @@ export default function SessionCompleteScreen() {
         </View>
 
         {/* Resumo de performance */}
-        <Text className="mb-md mt-lg text-center text-label-sm font-bold uppercase tracking-widest text-purple-200">
+        <Text className="mb-4 mt-6 text-center text-label-sm font-bold uppercase tracking-widest text-purple-200">
           Resumo de performance
         </Text>
 
@@ -290,14 +290,14 @@ export default function SessionCompleteScreen() {
             description="Você finalizou sem registrar séries nesta sessão."
           />
         ) : (
-          <View className="gap-sm">
+          <View className="gap-2">
             {summaries.map((ex) => (
               <View
                 key={ex.exerciseId}
-                className="rounded-2xl border border-white/7 bg-gray-600 p-3.5"
+                className="rounded-2xl border border-white/7 bg-gray-600 p-4"
               >
                 <View className="flex-row items-center gap-3">
-                  <View className="rounded-lg h-[38px] w-[38px] items-center justify-center bg-gray-500">
+                  <View className="h-[38px] w-[38px] items-center justify-center rounded-lg bg-gray-500">
                     <Dumbbell
                       size={22}
                       color={color["purple-200"]}
@@ -320,7 +320,7 @@ export default function SessionCompleteScreen() {
                   </View>
                 </View>
 
-                <View className="mt-3 flex-row items-center justify-between rounded-lg border border-dashed border-white/12 px-3 py-2.5">
+                <View className="mt-3 flex-row items-center justify-between rounded-lg border border-dashed border-white/12 px-3 py-3">
                   <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-200">
                     Melhor série
                   </Text>
@@ -359,7 +359,7 @@ export default function SessionCompleteScreen() {
       </ScrollView>
 
       {/* Barra de ação fixa */}
-      <View className="absolute bottom-0 left-0 right-0 border-t border-gray-300 bg-gray-600 p-md">
+      <View className="absolute bottom-0 left-0 right-0 border-t border-gray-300 bg-gray-600 p-4">
         <Button
           label="Concluir"
           fullWidth

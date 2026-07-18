@@ -96,10 +96,10 @@ export function SubstituteExerciseModal({
       <Pressable className="flex-1 justify-end bg-black/70" onPress={onClose}>
         <Pressable
           onPress={() => {}}
-          className="max-h-[85%] rounded-t-2xl border-t border-gray-300 bg-gray-600 pb-xl"
+          className="max-h-[85%] rounded-t-2xl border-t border-gray-300 bg-gray-600 pb-10"
         >
           {/* Header */}
-          <View className="px-lg pb-md pt-lg">
+          <View className="px-6 pb-4 pt-6">
             <View className="mb-1 flex-row items-center gap-2">
               <ArrowLeftRight size={18} color={color["purple-100"]} />
               <Text className="text-title-md font-bold text-white">
@@ -114,8 +114,8 @@ export function SubstituteExerciseModal({
           </View>
 
           {/* Manual search */}
-          <View className="px-lg pb-md">
-            <View className="flex-row items-center gap-2 rounded-lg border border-white/12 bg-gray-600 px-md py-3">
+          <View className="px-6 pb-4">
+            <View className="flex-row items-center gap-2 rounded-lg border border-white/12 bg-gray-600 px-4 py-3">
               <Search size={16} color={color["gray-200"]} />
               <TextInput
                 value={search}
@@ -129,16 +129,16 @@ export function SubstituteExerciseModal({
 
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-lg pb-md"
+            contentContainerClassName="px-6 pb-4"
           >
             {/* Suggested substitutes (only when no active search) */}
             {search.trim().length < 2 && (
-              <View className="mb-md">
+              <View className="mb-4">
                 <Text className="mb-2 text-label-sm font-bold uppercase tracking-widest text-gray-200">
                   Sugestões
                 </Text>
                 {loadingSuggestions ? (
-                  <View className="items-center py-lg">
+                  <View className="items-center py-6">
                     <ActivityIndicator
                       size="small"
                       color={color["purple-100"]}
@@ -160,7 +160,7 @@ export function SubstituteExerciseModal({
             {search.trim().length >= 2 && (
               <View>
                 {searching ? (
-                  <View className="items-center py-lg">
+                  <View className="items-center py-6">
                     <ActivityIndicator
                       size="small"
                       color={color["purple-100"]}
@@ -208,7 +208,7 @@ function SubstituteRow({
   return (
     <Pressable
       onPress={() => onPick(exercise)}
-      className="mb-2 flex-row items-center gap-3 rounded-2xl border border-white/12 bg-gray-600 p-md active:opacity-70"
+      className="mb-2 flex-row items-center gap-3 rounded-2xl border border-white/12 bg-gray-600 p-4 active:opacity-70"
     >
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-purple-300/20">
         <Dumbbell size={18} color={color["purple-100"]} />

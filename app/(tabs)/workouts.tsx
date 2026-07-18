@@ -50,7 +50,7 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
           "rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgb(129, 19, 211)",
       }}
     >
-      <View className="gap-lg p-md">
+      <View className="gap-6 p-4">
         <Pressable onPress={() => router.push(`/workout/${workout.id}`)}>
           <View className="mb-1 flex-row items-start justify-between">
             <Text className="flex-1 pr-2 text-headline-mobile font-bold text-white">
@@ -61,11 +61,11 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
             </Text>
           </View>
           {workout.description ? (
-            <Text className="mb-md text-label-md text-gray-200">
+            <Text className="mb-4 text-label-md text-gray-200">
               {workout.description}
             </Text>
           ) : null}
-          <View className="flex-row gap-xl">
+          <View className="flex-row gap-10">
             <View className="flex-row items-center gap-1">
               <Dumbbell size={16} color={color["gray-300"]} />
               <Text className="text-label-sm text-gray-200">
@@ -102,11 +102,11 @@ function LibraryWorkoutCard({
     <Pressable
       onPress={() => router.push(`/workout/${workout.id}`)}
       className={cn(
-        "rounded-2xl border border-white/7 bg-gray-600 p-md active:bg-gray-500",
+        "rounded-2xl border border-white/7 bg-gray-600 p-4 active:bg-gray-500",
         workout.active ? "" : "opacity-60",
       )}
     >
-      <View className="mb-md flex-row items-start justify-between">
+      <View className="mb-4 flex-row items-start justify-between">
         <View className="flex-1 pr-2">
           <Text className="text-title-lg font-bold text-white">
             {workout.name}
@@ -124,7 +124,7 @@ function LibraryWorkoutCard({
         </Pressable>
       </View>
 
-      <View className="mb-md flex-row items-center justify-between rounded-lg bg-gray-700 p-md">
+      <View className="mb-4 flex-row items-center justify-between rounded-lg bg-gray-700 p-4">
         <View>
           <Text className="text-label-sm uppercase tracking-widest text-gray-400">
             Exercícios
@@ -143,7 +143,7 @@ function LibraryWorkoutCard({
         </View>
       </View>
 
-      <View className="flex-row flex-wrap gap-sm">
+      <View className="flex-row flex-wrap gap-2">
         {workout.done_today ? (
           <View className="rounded-sm bg-purple-300/15 px-2 py-1">
             <Text className="text-label-sm uppercase tracking-widest text-purple-300">
@@ -236,7 +236,7 @@ export default function WorkoutsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="h-16 flex-row items-center justify-between px-md">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <View className="flex-row items-center gap-3">
           <Text className="text-title-xxl font-bold text-white">
             Meus Treinos
@@ -255,7 +255,7 @@ export default function WorkoutsScreen() {
           <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error && workouts.length === 0 ? (
-        <View className="flex-1 items-center justify-center gap-md px-lg">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -265,7 +265,7 @@ export default function WorkoutsScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-lg gap-lg pb-[112px]"
+          contentContainerClassName="px-4 py-6 gap-6 pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -284,7 +284,7 @@ export default function WorkoutsScreen() {
 
           {/* Programado para Hoje */}
           {todayWorkouts.length > 0 && (
-            <View className="gap-md">
+            <View className="gap-4">
               <View className="flex-row items-center justify-between">
                 <Text className="text-title-md font-bold text-white">Hoje</Text>
                 <View className="h-2 w-2 rounded-full bg-purple-200" />
@@ -301,7 +301,7 @@ export default function WorkoutsScreen() {
               Outros treinos
             </Text>
           </View>
-          <View className="gap-md">
+          <View className="gap-4">
             {libraryWorkouts.map((w) => (
               <LibraryWorkoutCard
                 key={w.id}
@@ -324,7 +324,7 @@ export default function WorkoutsScreen() {
               />
             ) : (
               /* Novo treino */
-              <View className="items-center gap-sm pt-5">
+              <View className="items-center gap-2 pt-5">
                 <IconButton
                   icon={Plus}
                   onPress={() => router.push("/workout/create")}

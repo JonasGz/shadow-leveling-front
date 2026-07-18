@@ -184,11 +184,11 @@ export default function ProfileScreen() {
         <Text className="mt-2 text-title-xxl font-bold text-white">Perfil</Text>
 
         {loading ? (
-          <View className="items-center justify-center py-xl">
+          <View className="items-center justify-center py-10">
             <ActivityIndicator size="large" color={color["purple-100"]} />
           </View>
         ) : error ? (
-          <View className="items-center justify-center gap-md py-xl">
+          <View className="items-center justify-center gap-4 py-10">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar o perfil"
@@ -257,7 +257,7 @@ export default function ProfileScreen() {
 
               <Pressable
                 onPress={openNicknameEditor}
-                className="mt-3.5 flex-row items-center gap-2 active:opacity-70"
+                className="mt-4 flex-row items-center gap-2 active:opacity-70"
               >
                 {/* shrink + 1 linha: sem isso um nome longo empurra o lápis
                     para fora da tela em 320px, porque Text não encolhe. */}
@@ -270,10 +270,10 @@ export default function ProfileScreen() {
                 <Pencil size={14} color={color["purple-200"]} strokeWidth={2} />
               </Pressable>
 
-              <Text className="mt-1.5 text-body-md text-gray-200">{email}</Text>
+              <Text className="mt-2 text-body-md text-gray-200">{email}</Text>
 
               {user?.created_at ? (
-                <View className="mt-3 rounded-full border border-white/12 px-3.5 py-1.5">
+                <View className="mt-3 rounded-full border border-white/12 px-4 py-2">
                   <Text className="text-label-sm font-semibold uppercase tracking-label text-gray-200">
                     Caçador desde {formatDateSlash(user.created_at)}
                   </Text>
@@ -331,7 +331,7 @@ export default function ProfileScreen() {
                     <Text className="text-label-md text-gray-300">
                       {level.total_xp.toLocaleString("pt-BR")} XP total
                     </Text>
-                    <View className="flex-row items-center gap-1.5">
+                    <View className="flex-row items-center gap-2">
                       <Flame
                         size={14}
                         color={color.warning}
@@ -397,7 +397,7 @@ export default function ProfileScreen() {
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
-              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-2.5 rounded-lg border border-error/40 bg-error/10 active:opacity-80"
+              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-3 rounded-lg border border-error/40 bg-error/10 active:opacity-80"
             >
               {loggingOut ? (
                 <ActivityIndicator size="small" color={color.error} />
@@ -423,9 +423,9 @@ export default function ProfileScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 items-center justify-center bg-black/70 px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full gap-md rounded-2xl border border-gray-300 bg-gray-600 p-lg">
+          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
             <Text className="text-title-md font-bold text-white">
               Editar nick
             </Text>
@@ -441,9 +441,9 @@ export default function ProfileScreen() {
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="rounded-lg border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
+              className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-body-lg text-white"
             />
-            <View className="mt-sm flex-row gap-md">
+            <View className="mt-2 flex-row gap-4">
               <Pressable
                 onPress={() => setEditing(false)}
                 disabled={savingNick}

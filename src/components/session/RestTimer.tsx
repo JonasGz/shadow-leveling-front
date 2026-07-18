@@ -37,7 +37,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
 
   return (
     <View
-      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-purple-200/40 bg-gray-500 py-2.5 pl-3 pr-2.5"
+      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-purple-200/40 bg-gray-500 py-3 pl-3 pr-3"
       style={{
         left: 0,
         right: 0,
@@ -65,7 +65,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         <Text className="text-label-sm font-bold uppercase tracking-widest text-gray-200">
           Descanso
         </Text>
-        <Text className="mt-0.5 text-title-md font-bold leading-none text-purple-200">
+        <Text className="mt-1 text-title-md font-bold leading-none text-purple-200">
           {formatDuration(remaining)}
         </Text>
       </View>

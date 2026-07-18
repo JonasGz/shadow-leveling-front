@@ -33,30 +33,14 @@ const FONT_SIZES = [
   "label-sm",
 ];
 
-// Escala de espaçamento nomeada, que convive com a numérica (1..16).
-const SPACING = ["xs", "sm", "md", "lg", "xl"];
+// Espaçamento não precisa de registro: a escala é a numérica do Tailwind
+// (1..16), que o tailwind-merge já conhece de fábrica. Os apelidos
+// xs/sm/md/lg/xl foram removidos do config.
 
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       "font-size": [{ text: FONT_SIZES }],
-      p: [{ p: SPACING }],
-      px: [{ px: SPACING }],
-      py: [{ py: SPACING }],
-      pt: [{ pt: SPACING }],
-      pr: [{ pr: SPACING }],
-      pb: [{ pb: SPACING }],
-      pl: [{ pl: SPACING }],
-      m: [{ m: SPACING }],
-      mx: [{ mx: SPACING }],
-      my: [{ my: SPACING }],
-      mt: [{ mt: SPACING }],
-      mr: [{ mr: SPACING }],
-      mb: [{ mb: SPACING }],
-      ml: [{ ml: SPACING }],
-      gap: [{ gap: SPACING }],
-      "gap-x": [{ "gap-x": SPACING }],
-      "gap-y": [{ "gap-y": SPACING }],
       // Elevação do design system: flat/low/medium/high no lugar da escala
       // sm/md/lg/xl que o tailwind-merge assume.
       shadow: [{ shadow: ["flat", "low", "medium", "high"] }],

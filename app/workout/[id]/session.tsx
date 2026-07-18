@@ -295,7 +295,7 @@ export default function WorkoutSessionScreen() {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-gray-700">
         <ActivityIndicator size="large" color={color["purple-100"]} />
-        <Text className="mt-md text-label-md uppercase tracking-widest text-gray-200">
+        <Text className="mt-4 text-label-md uppercase tracking-widest text-gray-200">
           Preparando sessão...
         </Text>
       </SafeAreaView>
@@ -304,7 +304,7 @@ export default function WorkoutSessionScreen() {
 
   if (bootError || !workout) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-gray-700 px-lg">
+      <SafeAreaView className="flex-1 items-center justify-center gap-4 bg-gray-700 px-6">
         <EmptyState
           icon={TriangleAlert}
           title="Não foi possível iniciar"
@@ -317,7 +317,7 @@ export default function WorkoutSessionScreen() {
 
   if (exercises.length === 0) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center gap-md bg-gray-700 px-lg">
+      <SafeAreaView className="flex-1 items-center justify-center gap-4 bg-gray-700 px-6">
         <EmptyState
           icon={Dumbbell}
           title="Treino sem exercícios"
@@ -335,7 +335,7 @@ export default function WorkoutSessionScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="px-md pt-sm">
+      <View className="px-4 pt-2">
         <View className="flex-row items-center justify-between gap-2">
           <View className="flex-1 flex-row items-center gap-3">
             <LinearGradient
@@ -370,7 +370,7 @@ export default function WorkoutSessionScreen() {
             onPress={confirmQuit}
           />
         </View>
-        <View className="mt-md h-px bg-white/12" />
+        <View className="mt-4 h-px bg-white/12" />
       </View>
 
       <ExerciseChips
@@ -382,7 +382,7 @@ export default function WorkoutSessionScreen() {
       />
 
       {/* Progresso */}
-      <View className="px-md pb-md">
+      <View className="px-4 pb-4">
         <View className="mb-2 flex-row items-end justify-between">
           <Text className="text-label-sm font-bold uppercase tracking-widest text-gray-200">
             Exercício {current + 1} de {exercises.length}
@@ -440,7 +440,7 @@ export default function WorkoutSessionScreen() {
       </KeyboardAvoidingView>
 
       {/* Dots de paginação */}
-      <View className="flex-row justify-center gap-1.5 pb-10">
+      <View className="flex-row justify-center gap-2 pb-10">
         {exercises.map((we, i) => (
           <View
             key={we.id}
@@ -453,7 +453,7 @@ export default function WorkoutSessionScreen() {
       </View>
 
       {/* Finalizar sempre disponível — pode-se pular exercícios sem concluir */}
-      <View className="px-md pb-8">
+      <View className="px-4 pb-8">
         <Button
           label="Finalizar treino"
           size="md"

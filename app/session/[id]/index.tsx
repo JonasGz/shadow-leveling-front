@@ -74,7 +74,7 @@ export default function SessionDetailScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="h-16 flex-row items-center justify-between px-md">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
@@ -92,7 +92,7 @@ export default function SessionDetailScreen() {
           <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error || !session || !status ? (
-        <View className="flex-1 items-center justify-center gap-md px-lg">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -102,7 +102,7 @@ export default function SessionDetailScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-5 py-md gap-3 pb-xl"
+          contentContainerClassName="px-5 py-4 gap-3 pb-10"
           showsVerticalScrollIndicator={false}
         >
           {/* Resumo */}
@@ -122,7 +122,7 @@ export default function SessionDetailScreen() {
           </View>
 
           {/* Estatísticas da sessão */}
-          <View className="flex-row gap-2.5">
+          <View className="flex-row gap-3">
             {[
               { value: totals.series, label: "Séries" },
               { value: totals.reps, label: "Reps" },
@@ -143,7 +143,7 @@ export default function SessionDetailScreen() {
           </View>
 
           {Object.keys(grouped).length === 0 ? (
-            <View className="mt-md">
+            <View className="mt-4">
               <EmptyState
                 icon={Inbox}
                 title="Nenhuma série registrada"
@@ -174,14 +174,14 @@ export default function SessionDetailScreen() {
                     </Text>
                   </View>
 
-                  <View className="mt-3.5 gap-2">
+                  <View className="mt-4 gap-2">
                     {ordered.map((set) => {
                       const isBest = set.id === bestId;
                       return (
                         <View
                           key={set.id}
                           className={cn(
-                            "flex-row items-center justify-between rounded-lg px-3.5 py-3",
+                            "flex-row items-center justify-between rounded-lg px-4 py-3",
                             isBest
                               ? "border border-purple-300/35 bg-purple-300/10"
                               : "bg-gray-700",
@@ -213,7 +213,7 @@ export default function SessionDetailScreen() {
                   </View>
 
                   {best ? (
-                    <View className="mt-3 flex-row items-center gap-1.5">
+                    <View className="mt-3 flex-row items-center gap-2">
                       <Trophy
                         size={13}
                         color={color["purple-200"]}

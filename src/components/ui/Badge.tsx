@@ -49,7 +49,7 @@ const toneStyles: Record<Tone, { container: string; text: string }> = {
 export function Badge({ label, tone = "neutral" }: BadgeProps) {
   const styles = toneStyles[tone];
   return (
-    <View className={cn("rounded-full px-2.5 py-1", styles.container)}>
+    <View className={cn("rounded-full px-3 py-1", styles.container)}>
       <Text
         className={cn("text-label-sm uppercase tracking-widest", styles.text)}
       >

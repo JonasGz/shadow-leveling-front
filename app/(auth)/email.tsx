@@ -68,16 +68,16 @@ export default function EmailAuthScreen() {
         <Pressable
           onPress={() => (step === "code" ? setStep("email") : router.back())}
           hitSlop={12}
-          className="absolute left-md top-20 z-10 p-1"
+          className="absolute left-4 top-20 z-10 p-1"
         >
           <ChevronLeft size={28} color={color.white} />
         </Pressable>
         <ScrollView
-          contentContainerClassName="flex-grow justify-center px-lg"
+          contentContainerClassName="flex-grow justify-center px-6"
           keyboardShouldPersistTaps="handled"
         >
           {step === "email" ? (
-            <View className="gap-md">
+            <View className="gap-4">
               <Text className="text-headline-mobile font-bold text-white">
                 Entrar com e-mail
               </Text>
@@ -101,7 +101,7 @@ export default function EmailAuthScreen() {
               />
             </View>
           ) : (
-            <View className="gap-md">
+            <View className="gap-4">
               <Text className="text-headline-mobile font-bold text-white">
                 Digite o código
               </Text>
