@@ -34,4 +34,26 @@ There is no E2E suite. Unit/component tests live next to the code as `*.test.ts(
 - `src/components/ui/` — themed primitives (Button, Card, Input, Badge, Toast, EmptyState). `Toast` is provided via a `ToastProvider` at the root layout.
 - `src/types/api.types.ts` — shared API types.
 
-Visual identity is "Cyber-Athletic": high-contrast dark mode, electric purple + cyan. Root background is `#131314`. Tokens live in `tailwind.config.js`.
+Visual identity is high-contrast dark mode with purple as the accent. Root
+background is `gray-700` (`#111113`).
+
+**Styling rules:**
+- Colors live in `src/theme/palette.js` (flat object, typed by `palette.d.ts`),
+  which `tailwind.config.js` consumes. Each key is exactly the Tailwind class
+  suffix, so `bg-purple-100`, `text-purple-100` and `color={color["purple-100"]}`
+  are visibly the same color. The scale is literal (`purple-300`, `gray-600`),
+  not semantic — `primary`/`surface-low`/`on-surface` were removed because ~10
+  aliases pointed at the same hex. `error`/`success`/`warning`/`info` and
+  `difficulty-*` stay semantic on purpose.
+- Never hardcode a hex. In `className` use the token; in a JS prop (Lucide
+  `color=`, `LinearGradient colors=`, `ActivityIndicator`) import `color` from
+  the palette.
+- Any conditional `className` goes through `cn()` (`src/lib/cn.ts`, clsx +
+  tailwind-merge). No template literals. `cn.test.ts` guards the custom
+  classGroups — the config's custom `fontSize`/spacing scales must be registered
+  there or the merge fails silently.
+- `style={{}}` only for what a class cannot express: `LinearGradient` and
+  `Animated.View` (no cssInterop registered, they ignore `className`), shadows,
+  and genuinely dynamic values.
+- `npm run format` runs prettier + prettier-plugin-tailwindcss, which sorts
+  classes (including inside `cn()`).
