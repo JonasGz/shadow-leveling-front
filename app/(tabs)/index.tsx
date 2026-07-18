@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import Svg, {
 import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
+import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
@@ -123,7 +124,7 @@ function StatCard({
   const Icon = icon;
   return (
     <View className="flex-1 bg-surface-low rounded-2xl p-lg border border-card-border">
-      <Icon size={20} color={iconColor} fill={iconFill ?? "none"} />
+      <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
       <Text className="text-on-surface text-center font-extrabold text-title-xl mt-2">
         {value}
       </Text>
@@ -143,6 +144,7 @@ export default function HomeScreen() {
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  const [goalModalVisible, setGoalModalVisible] = useState(false);
 
   const load = useCallback(async () => {
     setError(false);
@@ -169,6 +171,14 @@ export default function HomeScreen() {
       load();
     }, [load]),
   );
+
+  // Prompt the user to define a weekly goal on first entry (coluna NULL).
+  // "Definir depois" closes the modal; it reappears next visit until set.
+  useEffect(() => {
+    if (!loading && user && user.weekly_goal_days === null) {
+      setGoalModalVisible(true);
+    }
+  }, [loading, user]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -261,38 +271,45 @@ export default function HomeScreen() {
         >
           {/* Weekly goal card */}
           {weekly ? (
-            <LinearGradient
-              colors={["rgb(42, 23, 48)", "rgb(26, 25, 28)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 12,
-                borderRadius: 20,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: "#9F1FFF4D",
-              }}
+            <Pressable
+              onPress={goalScheduled > 0 ? undefined : () => setGoalModalVisible(true)}
+              disabled={goalScheduled > 0}
             >
-              <WeeklyGoalRing pct={goalPct} />
-              <View className="flex-1">
-                <Text className="text-title-lg text-on-surface font-bold text-center">
-                  Meta semanal
-                </Text>
-                <Text
-                  className="text-body-sm mt-1 text-center"
-                  style={{ color: "#B5B4B8" }}
-                >
-                  {goalCompleted >= goalScheduled && goalScheduled > 0
-                    ? "Meta da semana concluída. Excelente!"
-                    : `${goalCompleted} de ${goalScheduled} treinos feitos. Faltam ${Math.max(
-                        0,
-                        goalScheduled - goalCompleted,
-                      )} pra completar!`}
-                </Text>
-              </View>
-            </LinearGradient>
+              <LinearGradient
+                colors={["rgb(42, 23, 48)", "rgb(26, 25, 28)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 12,
+                  borderRadius: 20,
+                  padding: 16,
+                  borderWidth: 1,
+                  borderColor: "#9F1FFF4D",
+                }}
+              >
+                <WeeklyGoalRing pct={goalPct} />
+                <View className="flex-1">
+                  <Text className="text-title-lg text-on-surface font-bold text-center">
+                    Meta semanal
+                  </Text>
+                  <Text
+                    className="text-body-sm mt-1 text-center"
+                    style={{ color: "#B5B4B8" }}
+                  >
+                    {goalScheduled === 0
+                      ? "Defina sua meta semanal"
+                      : goalCompleted >= goalScheduled
+                        ? "Meta da semana concluída. Excelente!"
+                        : `${goalCompleted} de ${goalScheduled} treinos feitos. Faltam ${Math.max(
+                            0,
+                            goalScheduled - goalCompleted,
+                          )} pra completar!`}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </Pressable>
           ) : null}
 
           {/* Stat cards */}
@@ -383,6 +400,15 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
       )}
+
+      <WeeklyGoalModal
+        visible={goalModalVisible}
+        onClose={() => setGoalModalVisible(false)}
+        onSaved={() => {
+          setGoalModalVisible(false);
+          load();
+        }}
+      />
     </SafeAreaView>
   );
 }

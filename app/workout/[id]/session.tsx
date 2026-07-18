@@ -19,15 +19,18 @@ import {
   Clock,
   Check,
   ChevronLeft,
+  RotateCcw,
 } from "lucide-react-native";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
+import { SubstituteExerciseModal } from "../../../src/components/SubstituteExerciseModal";
 import { authService } from "../../../src/services/auth.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import type {
+  Exercise,
   SessionStatus,
   Workout,
   WorkoutExercise,
@@ -83,6 +86,14 @@ export default function WorkoutSessionScreen() {
   const [setsByExercise, setSetsByExercise] = useState<
     Record<string, LocalSet[]>
   >({});
+
+  // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
+  // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
+  // só afeta os exercise_sets registrados via addSet (Q15=A, Q19=A).
+  const [swapByWorkoutExercise, setSwapByWorkoutExercise] = useState<
+    Record<string, Exercise>
+  >({});
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
 
   // Cronômetro da sessão
   const [elapsed, setElapsed] = useState(0);
@@ -159,8 +170,14 @@ export default function WorkoutSessionScreen() {
     ? [...(workout.exercises ?? [])].sort((a, b) => a.sort_order - b.sort_order)
     : [];
   const activeEx = exercises[current];
+  const activeSwapped = activeEx
+    ? (swapByWorkoutExercise[activeEx.id] ?? null)
+    : null;
+  // Quando há troca, o exercício efetivo que o usuário vê/registra é o substituto;
+  // os metadados (sets/reps/duration) continuam vindos do workout_exercise.
+  const effectiveExercise = activeSwapped ?? activeEx?.exercise ?? null;
   const activeSets = activeEx ? (setsByExercise[activeEx.id] ?? []) : [];
-  const isTime = activeEx?.exercise.type === "time";
+  const isTime = effectiveExercise?.type === "time";
 
   const totalSets = exercises.reduce(
     (sum, e) => sum + (setsByExercise[e.id]?.length ?? 0),
@@ -191,9 +208,13 @@ export default function WorkoutSessionScreen() {
     const set = activeSets[idx];
     if (set.done) return; // já registrado
 
+    // Quando há troca (máquina ocupada), grava o set contra o exercício
+    // substituto. O workout_exercises original não muda — só os sets da sessão.
+    const exerciseId = activeSwapped?.id ?? activeEx.exercise_id;
+
     try {
       const created = await sessionsService.addSet(session.id, {
-        exercise_id: activeEx.exercise_id,
+        exercise_id: exerciseId,
         set_number: idx + 1,
         reps: isTime ? null : set.reps ? parseInt(set.reps, 10) : null,
         weight: isTime ? null : set.weight ? parseFloat(set.weight) : null,
@@ -385,19 +406,33 @@ export default function WorkoutSessionScreen() {
           <View className="bg-surface-low border border-card-border rounded-2xl overflow-hidden mb-lg">
             {/* Faixa em gradiente com o nome do exercício */}
             <View className="p-lg bg-primary/20">
+              {/* Badge "substituído" aparece quando há troca ativa pra esta sessão */}
+              {activeSwapped && (
+                <View className="flex-row items-center gap-1.5 mb-2 bg-secondary/20 border border-secondary/40 rounded-full px-2.5 py-1 self-start">
+                  <RotateCcw size={11} color="#B26CFF" />
+                  <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
+                    Substituído p/ hoje
+                  </Text>
+                </View>
+              )}
               <Text
                 className="text-title-xxl text-white font-extrabold"
                 numberOfLines={2}
               >
-                {activeEx?.exercise.name}
+                {effectiveExercise?.name ?? activeEx?.exercise.name}
               </Text>
-              <View className="flex-row items-center gap-2 mt-2.5">
+              {activeSwapped && (
+                <Text className="text-label-sm text-white/50 mt-1 line-through">
+                  {activeEx?.exercise.name}
+                </Text>
+              )}
+              <View className="flex-row items-center gap-2 mt-2.5 flex-wrap">
                 <View className="bg-black/30 px-2.5 py-1 rounded-full">
                   <Text className="text-[#E5D6FF] text-label-sm uppercase tracking-widest font-bold">
                     {isTime ? "Tempo" : "Força"}
                   </Text>
                 </View>
-                <Text className="text-white/90 text-label-md font-semibold">
+                <Text className="text-on-surface-variant text-label-md font-semibold">
                   {activeEx?.sets} séries
                   {isTime
                     ? activeEx?.duration
@@ -412,6 +447,15 @@ export default function WorkoutSessionScreen() {
                         } reps`
                       : ""}
                 </Text>
+                {/* Botão de troca (Máquina Ocupada). Oferece 3 sugeridos + busca. */}
+                <Pressable
+                  onPress={() => setSwapModalOpen(true)}
+                  className="bg-surface-lowest/60 border border-[#FFFFFF29] px-2.5 py-1 rounded-full active:opacity-70"
+                >
+                  <Text className="text-white/90 text-label-sm uppercase tracking-widest font-bold">
+                    Trocar (máquina ocupada)
+                  </Text>
+                </Pressable>
               </View>
             </View>
 
@@ -587,6 +631,24 @@ export default function WorkoutSessionScreen() {
           </Pressable>
         </View>
       )}
+
+      {/* Modal de troca de exercício (Máquina Ocupada). Scope: sessão atual. */}
+      <SubstituteExerciseModal
+        visible={swapModalOpen}
+        origin={activeEx?.exercise ?? null}
+        onSelect={(sub) => {
+          if (!activeEx) return;
+          setSwapByWorkoutExercise((prev) => ({
+            ...prev,
+            [activeEx.id]: sub,
+          }));
+          showToast(
+            `Trocando para ${sub.name} (só para esta sessão).`,
+            "success",
+          );
+        }}
+        onClose={() => setSwapModalOpen(false)}
+      />
     </SafeAreaView>
   );
 }

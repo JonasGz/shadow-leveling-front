@@ -9,6 +9,7 @@ export interface User {
   email: string;
   nickname: string | null;
   avatar_url: string | null;
+  weekly_goal_days: number | null;
   created_at: string;
 }
 
@@ -62,6 +63,23 @@ export interface Exercise {
   type: ExerciseType;
   unit: string;
   created_at: string;
+  // Catalog attributes imported from exerciseapi.dev (migration 000025).
+  // Populated on imported rows, omitted on user-created ones (omitempty).
+  external_id?: string;
+  primary_muscles?: string[];
+  secondary_muscles?: string[];
+  equipment?: string | null;
+  force?: string | null;
+  level?: string | null;
+  mechanic?: string | null;
+  category?: string | null;
+  // PT translations for display. Null on user-created or untranslated rows —
+  // the UI falls back to the EN counterpart when these are absent.
+  primary_muscles_pt?: string[];
+  secondary_muscles_pt?: string[];
+  equipment_pt?: string | null;
+  level_pt?: string | null;
+  mechanic_pt?: string | null;
 }
 
 export interface PaginatedExercises {
@@ -70,6 +88,12 @@ export interface PaginatedExercises {
     next_cursor: string | null;
     has_more: boolean;
   };
+}
+
+// Substitutes response envelope from GET /exercises/{id}/substitutes.
+export interface SubstitutesResponse {
+  data: Exercise[];
+  total: number;
 }
 
 // Workouts

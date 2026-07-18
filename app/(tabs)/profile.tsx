@@ -23,10 +23,12 @@ import {
   Trophy,
   ChevronRight,
   LogOut,
+  Target,
 } from "lucide-react-native";
 import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
+import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
 import { pickImage } from "../../src/lib/pickImage";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
@@ -58,6 +60,7 @@ export default function ProfileScreen() {
   const [editing, setEditing] = useState(false);
   const [nicknameInput, setNicknameInput] = useState("");
   const [savingNick, setSavingNick] = useState(false);
+  const [goalModalVisible, setGoalModalVisible] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const load = useCallback(async () => {
@@ -365,6 +368,22 @@ export default function ProfileScreen() {
             {/* Menu */}
             <View className="bg-surface-low border border-card-border rounded-xl mt-3 overflow-hidden">
               <Pressable
+                onPress={() => setGoalModalVisible(true)}
+                className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
+              >
+                <Target size={18} color="#B26CFF" strokeWidth={1.9} />
+                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                  Meta semanal
+                </Text>
+                {user?.weekly_goal_days != null && (
+                  <Text className="text-label-md text-on-surface-variant">
+                    {user.weekly_goal_days}x
+                  </Text>
+                )}
+                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+              </Pressable>
+              <View className="h-px bg-outline-variant/40" />
+              <Pressable
                 onPress={() => showToast("Conquistas — em breve.", "info")}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
               >
@@ -452,6 +471,15 @@ export default function ProfileScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      <WeeklyGoalModal
+        visible={goalModalVisible}
+        onClose={() => setGoalModalVisible(false)}
+        onSaved={(updated) => {
+          setLocalUser(updated);
+          setGoalModalVisible(false);
+        }}
+      />
     </SafeAreaView>
   );
 }

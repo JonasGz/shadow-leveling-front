@@ -46,6 +46,13 @@ export const authService = {
     return data;
   },
 
+  async updateWeeklyGoal(weeklyGoalDays: number): Promise<User> {
+    const { data } = await api.patch<User>("/auth/me/weekly-goal", {
+      weekly_goal_days: weeklyGoalDays,
+    });
+    return data;
+  },
+
   /** Uploads a new profile picture (local URI from expo-image-picker). */
   async updateAvatar(uri: string): Promise<User> {
     const { data } = await api.patch<User>("/auth/me/avatar", buildImageForm(uri), {
