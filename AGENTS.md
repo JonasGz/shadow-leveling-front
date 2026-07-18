@@ -55,5 +55,17 @@ background is `gray-700` (`#111113`).
 - `style={{}}` only for what a class cannot express: `LinearGradient` and
   `Animated.View` (no cssInterop registered, they ignore `className`), shadows,
   and genuinely dynamic values.
+- **Radius is four values, one per role**: `rounded-sm` 4px (micro),
+  `rounded-lg` 12px (control: input, button, chip, icon tile), `rounded-2xl`
+  28px (container: card, panel, modal, sheet), `rounded-full` (pill, circle).
+  The container→control gap keeps nesting harmonious by construction: an inner
+  element always reads less round than its container. Don't add a fifth.
+- **Spacing is the numeric scale only** (`p-4`, `gap-2`, `mt-6`). The
+  `xs/sm/md/lg/xl` aliases were removed — they were exact duplicates of
+  `1/2/4/6/10`. Half-steps (`p-2.5`) are gone too. Note that `h-`, `w-`, `top-`
+  and `left-` read the same scale, so a stale alias there fails silently.
+- `Card` (`src/components/ui/Card.tsx`) is the card surface — use it instead of
+  hand-writing `rounded-2xl border border-white/7 bg-gray-600 p-4`. Pass `p-0`
+  for image/menu containers that need the surface without the padding.
 - `npm run format` runs prettier + prettier-plugin-tailwindcss, which sorts
   classes (including inside `cn()`).
