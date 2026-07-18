@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
@@ -65,7 +65,6 @@ export default function EmailAuthScreen() {
     <KeyboardAvoidingView behavior="padding" className="flex-1 bg-background">
       <SafeAreaView className="flex-1">
         <Pressable
-          testID="email-back"
           onPress={() => (step === "code" ? setStep("email") : router.back())}
           hitSlop={12}
           className="absolute left-md top-20 z-10 p-1"
@@ -85,7 +84,6 @@ export default function EmailAuthScreen() {
                 Enviaremos um código de acesso para o seu e-mail.
               </Text>
               <Input
-                testID="email-input"
                 label="E-mail"
                 value={email}
                 onChangeText={setEmail}
@@ -95,7 +93,6 @@ export default function EmailAuthScreen() {
                 placeholder="seu@email.com"
               />
               <Button
-                testID="email-send"
                 label="Enviar código"
                 onPress={sendCode}
                 loading={loading}
@@ -111,7 +108,6 @@ export default function EmailAuthScreen() {
                 Enviamos um código de 6 dígitos para {email}.
               </Text>
               <Input
-                testID="code-input"
                 label="Código"
                 value={code}
                 onChangeText={(t) => setCode(t.replace(/\D/g, "").slice(0, 6))}
@@ -119,7 +115,6 @@ export default function EmailAuthScreen() {
                 placeholder="000000"
               />
               <Button
-                testID="code-verify"
                 label="Entrar"
                 onPress={verify}
                 loading={loading}

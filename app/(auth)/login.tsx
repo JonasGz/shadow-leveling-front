@@ -4,7 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { Apple, type LucideIcon } from "lucide-react-native";
+import Apple from "lucide-react-native/icons/apple";
+import type { LucideIcon } from "lucide-react-native";
 import Svg, { Path } from "react-native-svg";
 import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
@@ -118,7 +119,6 @@ export default function AuthScreen() {
       <View className="mt-10">
         <View className="gap-3">
           <Button
-            testID="auth-google"
             label="Continuar com Google"
             transform="capitalize"
             labelClassName="text-body-lg"
@@ -139,7 +139,6 @@ export default function AuthScreen() {
 
           {appleAvailable && (
             <Button
-              testID="auth-apple"
               label="Continuar com Apple"
               variant="tonal"
               transform="capitalize"
@@ -155,7 +154,6 @@ export default function AuthScreen() {
         </View>
 
         <Button
-          testID="auth-email"
           label="Continuar com e-mail"
           variant="ghost"
           transform="capitalize"

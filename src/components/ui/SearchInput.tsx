@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TextInputProps } from "react-native";
-import { Search } from "lucide-react-native";
+import Search from "lucide-react-native/icons/search";
 import { FOCUS_RING } from "./Input";
 
 interface SearchInputProps extends TextInputProps {

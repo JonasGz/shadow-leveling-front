@@ -43,17 +43,6 @@ export interface Task {
   occurrence_date: string;
 }
 
-export interface CreateTaskInput {
-  title: string;
-  description?: string;
-  level: TaskLevel;
-  initial_date: string;
-  final_date: string;
-  recurrence_type: RecurrenceType;
-  custom_days_of_week?: DayOfWeek[];
-  is_optional: boolean;
-}
-
 // Exercises
 export type ExerciseType = "repetition" | "time";
 

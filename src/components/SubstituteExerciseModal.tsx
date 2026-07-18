@@ -8,8 +8,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { Dumbbell, Search, ArrowLeftRight } from "lucide-react-native";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import Search from "lucide-react-native/icons/search";
+import ArrowLeftRight from "lucide-react-native/icons/arrow-left-right";
 import { exercisesService } from "../services/exercises.service";
+import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import type { Exercise } from "../types/api.types";
 
 interface SubstituteExerciseModalProps {
@@ -38,7 +41,23 @@ export function SubstituteExerciseModal({
 
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<Exercise[]>([]);
-  const [searching, setSearching] = useState(false);
+
+  const { searching } = useDebouncedSearch(
+    search,
+    async (query, isCurrent) => {
+      try {
+        const res = await exercisesService.list({ search: query, limit: 20 });
+        if (isCurrent()) setSearchResults(res.data);
+      } catch {
+        if (isCurrent()) setSearchResults([]);
+      }
+    },
+    {
+      enabled: visible,
+      minLength: 2,
+      onSkip: () => setSearchResults([]),
+    },
+  );
 
   const loadSuggestions = useCallback(async () => {
     if (!origin) return;
@@ -60,30 +79,6 @@ export function SubstituteExerciseModal({
       loadSuggestions();
     }
   }, [visible, loadSuggestions]);
-
-  // Debounce the manual search. 350ms covers typing without spamming the API
-  // for every keystroke. ponytail: setTimeout over a debounce lib.
-  useEffect(() => {
-    if (!visible) return;
-    const q = search.trim();
-    if (q.length < 2) {
-      setSearchResults([]);
-      setSearching(false);
-      return;
-    }
-    setSearching(true);
-    const t = setTimeout(async () => {
-      try {
-        const res = await exercisesService.list({ search: q, limit: 20 });
-        setSearchResults(res.data);
-      } catch {
-        setSearchResults([]);
-      } finally {
-        setSearching(false);
-      }
-    }, 350);
-    return () => clearTimeout(t);
-  }, [search, visible]);
 
   function pick(ex: Exercise) {
     onSelect(ex);

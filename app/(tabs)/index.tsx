@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -10,13 +10,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, router } from "expo-router";
-import {
-  TriangleAlert,
-  Calendar,
-  Flame,
-  TrendingUp,
-} from "lucide-react-native";
+import { router } from "expo-router";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Calendar from "lucide-react-native/icons/calendar";
+import Flame from "lucide-react-native/icons/flame";
+import TrendingUp from "lucide-react-native/icons/trending-up";
 import Svg, {
   Circle,
   Defs,
@@ -28,14 +26,10 @@ import { Button } from "../../src/components/ui/Button";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
 import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
+import { useScreenData } from "../../src/hooks/useScreenData";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
-import type {
-  TodayMetrics,
-  UserLevel,
-  WeeklySummary,
-} from "../../src/types/api.types";
 
 function titleCase(s: string) {
   return s
@@ -137,40 +131,27 @@ function StatCard({
 
 export default function HomeScreen() {
   const user = useAuthStore((s) => s.user);
-  const [metrics, setMetrics] = useState<TodayMetrics | null>(null);
-  const [weekly, setWeekly] = useState<WeeklySummary | null>(null);
-  const [level, setLevel] = useState<UserLevel | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [now, setNow] = useState(() => new Date());
   const [goalModalVisible, setGoalModalVisible] = useState(false);
 
-  const load = useCallback(async () => {
-    setError(false);
-    try {
-      const [m, w, lvl] = await Promise.all([
-        metricsService.today(),
-        metricsService.weekly().catch(() => null),
-        authService.level().catch(() => null),
-      ]);
-      setMetrics(m);
-      setWeekly(w);
-      setLevel(lvl);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const {
+    data,
+    loading,
+    error,
+    refreshing,
+    refresh: onRefresh,
+    reload,
+  } = useScreenData(async () => {
+    const [metrics, weekly, level] = await Promise.all([
+      metricsService.today(),
+      metricsService.weekly().catch(() => null),
+      authService.level().catch(() => null),
+    ]);
+    return { metrics, weekly, level };
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      setNow(new Date());
-      setLoading(true);
-      load();
-    }, [load]),
-  );
+  const metrics = data?.metrics ?? null;
+  const weekly = data?.weekly ?? null;
+  const level = data?.level ?? null;
 
   // Prompt the user to define a weekly goal on first entry (coluna NULL).
   // "Definir depois" closes the modal; it reappears next visit until set.
@@ -179,13 +160,6 @@ export default function HomeScreen() {
       setGoalModalVisible(true);
     }
   }, [loading, user]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    setNow(new Date());
-    await load();
-    setRefreshing(false);
-  }, [load]);
 
   const email = user?.email ?? "";
   const name = deriveName(user?.nickname ?? null, email);
@@ -251,10 +225,7 @@ export default function HomeScreen() {
           <Button
             label="Tentar novamente"
             size="sm"
-            onPress={() => {
-              setLoading(true);
-              load();
-            }}
+            onPress={reload}
           />
         </View>
       ) : (
@@ -408,7 +379,7 @@ export default function HomeScreen() {
         onClose={() => setGoalModalVisible(false)}
         onSaved={() => {
           setGoalModalVisible(false);
-          load();
+          reload();
         }}
       />
     </SafeAreaView>

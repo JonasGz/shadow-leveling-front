@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
-import { TriangleAlert, type LucideIcon } from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import type { LucideIcon } from "lucide-react-native";
 import { Button } from "./Button";
 
 interface EmptyStateProps {

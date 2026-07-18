@@ -2,9 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Pressable,
-  ScrollView,
   FlatList,
   Dimensions,
   ActivityIndicator,
@@ -14,22 +11,21 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  TriangleAlert,
-  Dumbbell,
-  Zap,
-  Clock,
-  Check,
-  RotateCcw,
-  Timer,
-  Plus,
-  X,
-  TrendingUp,
-} from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import Zap from "lucide-react-native/icons/zap";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { SubstituteExerciseModal } from "../../../src/components/SubstituteExerciseModal";
+import { ExerciseChips } from "../../../src/components/session/ExerciseChips";
+import { ExercisePage } from "../../../src/components/session/ExercisePage";
+import { RestTimer } from "../../../src/components/session/RestTimer";
+import { SessionClock } from "../../../src/components/session/SessionClock";
+import type {
+  LocalSet,
+  SetField,
+} from "../../../src/components/session/SetRow";
 import { authService } from "../../../src/services/auth.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { sessionsService } from "../../../src/services/sessions.service";
@@ -40,6 +36,7 @@ import {
   type LastSet,
 } from "../../../src/features/progression";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
+import { localCalendarDate } from "../../../src/lib/date";
 import type {
   Exercise,
   SessionStatus,
@@ -48,37 +45,15 @@ import type {
   WorkoutSession,
 } from "../../../src/types/api.types";
 
-// Data (dia local) da sessão como meio-dia UTC daquele dia, para a coluna DATE
-// do backend gravar o dia do calendário do usuário e não escorregar de fuso.
-function localCalendarDate(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T12:00:00.000Z`;
-}
-
-// Mesma correção de métrica usada em Input/SearchInput: sem isso o número
-// fica caído dentro da caixa no Android.
-const SET_FIELD_TEXT = {
-  fontSize: 14,
-  lineHeight: 16,
-  includeFontPadding: false,
-  fontWeight: "600" as const,
-};
-
 const FINISH_SHADOW = { boxShadow: "0px 6px 18px rgba(129, 19, 211, 0.4)" };
 
-function fmtClock(totalSeconds: number) {
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
+const REST_SECONDS = 60;
 
-interface LocalSet {
-  weight: string;
-  reps: string;
-  duration: string;
-  done: boolean;
-  remoteId?: string;
+function sortedExercises(workout: Workout | null): WorkoutExercise[] {
+  if (!workout) return [];
+  return [...(workout.exercises ?? [])].sort(
+    (a, b) => a.sort_order - b.sort_order,
+  );
 }
 
 export default function WorkoutSessionScreen() {
@@ -98,9 +73,7 @@ export default function WorkoutSessionScreen() {
     Record<string, LocalSet[]>
   >({});
   // Dica de progressão por exercício (keyed by workoutExercise.id).
-  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>(
-    {},
-  );
+  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>({});
 
   // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
   // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
@@ -110,22 +83,14 @@ export default function WorkoutSessionScreen() {
   >({});
   const [swapModalOpen, setSwapModalOpen] = useState(false);
 
-  // Cronômetro da sessão
-  const [elapsed, setElapsed] = useState(0);
-  // Timer de descanso (null = oculto)
-  const [rest, setRest] = useState<number | null>(null);
+  // Instante em que o último descanso começou; serve de `key` do RestTimer,
+  // que remonta e reinicia a contagem. null = oculto.
+  const [restStartedAt, setRestStartedAt] = useState<number | null>(null);
 
   // Pager horizontal: cada exercício é uma página que se arrasta pro lado.
   const pagerRef = useRef<FlatList<WorkoutExercise>>(null);
   const [pageWidth, setPageWidth] = useState(Dimensions.get("window").width);
 
-  function goTo(index: number, count: number) {
-    const clamped = Math.max(0, Math.min(count - 1, index));
-    setCurrent(clamped);
-    pagerRef.current?.scrollToIndex({ index: clamped, animated: true });
-  }
-
-  // --- Bootstrap: carrega workout e cria a sessão ---
   const boot = useCallback(async () => {
     if (!workoutId) return;
     setBooting(true);
@@ -133,10 +98,6 @@ export default function WorkoutSessionScreen() {
     try {
       const w = await workoutsService.get(workoutId);
       setWorkout(w);
-
-      const sorted = [...(w.exercises ?? [])].sort(
-        (a, b) => a.sort_order - b.sort_order,
-      );
 
       // Última sessão completa (autopreenchimento + dica). Em paralelo com a
       // criação da sessão; falha aqui não impede o treino (segue sem prefill).
@@ -146,9 +107,7 @@ export default function WorkoutSessionScreen() {
           // A sessão é datada pelo DIA LOCAL, não pelo instante UTC: um treino
           // às 22:31 (UTC-3) vira 01:31Z do dia seguinte, e `toISOString()`
           // gravaria a data errada na coluna DATE — fazendo `done_today`
-          // acender no dia seguinte. Enviamos meio-dia UTC do dia local (margem
-          // de ±12h contra o fuso do banco) para a data truncada bater com o
-          // calendário do usuário.
+          // acender no dia seguinte. Ver localCalendarDate.
           date: localCalendarDate(),
           status: "incomplete",
         }),
@@ -157,7 +116,7 @@ export default function WorkoutSessionScreen() {
 
       const initial: Record<string, LocalSet[]> = {};
       const hints: Record<string, Hint> = {};
-      for (const we of sorted) {
+      for (const we of sortedExercises(w)) {
         // Sets da última sessão para ESTE exercício (match por exercise_id).
         const lastSets: LastSet[] = (lastDetail?.sets ?? [])
           .filter((s) => s.exercise_id === we.exercise_id)
@@ -176,7 +135,6 @@ export default function WorkoutSessionScreen() {
       }
       setSetsByExercise(initial);
       setHintByExercise(hints);
-
       setSession(createdSession);
     } catch {
       setBootError(true);
@@ -189,30 +147,7 @@ export default function WorkoutSessionScreen() {
     boot();
   }, [boot]);
 
-  // Cronômetro da sessão (1s)
-  useEffect(() => {
-    if (!session) return;
-    const t = setInterval(() => setElapsed((e) => e + 1), 1000);
-    return () => clearInterval(t);
-  }, [session]);
-
-  // Timer de descanso
-  useEffect(() => {
-    if (rest == null) return;
-    if (rest <= 0) {
-      setRest(null);
-      return;
-    }
-    const t = setTimeout(
-      () => setRest((r) => (r == null ? null : r - 1)),
-      1000,
-    );
-    return () => clearTimeout(t);
-  }, [rest]);
-
-  const exercises: WorkoutExercise[] = workout
-    ? [...(workout.exercises ?? [])].sort((a, b) => a.sort_order - b.sort_order)
-    : [];
+  const exercises = sortedExercises(workout);
   // Exercício sob o foco do pager (usado pelo modal de troca).
   const activeEx = exercises[current];
 
@@ -227,54 +162,79 @@ export default function WorkoutSessionScreen() {
   const progressPct =
     totalSets === 0 ? 0 : Math.round((doneSets / totalSets) * 100);
 
-  function updateSetField(
-    weId: string,
-    idx: number,
-    field: "weight" | "reps" | "duration",
-    value: string,
-  ) {
-    setSetsByExercise((prev) => {
-      const list = [...(prev[weId] ?? [])];
-      list[idx] = { ...list[idx], [field]: value };
-      return { ...prev, [weId]: list };
-    });
-  }
+  // Espelho do estado que toggleSetDone precisa ler. Mantê-lo fora das deps é
+  // o que deixa o callback estável — sem isso, digitar em uma série trocaria a
+  // identidade da função e re-renderizaria todas as páginas memoizadas.
+  const liveStateRef = useRef({
+    sets: setsByExercise,
+    swaps: swapByWorkoutExercise,
+  });
+  liveStateRef.current = {
+    sets: setsByExercise,
+    swaps: swapByWorkoutExercise,
+  };
 
-  async function toggleSetDone(we: WorkoutExercise, idx: number) {
-    if (!session) return;
-    const set = (setsByExercise[we.id] ?? [])[idx];
-    if (!set || set.done) return; // já registrado
+  const goTo = useCallback((index: number, count: number) => {
+    const clamped = Math.max(0, Math.min(count - 1, index));
+    setCurrent(clamped);
+    pagerRef.current?.scrollToIndex({ index: clamped, animated: true });
+  }, []);
 
-    // Quando há troca (máquina ocupada), grava o set contra o exercício
-    // substituto. O workout_exercises original não muda — só os sets da sessão.
-    const swapped = swapByWorkoutExercise[we.id] ?? null;
-    const timed = (swapped ?? we.exercise).type === "time";
-    const exerciseId = swapped?.id ?? we.exercise_id;
-
-    try {
-      const created = await sessionsService.addSet(session.id, {
-        exercise_id: exerciseId,
-        set_number: idx + 1,
-        reps: timed ? null : set.reps ? parseInt(set.reps, 10) : null,
-        weight: timed ? null : set.weight ? parseFloat(set.weight) : null,
-        duration: timed && set.duration ? parseInt(set.duration, 10) : null,
-      });
+  // Estável de propósito: é prop do ExercisePage memoizado.
+  const updateSetField = useCallback(
+    (weId: string, idx: number, field: SetField, value: string) => {
       setSetsByExercise((prev) => {
-        const list = [...(prev[we.id] ?? [])];
-        list[idx] = { ...list[idx], done: true, remoteId: created.id };
-        return { ...prev, [we.id]: list };
+        const list = [...(prev[weId] ?? [])];
+        list[idx] = { ...list[idx], [field]: value };
+        return { ...prev, [weId]: list };
       });
-      setRest(60); // inicia descanso ao concluir uma série
-    } catch (err: any) {
-      const status = err?.response?.status;
-      showToast(
-        status === 400
-          ? "Dados da série inválidos."
-          : "Erro ao registrar série.",
-        "error",
-      );
-    }
-  }
+    },
+    [],
+  );
+
+  const toggleSetDone = useCallback(
+    async (we: WorkoutExercise, idx: number) => {
+      if (!session) return;
+
+      const { sets, swaps } = liveStateRef.current;
+      const set = (sets[we.id] ?? [])[idx];
+      if (!set || set.done) return; // já registrado
+
+      // Quando há troca (máquina ocupada), grava o set contra o exercício
+      // substituto. O workout_exercises original não muda — só os sets da sessão.
+      const swapped = swaps[we.id] ?? null;
+      const timed = (swapped ?? we.exercise).type === "time";
+      const exerciseId = swapped?.id ?? we.exercise_id;
+
+      try {
+        const created = await sessionsService.addSet(session.id, {
+          exercise_id: exerciseId,
+          set_number: idx + 1,
+          reps: timed ? null : set.reps ? parseInt(set.reps, 10) : null,
+          weight: timed ? null : set.weight ? parseFloat(set.weight) : null,
+          duration: timed && set.duration ? parseInt(set.duration, 10) : null,
+        });
+        setSetsByExercise((prev) => {
+          const list = [...(prev[we.id] ?? [])];
+          list[idx] = { ...list[idx], done: true, remoteId: created.id };
+          return { ...prev, [we.id]: list };
+        });
+        setRestStartedAt(Date.now()); // inicia descanso ao concluir uma série
+      } catch (err: any) {
+        const status = err?.response?.status;
+        showToast(
+          status === 400
+            ? "Dados da série inválidos."
+            : "Erro ao registrar série.",
+          "error",
+        );
+      }
+    },
+    [session, showToast],
+  );
+
+  const openSwapModal = useCallback(() => setSwapModalOpen(true), []);
+  const dismissRest = useCallback(() => setRestStartedAt(null), []);
 
   async function handleFinish() {
     if (!session) return;
@@ -327,7 +287,6 @@ export default function WorkoutSessionScreen() {
     );
   }
 
-  // --- Estados de carregamento / erro ---
   if (booting) {
     return (
       <SafeAreaView className="flex-1 bg-background items-center justify-center">
@@ -397,12 +356,7 @@ export default function WorkoutSessionScreen() {
               >
                 {workout.name}
               </Text>
-              <View className="flex-row items-center gap-1 mt-1">
-                <Clock size={15} color="#908D94" />
-                <Text className="text-label-md text-on-surface-variant">
-                  {fmtClock(elapsed)}
-                </Text>
-              </View>
+              <SessionClock running={session != null} />
             </View>
           </View>
           <Button
@@ -415,57 +369,13 @@ export default function WorkoutSessionScreen() {
         <View className="h-px bg-[#FFFFFF14] mt-md" />
       </View>
 
-      {/* Chips: pular direto pra qualquer exercício da sessão */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ flexGrow: 0 }}
-        contentContainerClassName="px-md pb-8 gap-2 py-3"
-        keyboardShouldPersistTaps="handled"
-      >
-        {exercises.map((we, i) => {
-          const name = (swapByWorkoutExercise[we.id] ?? we.exercise).name;
-          const active = i === current;
-          const sets = setsByExercise[we.id] ?? [];
-          const allDone = sets.length > 0 && sets.every((s) => s.done);
-          return (
-            <Pressable
-              key={we.id}
-              onPress={() => goTo(i, exercises.length)}
-              className={`w-36 h-24 px-3 py-3 rounded-xl border justify-between active:opacity-70 ${
-                allDone
-                  ? "bg-secondary/15 border-secondary/60"
-                  : active
-                    ? "bg-primary/20 border-primary/60"
-                    : "bg-surface-low border-[#FFFFFF29]"
-              }`}
-            >
-              <View className="flex-row items-center justify-between">
-                <Text
-                  className={`text-xs font-bold ${
-                    active ? "text-secondary" : "text-outline"
-                  }`}
-                >
-                  {i + 1}
-                </Text>
-                {allDone && (
-                  <View className="w-5 h-5 rounded-full bg-secondary/25 items-center justify-center">
-                    <Check size={13} color="#B26CFF" strokeWidth={3} />
-                  </View>
-                )}
-              </View>
-              <Text
-                className={`text-label-md font-semibold ${
-                  active ? "text-on-surface" : "text-on-surface-variant"
-                }`}
-                numberOfLines={3}
-              >
-                {name}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      <ExerciseChips
+        exercises={exercises}
+        currentIndex={current}
+        setsByExercise={setsByExercise}
+        swapByWorkoutExercise={swapByWorkoutExercise}
+        onSelect={(i) => goTo(i, exercises.length)}
+      />
 
       {/* Progresso */}
       <View className="px-md pb-md">
@@ -509,191 +419,18 @@ export default function WorkoutSessionScreen() {
               const i = Math.round(e.nativeEvent.contentOffset.x / pageWidth);
               if (i !== current) setCurrent(i);
             }}
-            renderItem={({ item: we }) => {
-              const swapped = swapByWorkoutExercise[we.id] ?? null;
-              const effective = swapped ?? we.exercise;
-              const sets = setsByExercise[we.id] ?? [];
-              const timed = effective.type === "time";
-              return (
-                <ScrollView
-                  style={{ width: pageWidth }}
-                  contentContainerClassName="px-md py-sm pb-6"
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  {/* Card do exercício */}
-                  <View className="bg-surface-low border border-card-border rounded-2xl overflow-hidden">
-                    {/* Faixa em gradiente com o nome do exercício */}
-                    <View className="p-lg bg-primary/20">
-                      {/* Badge "substituído" aparece quando há troca ativa pra esta sessão */}
-                      {swapped && (
-                        <View className="flex-row items-center gap-1.5 mb-2 bg-secondary/20 border border-secondary/40 rounded-full px-2.5 py-1 self-start">
-                          <RotateCcw size={11} color="#B26CFF" />
-                          <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
-                            Substituído p/ hoje
-                          </Text>
-                        </View>
-                      )}
-                      <Text
-                        className="text-title-xl text-white font-extrabold"
-                        numberOfLines={2}
-                      >
-                        {effective.name}
-                      </Text>
-                      {swapped && (
-                        <Text className="text-label-sm text-white/50 mt-1 line-through">
-                          {we.exercise.name}
-                        </Text>
-                      )}
-                      <View className="flex-row items-center gap-2 mt-2.5 flex-wrap">
-                        <View className="bg-black/30 px-2.5 py-1 rounded-full">
-                          <Text className="text-[#E5D6FF] text-label-sm uppercase tracking-widest font-bold">
-                            {timed ? "Tempo" : "Força"}
-                          </Text>
-                        </View>
-                        <Text className="text-on-surface-variant text-label-sm font-semibold">
-                          {we.sets} séries
-                          {timed
-                            ? we.duration
-                              ? ` × ${we.duration}s`
-                              : ""
-                            : we.reps_min != null
-                              ? ` × ${we.reps_min}${
-                                  we.reps_max && we.reps_max !== we.reps_min
-                                    ? `–${we.reps_max}`
-                                    : ""
-                                } reps`
-                              : ""}
-                        </Text>
-                        {/* Botão de troca (Máquina Ocupada). Oferece 3 sugeridos + busca. */}
-                        <Pressable
-                          onPress={() => setSwapModalOpen(true)}
-                          className="bg-surface-lowest/60 border border-[#FFFFFF29] px-2.5 py-1 rounded-full active:opacity-70"
-                        >
-                          <Text className="text-white/90 text-label-sm uppercase tracking-widest font-bold">
-                            Trocar (máquina ocupada)
-                          </Text>
-                        </Pressable>
-                      </View>
-                    </View>
-
-                    {/* Dica de progressão (Diferencial 2): meta discreta no
-                        topo do exercício, baseada na última sessão. */}
-                    {hintByExercise[we.id] && (
-                      <View className="flex-row items-center gap-2 px-lg pt-3 pb-1">
-                        <TrendingUp size={15} color="#5CE1E6" />
-                        <Text className="flex-1 text-label-md text-info font-semibold">
-                          {hintByExercise[we.id]!.text}
-                        </Text>
-                      </View>
-                    )}
-
-                    {/* Grid de séries */}
-                    <View className="p-3.5">
-                      {/* Cabeçalho */}
-                      <View className="flex-row items-center gap-2 px-2 pb-3">
-                        <Text className="w-10 text-center text-label-sm uppercase tracking-widest text-outline-variant">
-                          Série
-                        </Text>
-                        <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
-                          {timed ? "Duração (s)" : "Peso (kg)"}
-                        </Text>
-                        {!timed && (
-                          <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
-                            Reps
-                          </Text>
-                        )}
-                        <Text className="w-9 text-center text-label-sm uppercase tracking-widest text-outline-variant">
-                          ✓
-                        </Text>
-                      </View>
-
-                      {/* Linhas */}
-                      {sets.map((set, idx) => {
-                        const isActiveRow =
-                          !set.done && sets.findIndex((s) => !s.done) === idx;
-                        // altura vem do padding: h-[..] + py-* juntos zeram a área do texto
-                        const fieldClass = `py-3 rounded-lg border text-center ${
-                          isActiveRow && !set.done
-                            ? "bg-background border-primary/60 text-[#fff]"
-                            : "bg-[#151417] border-[#FFFFFF14] text-on-surface-variant"
-                        } ${set.done ? "opacity-50" : ""}`;
-
-                        return (
-                          <View
-                            key={idx}
-                            className={`flex-row gap-2 items-center px-2 py-4 mt-1 rounded-xl border ${
-                              isActiveRow
-                                ? "bg-primary/10 border-primary/50"
-                                : "border-transparent"
-                            }`}
-                          >
-                            <Text
-                              className={`w-8 text-center text-body-md font-bold ${
-                                isActiveRow ? "text-secondary" : "text-outline"
-                              }`}
-                            >
-                              {idx + 1}
-                            </Text>
-
-                            <TextInput
-                              value={timed ? set.duration : set.weight}
-                              onChangeText={(v) =>
-                                updateSetField(
-                                  we.id,
-                                  idx,
-                                  timed ? "duration" : "weight",
-                                  v,
-                                )
-                              }
-                              editable={!set.done}
-                              keyboardType="numeric"
-                              placeholder="– –"
-                              placeholderTextColor="#49474D"
-                              style={SET_FIELD_TEXT}
-                              className={`flex-1 ${fieldClass}`}
-                            />
-
-                            {!timed && (
-                              <TextInput
-                                value={set.reps}
-                                onChangeText={(v) =>
-                                  updateSetField(we.id, idx, "reps", v)
-                                }
-                                editable={!set.done}
-                                keyboardType="numeric"
-                                placeholder="– –"
-                                placeholderTextColor="#49474D"
-                                style={SET_FIELD_TEXT}
-                                className={`flex-1 ${fieldClass}`}
-                              />
-                            )}
-
-                            <View className="w-9 items-center">
-                              <Pressable
-                                onPress={() => toggleSetDone(we, idx)}
-                                disabled={set.done}
-                                className={`w-[22px] h-[22px] rounded-full items-center justify-center border-2 ${
-                                  set.done
-                                    ? "bg-secondary/20 border-secondary"
-                                    : isActiveRow
-                                      ? "border-outline active:border-primary"
-                                      : "border-[#3A393E]"
-                                }`}
-                              >
-                                {set.done && (
-                                  <Check size={12} color="#B26CFF" />
-                                )}
-                              </Pressable>
-                            </View>
-                          </View>
-                        );
-                      })}
-                    </View>
-                  </View>
-                </ScrollView>
-              );
-            }}
+            renderItem={({ item: we }) => (
+              <ExercisePage
+                workoutExercise={we}
+                swapped={swapByWorkoutExercise[we.id] ?? null}
+                sets={setsByExercise[we.id] ?? []}
+                hint={hintByExercise[we.id] ?? null}
+                pageWidth={pageWidth}
+                onChangeField={updateSetField}
+                onToggleDone={toggleSetDone}
+                onRequestSwap={openSwapModal}
+              />
+            )}
           />
         </View>
       </KeyboardAvoidingView>
@@ -722,54 +459,12 @@ export default function WorkoutSessionScreen() {
         />
       </View>
 
-      {/* Timer de descanso flutuante */}
-      {rest != null && (
-        <View
-          className="absolute bottom-8 self-center bg-surface-high border border-secondary/40 rounded-2xl pl-3 pr-2.5 py-2.5 flex-row items-center gap-3"
-          style={{
-            left: 0,
-            right: 0,
-            marginHorizontal: "auto",
-            maxWidth: 300,
-            boxShadow: "0px 8px 28px rgba(0, 0, 0, 0.55)",
-          }}
-        >
-          <LinearGradient
-            colors={["#8113D3", "#6E00B3"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0.5, y: 0.87 }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 14,
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0px 0px 14px rgba(129, 19, 211, 0.5)",
-            }}
-          >
-            <Timer size={20} color="#FFF" />
-          </LinearGradient>
-          <View className="flex-1">
-            <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest font-bold">
-              Descanso
-            </Text>
-            <Text className="text-title-md text-secondary font-bold leading-none mt-0.5">
-              {fmtClock(rest)}
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => setRest((r) => (r == null ? null : r + 15))}
-            className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
-          >
-            <Plus size={16} color="#B26CFF" strokeWidth={2.5} />
-          </Pressable>
-          <Pressable
-            onPress={() => setRest(null)}
-            className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
-          >
-            <X size={16} color="#B26CFF" strokeWidth={2.5} />
-          </Pressable>
-        </View>
+      {restStartedAt != null && (
+        <RestTimer
+          key={restStartedAt}
+          seconds={REST_SECONDS}
+          onDismiss={dismissRest}
+        />
       )}
 
       {/* Modal de troca de exercício (Máquina Ocupada). Scope: sessão atual. */}

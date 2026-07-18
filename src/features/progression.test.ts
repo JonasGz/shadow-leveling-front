@@ -1,39 +1,69 @@
-// Self-check da lógica de progressão. Sem framework — roda com:
-//   npx tsx src/features/progression.test.ts
-import assert from "node:assert/strict";
-import { computeHint, nextWeight, prefillSets, type LastSet } from "./progression";
+import {
+  computeHint,
+  nextWeight,
+  prefillSets,
+  type LastSet,
+} from "./progression";
 
-const S = (setNumber: number, reps: number | null, weight: number | null, duration: number | null = null): LastSet =>
-  ({ setNumber, reps, weight, duration });
+const S = (
+  setNumber: number,
+  reps: number | null,
+  weight: number | null,
+  duration: number | null = null,
+): LastSet => ({ setNumber, reps, weight, duration });
 
-// nextWeight: piso 2,5kg e arredondamento ao múltiplo de 2,5.
-assert.equal(nextWeight(20), 22.5);
-assert.equal(nextWeight(100), 102.5);
-assert.equal(nextWeight(200), 205);
+describe("nextWeight", () => {
+  // Piso de 2,5kg e arredondamento ao múltiplo de 2,5.
+  it("sobe ao próximo múltiplo de 2,5", () => {
+    expect(nextWeight(20)).toBe(22.5);
+    expect(nextWeight(100)).toBe(102.5);
+    expect(nextWeight(200)).toBe(205);
+  });
+});
 
-// prefill: série-a-série; linha além do histórico fica vazia.
-assert.deepEqual(
-  prefillSets([S(1, 10, 20), S(2, 10, 20)], 3, false),
-  [
-    { weight: "20", reps: "10", duration: "" },
-    { weight: "20", reps: "10", duration: "" },
-    { weight: "", reps: "", duration: "" },
-  ],
-);
-// prefill tempo: usa duração.
-assert.deepEqual(prefillSets([S(1, null, null, 45)], 1, true), [{ weight: "", reps: "", duration: "45" }]);
+describe("prefillSets", () => {
+  it("preenche série-a-série e deixa vazia a linha além do histórico", () => {
+    expect(prefillSets([S(1, 10, 20), S(2, 10, 20)], 3, false)).toEqual([
+      { weight: "20", reps: "10", duration: "" },
+      { weight: "20", reps: "10", duration: "" },
+      { weight: "", reps: "", duration: "" },
+    ]);
+  });
 
-// teto batido (faixa 8–10, fez 10,10,10) → sobe carga.
-assert.match(computeHint([S(1, 10, 20), S(2, 10, 20), S(3, 10, 20)], 10, false)!.text, /tente 22\.5kg/);
+  it("usa duração em exercício de tempo", () => {
+    expect(prefillSets([S(1, null, null, 45)], 1, true)).toEqual([
+      { weight: "", reps: "", duration: "45" },
+    ]);
+  });
+});
 
-// abaixo do teto (10,10,8) → meta de reps.
-assert.match(computeHint([S(1, 10, 20), S(2, 10, 20), S(3, 8, 20)], 10, false)!.text, /chegue a 10 reps com 20kg/);
+describe("computeHint", () => {
+  it("sugere subir carga quando o teto da faixa foi batido", () => {
+    const hint = computeHint(
+      [S(1, 10, 20), S(2, 10, 20), S(3, 10, 20)],
+      10,
+      false,
+    );
+    expect(hint!.text).toMatch(/tente 22\.5kg/);
+  });
 
-// sem histórico → null.
-assert.equal(computeHint([], 10, false), null);
-// repetição sem faixa → null.
-assert.equal(computeHint([S(1, 10, 20)], null, false), null);
-// tempo → supere a duração.
-assert.match(computeHint([S(1, null, null, 45)], null, true)!.text, /supere os 45s/);
+  it("sugere meta de reps quando ficou abaixo do teto", () => {
+    const hint = computeHint(
+      [S(1, 10, 20), S(2, 10, 20), S(3, 8, 20)],
+      10,
+      false,
+    );
+    expect(hint!.text).toMatch(/chegue a 10 reps com 20kg/);
+  });
 
-console.log("progression: all checks passed");
+  it("sugere superar a duração em exercício de tempo", () => {
+    expect(computeHint([S(1, null, null, 45)], null, true)!.text).toMatch(
+      /supere os 45s/,
+    );
+  });
+
+  it("retorna null sem histórico ou sem faixa de reps", () => {
+    expect(computeHint([], 10, false)).toBeNull();
+    expect(computeHint([S(1, 10, 20)], null, false)).toBeNull();
+  });
+});

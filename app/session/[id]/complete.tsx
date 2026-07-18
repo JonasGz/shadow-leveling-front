@@ -10,69 +10,19 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  TriangleAlert,
-  Inbox,
-  Trophy,
-  Dumbbell,
-  Camera,
-} from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Inbox from "lucide-react-native/icons/inbox";
+import Trophy from "lucide-react-native/icons/trophy";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import Camera from "lucide-react-native/icons/camera";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { pickImage } from "../../../src/lib/pickImage";
-import type {
-  ExerciseSet,
-  WorkoutSessionDetail,
-} from "../../../src/types/api.types";
-
-interface ExerciseSummary {
-  exerciseId: string;
-  name: string;
-  isTime: boolean;
-  setsCount: number;
-  bestWeight: number | null;
-  bestReps: number | null;
-  bestDuration: number | null;
-}
-
-function buildSummary(
-  sets: ExerciseSet[],
-  nameOf: (id: string) => string,
-  isTimeOf: (id: string) => boolean,
-): { summaries: ExerciseSummary[]; totalVolume: number } {
-  const byEx: Record<string, ExerciseSet[]> = {};
-  for (const s of sets) (byEx[s.exercise_id] ??= []).push(s);
-
-  let totalVolume = 0;
-  const summaries: ExerciseSummary[] = Object.entries(byEx).map(
-    ([exId, list]) => {
-      let best: ExerciseSet | null = null;
-      let bestScore = -1;
-      for (const s of list) {
-        const vol = (s.weight ?? 0) * (s.reps ?? 0);
-        totalVolume += vol;
-        const score = s.duration != null ? s.duration : vol;
-        if (score > bestScore) {
-          bestScore = score;
-          best = s;
-        }
-      }
-      return {
-        exerciseId: exId,
-        name: nameOf(exId),
-        isTime: isTimeOf(exId),
-        setsCount: list.length,
-        bestWeight: best?.weight ?? null,
-        bestReps: best?.reps ?? null,
-        bestDuration: best?.duration ?? null,
-      };
-    },
-  );
-  return { summaries, totalVolume };
-}
+import { buildSessionSummary } from "../../../src/features/sets";
+import type { WorkoutSessionDetail } from "../../../src/types/api.types";
 
 export default function SessionCompleteScreen() {
   // A sessão já foi finalizada na tela de treino — aqui é só o resumo.
@@ -142,7 +92,7 @@ export default function SessionCompleteScreen() {
   const { summaries, totalVolume } = useMemo(
     () =>
       session
-        ? buildSummary(session.sets ?? [], nameOf, isTimeOf)
+        ? buildSessionSummary(session.sets ?? [], nameOf, isTimeOf)
         : { summaries: [], totalVolume: 0 },
     [session, nameOf, isTimeOf],
   );

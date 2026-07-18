@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   View,
   Text,
@@ -8,32 +8,18 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
-import {
-  TriangleAlert,
-  Dumbbell,
-  Play,
-  Plus,
-  ChevronLeft,
-} from "lucide-react-native";
+import { useLocalSearchParams, router } from "expo-router";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import Play from "lucide-react-native/icons/play";
+import Plus from "lucide-react-native/icons/plus";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { IconButton } from "../../../src/components/ui/IconButton";
 import { workoutsService } from "../../../src/services/workouts.service";
-import type {
-  DayOfWeek,
-  Workout,
-  WorkoutExercise,
-} from "../../../src/types/api.types";
-
-const DAY_LABELS: Record<DayOfWeek, string> = {
-  sunday: "DOM",
-  monday: "SEG",
-  tuesday: "TER",
-  wednesday: "QUA",
-  thursday: "QUI",
-  friday: "SEX",
-  saturday: "SÁB",
-};
+import { DAY_UPPER } from "../../../src/lib/date";
+import type { WorkoutExercise } from "../../../src/types/api.types";
+import { useScreenData } from "../../../src/hooks/useScreenData";
 
 function repsLabel(ex: WorkoutExercise): string {
   if (ex.exercise.type === "time") {
@@ -105,22 +91,12 @@ function ExerciseCard({
 
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!id) return;
-    try {
-      const data = await workoutsService.get(id);
-      setWorkout(data);
-      setError(false);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const {
+    data: workout,
+    loading,
+    error,
+    reload,
+  } = useScreenData(async () => (id ? workoutsService.get(id) : null), [id]);
 
   const handleDeleteExercise = useCallback(
     (ex: WorkoutExercise) => {
@@ -136,7 +112,7 @@ export default function WorkoutDetailScreen() {
             onPress: async () => {
               try {
                 await workoutsService.removeExercise(id, ex.id);
-                await load();
+                await reload();
               } catch {
                 Alert.alert("Erro", "Não foi possível remover o exercício.");
               }
@@ -145,20 +121,14 @@ export default function WorkoutDetailScreen() {
         ],
       );
     },
-    [id, load],
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
+    [id, reload],
   );
 
   const exercises = workout?.exercises ?? [];
   const totalSets = exercises.reduce((sum, e) => sum + (e.sets ?? 0), 0);
   const estMinutes = totalSets * 3; // estimativa: ~3 min por série
   const daysLabel = (workout?.days_of_week ?? [])
-    .map((d) => DAY_LABELS[d])
+    .map((d) => DAY_UPPER[d])
     .join(" · ");
 
   return (
@@ -190,7 +160,7 @@ export default function WorkoutDetailScreen() {
             icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
-            action={{ label: "Tentar novamente", onPress: load }}
+            action={{ label: "Tentar novamente", onPress: reload }}
           />
         </View>
       ) : (

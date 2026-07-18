@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useState } from "react";
+import { FlashList } from "@shopify/flash-list";
 import {
   View,
   Text,
-  FlatList,
   Pressable,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -12,16 +12,46 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
 import { Input } from "../../../src/components/ui/Input";
 import { Button } from "../../../src/components/ui/Button";
-import { Search, ChevronLeft } from "lucide-react-native";
+import Search from "lucide-react-native/icons/search";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import { SearchInput } from "../../../src/components/ui/SearchInput";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
 import { exercisesService } from "../../../src/services/exercises.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
+import { useDebouncedSearch } from "../../../src/hooks/useDebouncedSearch";
 import type { Exercise, ExerciseType } from "../../../src/types/api.types";
 
 type Stage = "search" | "configure";
+
+// gap-sm entre as linhas; o FlashList recicla itens e não aceita `gap` no
+// contentContainer, então o espaçamento vira separador.
+const ExerciseSeparator = () => <View className="h-sm" />;
+
+// Componente de topo e memoizado: uma closure inline aqui seria recriada a
+// cada tecla digitada na busca, anulando a reciclagem do FlashList.
+const ExerciseRow = memo(function ExerciseRow({
+  exercise,
+  onSelect,
+}: {
+  exercise: Exercise;
+  onSelect: (exercise: Exercise) => void;
+}) {
+  return (
+    <Pressable
+      onPress={() => onSelect(exercise)}
+      className="bg-surface-low border border-card-border rounded-xl text-on-surface-variant px-md py-md flex-row items-center justify-between active:opacity-80"
+    >
+      <View className="flex-1">
+        <Text className="text-body-lg font-semibold text-on-surface">
+          {exercise.name}
+        </Text>
+      </View>
+      <Text className="text-secondary text-title-lg">+</Text>
+    </Pressable>
+  );
+});
 
 export default function AddExerciseScreen() {
   const { id: workoutId } = useLocalSearchParams<{ id: string }>();
@@ -35,35 +65,20 @@ export default function AddExerciseScreen() {
   const [results, setResults] = useState<Exercise[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
-  const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [creating, setCreating] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const runSearch = useCallback(
-    async (search: string) => {
-      setSearching(true);
-      try {
-        const res = await exercisesService.list({ search, limit: 20 });
-        setResults(res.data);
-        setCursor(res.cursor.next_cursor);
-        setHasMore(res.cursor.has_more);
-      } catch {
-        showToast("Erro ao buscar exercícios.", "error");
-      } finally {
-        setSearching(false);
-      }
-    },
-    [showToast],
-  );
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => runSearch(query.trim()), 350);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query, runSearch]);
+  const { searching } = useDebouncedSearch(query, async (search, isCurrent) => {
+    try {
+      const res = await exercisesService.list({ search, limit: 20 });
+      if (!isCurrent()) return;
+      setResults(res.data);
+      setCursor(res.cursor.next_cursor);
+      setHasMore(res.cursor.has_more);
+    } catch {
+      if (isCurrent()) showToast("Erro ao buscar exercícios.", "error");
+    }
+  });
 
   const loadMore = useCallback(async () => {
     if (!hasMore || loadingMore || !cursor) return;
@@ -87,10 +102,11 @@ export default function AddExerciseScreen() {
   // --- Exercício selecionado / criado ---
   const [selected, setSelected] = useState<Exercise | null>(null);
 
-  function selectExercise(ex: Exercise) {
+  // Estável: é prop do ExerciseRow memoizado.
+  const selectExercise = useCallback((ex: Exercise) => {
     setSelected(ex);
     setStage("configure");
-  }
+  }, []);
 
   async function createAndSelect(type: ExerciseType) {
     const name = query.trim();
@@ -200,26 +216,19 @@ export default function AddExerciseScreen() {
               <ActivityIndicator size="large" color="#c8a3ff" />
             </View>
           ) : (
-            <FlatList
+            <FlashList
               data={results}
               keyExtractor={(item) => item.id}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              contentContainerClassName="pb-xl gap-sm pt-5"
+              // FlashList não é registrado no NativeWind, então os tokens
+              // (pt-5 / pb-xl / gap-sm) vêm resolvidos de tailwind.config.
+              contentContainerStyle={{ paddingTop: 20, paddingBottom: 40 }}
+              ItemSeparatorComponent={ExerciseSeparator}
               onEndReached={loadMore}
               onEndReachedThreshold={0.4}
               renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => selectExercise(item)}
-                  className="bg-surface-low border border-card-border rounded-xl text-on-surface-variant px-md py-md flex-row items-center justify-between active:opacity-80"
-                >
-                  <View className="flex-1">
-                    <Text className="text-body-lg font-semibold text-on-surface">
-                      {item.name}
-                    </Text>
-                  </View>
-                  <Text className="text-secondary text-title-lg">+</Text>
-                </Pressable>
+                <ExerciseRow exercise={item} onSelect={selectExercise} />
               )}
               ListFooterComponent={
                 loadingMore ? (

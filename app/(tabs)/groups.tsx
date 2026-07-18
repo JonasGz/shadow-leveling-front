@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -11,16 +11,17 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useFocusEffect, router } from "expo-router";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
-import { Swords, ChevronRight } from "lucide-react-native";
+import Swords from "lucide-react-native/icons/swords";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
-import type { GroupListItem } from "../../src/types/api.types";
+import { useScreenData } from "../../src/hooks/useScreenData";
 
 // Overlapping member avatars for a group card. Shows up to 3 real avatars and a
 // "+N" bubble for the remaining members. Falls back to a plain purple circle
@@ -59,27 +60,21 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
 
 export default function GroupsScreen() {
   const { showToast } = useToast();
-  const [groups, setGroups] = useState<GroupListItem[]>([]);
-  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const load = useCallback(async () => {
+  const { data, loading, refreshing, refresh } = useScreenData(async () => {
     try {
-      setGroups(await groupsService.list());
-    } catch {
+      return await groupsService.list();
+    } catch (e) {
       showToast("Não foi possível carregar seus grupos");
-    } finally {
-      setLoading(false);
+      // Relança para o hook marcar erro sem descartar a lista já exibida.
+      throw e;
     }
-  }, [showToast]);
+  });
 
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
+  const groups = data ?? [];
 
   async function handleCreate() {
     if (name.trim().length === 0) return;
@@ -114,8 +109,8 @@ export default function GroupsScreen() {
         contentContainerClassName="pb-[112px] pt-md"
         refreshControl={
           <RefreshControl
-            refreshing={false}
-            onRefresh={load}
+            refreshing={refreshing}
+            onRefresh={refresh}
             tintColor="#c8a3ff"
           />
         }

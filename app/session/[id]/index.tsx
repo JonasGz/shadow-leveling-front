@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,29 +7,23 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
-import {
-  TriangleAlert,
-  Inbox,
-  ChevronLeft,
-  Check,
-  X,
-  Trophy,
-  type LucideIcon,
-} from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import Inbox from "lucide-react-native/icons/inbox";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Check from "lucide-react-native/icons/check";
+import X from "lucide-react-native/icons/x";
+import Trophy from "lucide-react-native/icons/trophy";
+import type { LucideIcon } from "lucide-react-native";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
-import type {
-  ExerciseSet,
-  SessionStatus,
-  WorkoutSessionDetail,
-} from "../../../src/types/api.types";
-
-// Espaçamento das labels em caixa alta: o design system zera todo tracking-*,
-// então o valor do mock vem inline.
-const TRACK = { letterSpacing: 0.5 };
+import { formatFullDate } from "../../../src/lib/date";
+import { TRACK } from "../../../src/lib/ui";
+import type { ExerciseSet, SessionStatus } from "../../../src/types/api.types";
+import { useScreenData } from "../../../src/hooks/useScreenData";
+import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -41,87 +34,27 @@ const STATUS_META: Record<
   skipped: { label: "Pulado", Icon: X, color: "#EF4444" },
 };
 
-function fmtFull(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-function fmtSet(set: ExerciseSet) {
-  return set.duration != null
-    ? `${set.duration}s`
-    : `${set.weight ?? 0}kg × ${set.reps ?? 0}`;
-}
-
-// Melhor série = maior carga; empate decidido por mais reps. Exercícios por
-// tempo (sem peso) usam a maior duração.
-function bestSetId(sets: ExerciseSet[]): string | null {
-  const best = sets.reduce<ExerciseSet | null>((acc, s) => {
-    if (!acc) return s;
-    if (s.duration != null || acc.duration != null) {
-      return (s.duration ?? 0) > (acc.duration ?? 0) ? s : acc;
-    }
-    const w = s.weight ?? 0;
-    const bw = acc.weight ?? 0;
-    if (w !== bw) return w > bw ? s : acc;
-    return (s.reps ?? 0) > (acc.reps ?? 0) ? s : acc;
-  }, null);
-  return best?.id ?? null;
-}
-
-function statsOf(sets: ExerciseSet[]) {
-  return sets.reduce(
-    (acc, s) => ({
-      series: acc.series + 1,
-      reps: acc.reps + (s.reps ?? 0),
-      volume: acc.volume + (s.weight ?? 0) * (s.reps ?? 0),
-    }),
-    { series: 0, reps: 0, volume: 0 },
-  );
-}
-
 export default function SessionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const workouts = useWorkoutsStore((s) => s.workouts);
-  const [session, setSession] = useState<WorkoutSessionDetail | null>(null);
-  const [exerciseNames, setExerciseNames] = useState<Record<string, string>>(
-    {},
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    if (!id) return;
-    setError(false);
-    try {
-      const s = await sessionsService.get(id);
-      setSession(s);
-      // Os sets só trazem exercise_id; os nomes vêm do detalhe do treino.
-      // Secundário: se falhar, cada card cai no rótulo genérico.
-      const w = await workoutsService.get(s.workout_id).catch(() => null);
-      setExerciseNames(
-        Object.fromEntries(
-          (w?.exercises ?? []).map((we) => [we.exercise_id, we.exercise.name]),
-        ),
-      );
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
+  const { data, loading, error, reload } = useScreenData(async () => {
+    if (!id) return null;
+    const session = await sessionsService.get(id);
+    // Os sets só trazem exercise_id; os nomes vêm do detalhe do treino.
+    // Secundário: se falhar, cada card cai no rótulo genérico.
+    const w = await workoutsService.get(session.workout_id).catch(() => null);
+    const exerciseNames = Object.fromEntries(
+      (w?.exercises ?? []).map((we) => [we.exercise_id, we.exercise.name]),
+    );
+    return { session, exerciseNames };
   }, [id]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  const session = data?.session ?? null;
+  const exerciseNames = data?.exerciseNames ?? {};
 
   const workoutName =
     workouts.find((w) => w.id === session?.workout_id)?.name ?? "Treino";
 
-  // Agrupa sets por exercício
   const grouped = (session?.sets ?? []).reduce<Record<string, ExerciseSet[]>>(
     (acc, set) => {
       (acc[set.exercise_id] ??= []).push(set);
@@ -163,10 +96,7 @@ export default function SessionDetailScreen() {
           <Button
             label="Tentar novamente"
             size="sm"
-            onPress={() => {
-              setLoading(true);
-              load();
-            }}
+            onPress={reload}
           />
         </View>
       ) : (
@@ -180,7 +110,7 @@ export default function SessionDetailScreen() {
               {workoutName}
             </Text>
             <Text className="text-body-md text-on-surface-variant mt-2">
-              {fmtFull(session.date)}
+              {formatFullDate(session.date)}
             </Text>
             <View className="flex-row items-center gap-2 mt-3">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
@@ -280,7 +210,7 @@ export default function SessionDetailScreen() {
                             </Text>
                           </View>
                           <Text className="text-body-lg font-extrabold text-on-surface">
-                            {fmtSet(set)}
+                            {formatSet(set)}
                           </Text>
                         </View>
                       );
@@ -291,7 +221,7 @@ export default function SessionDetailScreen() {
                     <View className="flex-row items-center gap-1.5 mt-3">
                       <Trophy size={13} color="#B26CFF" strokeWidth={2} />
                       <Text className="text-label-sm text-outline-variant">
-                        Melhor série: {fmtSet(best)}
+                        Melhor série: {formatSet(best)}
                       </Text>
                     </View>
                   ) : null}
