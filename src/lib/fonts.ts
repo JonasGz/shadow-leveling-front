@@ -32,10 +32,16 @@ let installed = false;
 export function installOpenSans() {
   if (installed) return;
   installed = true;
-  const AnyText = Text as unknown as { render: (props: any, ref: any) => unknown };
+  const AnyText = Text as unknown as {
+    render: (props: any, ref: any) => unknown;
+  };
   const previous = AnyText.render;
   AnyText.render = function render(props: any, ref: any) {
     const fontFamily = familyForWeight(props?.style);
-    return previous.call(this, { ...props, style: [{ fontFamily }, props?.style] }, ref);
+    return previous.call(
+      this,
+      { ...props, style: [{ fontFamily }, props?.style] },
+      ref,
+    );
   };
 }

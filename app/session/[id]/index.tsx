@@ -20,18 +20,24 @@ import { sessionsService } from "../../../src/services/sessions.service";
 import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import { formatFullDate } from "../../../src/lib/date";
-import { TRACK } from "../../../src/lib/ui";
 import type { ExerciseSet, SessionStatus } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
+import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
+import { Card } from "../../../src/components/ui/Card";
 
 const STATUS_META: Record<
   SessionStatus,
   { label: string; Icon: LucideIcon; color: string }
 > = {
-  complete: { label: "Concluído", Icon: Check, color: "#22C55E" },
-  incomplete: { label: "Incompleto", Icon: TriangleAlert, color: "#F59E0B" },
-  skipped: { label: "Pulado", Icon: X, color: "#EF4444" },
+  complete: { label: "Concluído", Icon: Check, color: color.success },
+  incomplete: {
+    label: "Incompleto",
+    Icon: TriangleAlert,
+    color: color.warning,
+  },
+  skipped: { label: "Pulado", Icon: X, color: color.error },
 };
 
 export default function SessionDetailScreen() {
@@ -67,85 +73,73 @@ export default function SessionDetailScreen() {
   const status = session ? STATUS_META[session.status] : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Sessão</Text>
+        <Text className="text-2xl font-bold text-white">Sessão</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error || !session || !status ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Button
-            label="Tentar novamente"
-            size="sm"
-            onPress={reload}
-          />
+          <Button label="Tentar novamente" size="sm" onPress={reload} />
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-5 py-md gap-3 pb-xl"
+          contentContainerClassName="px-5 py-4 gap-3 pb-10"
           showsVerticalScrollIndicator={false}
         >
           {/* Resumo */}
-          <View className="bg-surface-low border border-card-border rounded-2xl p-[18px]">
-            <Text className="text-title-lg font-bold text-on-surface">
-              {workoutName}
-            </Text>
-            <Text className="text-body-md text-on-surface-variant mt-2">
+          <Card className="p-[18px]">
+            <Text className="text-2xl font-bold text-white">{workoutName}</Text>
+            <Text className="mt-2 text-base font-normal text-gray-200">
               {formatFullDate(session.date)}
             </Text>
-            <View className="flex-row items-center gap-2 mt-3">
+            <View className="mt-3 flex-row items-center gap-2">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
-              <Text
-                className="text-label-md font-bold uppercase text-secondary"
-                style={TRACK}
-              >
+              <Text className="text-base font-bold uppercase tracking-wider text-purple-200">
                 {status.label}
               </Text>
             </View>
-          </View>
+          </Card>
 
           {/* Estatísticas da sessão */}
-          <View className="flex-row gap-2.5">
+          <View className="flex-row gap-3">
             {[
               { value: totals.series, label: "Séries" },
               { value: totals.reps, label: "Reps" },
               { value: totals.volume, label: "kg vol." },
             ].map((stat) => (
-              <View
-                key={stat.label}
-                className="flex-1 bg-surface-low border border-card-border rounded-xl p-3 items-center"
-              >
-                <Text className="text-title-xl font-extrabold text-on-surface">
+              <Card key={stat.label} className="flex-1 items-center">
+                <Text className="text-3xl font-extrabold text-white">
                   {stat.value}
                 </Text>
-                <Text className="text-label-sm text-on-surface-variant mt-1">
+                <Text className="mt-1 text-xs font-medium text-gray-200">
                   {stat.label}
                 </Text>
-              </View>
+              </Card>
             ))}
           </View>
 
           {Object.keys(grouped).length === 0 ? (
-            <View className="mt-md">
+            <View className="mt-4">
               <EmptyState
                 icon={Inbox}
                 title="Nenhuma série registrada"
@@ -160,56 +154,50 @@ export default function SessionDetailScreen() {
               const bestId = bestSetId(ordered);
               const best = ordered.find((s) => s.id === bestId);
               return (
-                <View
-                  key={exerciseId}
-                  className="bg-surface-low border border-card-border rounded-2xl p-4"
-                >
+                <Card key={exerciseId}>
                   <View className="flex-row items-center justify-between">
-                    <Text
-                      className="text-label-sm font-bold uppercase text-on-surface-variant"
-                      style={TRACK}
-                    >
+                    <Text className="text-xs font-bold uppercase tracking-wider text-gray-200">
                       Exercício
                     </Text>
                     <Text
-                      className="text-label-md font-semibold text-on-surface flex-1 text-right ml-3"
+                      className="ml-3 flex-1 text-right text-base font-semibold text-white"
                       numberOfLines={1}
                     >
                       {exerciseNames[exerciseId] ?? "Exercício"}
                     </Text>
                   </View>
 
-                  <View className="gap-2 mt-3.5">
+                  <View className="mt-4 gap-2">
                     {ordered.map((set) => {
                       const isBest = set.id === bestId;
                       return (
                         <View
                           key={set.id}
-                          className={`flex-row items-center justify-between rounded-xl px-3.5 py-3 ${
+                          className={cn(
+                            "flex-row items-center justify-between rounded-lg px-4 py-3",
                             isBest
-                              ? "bg-primary/10 border border-primary/35"
-                              : "bg-background"
-                          }`}
+                              ? "border border-purple-300/35 bg-purple-300/10"
+                              : "bg-gray-700",
+                          )}
                         >
                           <View className="flex-row items-center gap-2">
                             {isBest ? (
                               <Trophy
                                 size={14}
-                                color="#CAA4FF"
+                                color={color["purple-100"]}
                                 strokeWidth={2}
                               />
                             ) : null}
                             <Text
-                              className={`text-label-md font-semibold ${
-                                isBest
-                                  ? "text-primary-fixed-dim"
-                                  : "text-on-surface-variant"
-                              }`}
+                              className={cn(
+                                "text-base font-semibold",
+                                isBest ? "text-purple-100" : "text-gray-200",
+                              )}
                             >
                               Série {set.set_number}
                             </Text>
                           </View>
-                          <Text className="text-body-lg font-extrabold text-on-surface">
+                          <Text className="text-lg font-extrabold text-white">
                             {formatSet(set)}
                           </Text>
                         </View>
@@ -218,14 +206,18 @@ export default function SessionDetailScreen() {
                   </View>
 
                   {best ? (
-                    <View className="flex-row items-center gap-1.5 mt-3">
-                      <Trophy size={13} color="#B26CFF" strokeWidth={2} />
-                      <Text className="text-label-sm text-outline-variant">
+                    <View className="mt-3 flex-row items-center gap-2">
+                      <Trophy
+                        size={13}
+                        color={color["purple-200"]}
+                        strokeWidth={2}
+                      />
+                      <Text className="text-xs font-medium text-gray-300">
                         Melhor série: {formatSet(best)}
                       </Text>
                     </View>
                   ) : null}
-                </View>
+                </Card>
               );
             })
           )}

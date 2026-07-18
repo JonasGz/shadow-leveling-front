@@ -1,4 +1,4 @@
-const { palette } = require("./src/theme/palette");
+const { color, difficulty } = require("./src/theme/palette");
 
 // Elevation tokens (PULSE) translated to RN shadow props. tailwind/nativewind
 // consumes box-shadow strings for web; on RN the NativeWind shadow* utilities
@@ -20,83 +20,25 @@ const motion = {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./App.{js,jsx,ts,tsx}",
-    "./app/**/*.{js,jsx,ts,tsx}",
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./components/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      // A escala é literal (purple-300, gray-600), não semântica. Nomes como
+      // `primary`/`secondary`/`surface-low` escondiam ~10 apelidos apontando
+      // para o mesmo hex — `secondary` e `tertiary` eram idênticos, e
+      // `secondary-container` era o mesmo que `primary`. Ver src/theme/palette.js.
       colors: {
-        // Semantic surface tokens (PULSE). Components only know these names;
-        // the underlying values moved from purple-tinged to neutral dark.
-        background: palette.surface.bg,
-        surface: {
-          DEFAULT: palette.surface.default,
-          dim: palette.surface.bg,
-          bright: palette.surface.raised,
-          lowest: palette.surface.bg,
-          low: palette.surface.default,
-          container: palette.surface.default,
-          high: palette.surface.raised,
-          highest: palette.surface.raised,
-        },
-        "on-surface": palette.text.DEFAULT,
-        "on-surface-variant": palette.text.muted,
-        outline: palette.neutral[400], // neutral border on dark surfaces
-        "outline-variant": palette.neutral[300],
-        "card-border": palette.border.DEFAULT,
-        "card-border-strong": palette.border.strong,
-        "surface-tint": palette.purple[200],
-        primary: {
-          DEFAULT: palette.purple[300], // #8113D3 accent
-          container: palette.purple[400],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-primary": palette.neutral[50],
-        "on-primary-fixed": palette.surface.bg,
-        "on-primary-fixed-variant": palette.purple[400],
-        secondary: {
-          // secondary accent is the lighter purple (purple-200), distinct from
-          // the primary purple-300 so two accents side-by-side read separately.
-          DEFAULT: palette.purple[200],
-          container: palette.purple[300],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-secondary": palette.surface.bg,
-        "on-secondary-fixed": palette.surface.bg,
-        "on-secondary-fixed-variant": palette.purple[600],
-        // tertiary collapes the old orange onto the purple accent family.
-        tertiary: {
-          DEFAULT: palette.purple[200],
-          container: palette.purple[300],
-          fixed: palette.purple[50],
-          "fixed-dim": palette.purple[100],
-        },
-        "on-tertiary": palette.surface.bg,
-        "on-tertiary-fixed": palette.surface.bg,
-        "on-tertiary-fixed-variant": palette.purple[600],
-        error: {
-          DEFAULT: palette.semantic.error,
-          container: palette.semantic.error,
-        },
-        "on-error": palette.neutral[50],
-        "on-error-container": palette.neutral[50],
-        // Semantic surface aliases for the Toast/Badge etc.
-        success: palette.semantic.success,
-        warning: palette.semantic.warning,
-        info: palette.semantic.info,
-        difficulty: {
-          // Aligned to PULSE semantic hues.
-          easy: palette.semantic.success,
-          medium: palette.semantic.warning,
-          hard: palette.semantic.error,
-          "no-rank": palette.neutral[200],
-        },
+        ...color,
+        difficulty,
+      },
+      // 7 e 12 não existem na escala padrão (que vai de 5 em 5 a partir de 20),
+      // e sem registrá-los `border-white/7` não gera CSS nenhum — a borda some
+      // sem erro. São as duas bordas brancas do design system: /7 para card e
+      // container, /12 para controle em repouso (input, chip, botão de ícone).
+      opacity: {
+        7: "0.07",
+        12: "0.12",
       },
       fontFamily: {
         sans: ["OpenSans_400Regular", "System"],
@@ -105,58 +47,51 @@ module.exports = {
         // when the first consumer lands.
         mono: ["JetBrains Mono", "monospace"],
       },
-      // Letter-spacing disabled app-wide: every tracking-* resolves to 0.
-      letterSpacing: {
-        tighter: "0px",
-        tight: "0px",
-        normal: "0px",
-        wide: "0px",
-        wider: "0px",
-        widest: "0px",
-      },
+      // letterSpacing removido: o bloco zerava tighter/tight/normal/wide/wider/
+      // widest, então 34 das 48 classes de tracking do app não renderizavam
+      // nada. O único valor real era `label` (0.5px), para label em caixa alta
+      // — coberto agora pelo `tracking-wider` nativo (0.05em ≈ 0.6px a 12px).
       fontSize: {
-        // PULSE type scale.
-        display: ["40px", { lineHeight: "48px", fontWeight: "800" }],
-        h1: ["32px", { lineHeight: "40px", fontWeight: "700" }],
-        h2: ["28px", { lineHeight: "34px", fontWeight: "700" }],
-        h3: ["24px", { lineHeight: "30px", fontWeight: "600" }],
-        title: ["20px", { lineHeight: "28px", fontWeight: "600" }],
-        subtitle: ["18px", { lineHeight: "26px", fontWeight: "600" }],
-        body: ["16px", { lineHeight: "24px", fontWeight: "400" }],
-        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
-        button: ["15px", { lineHeight: "20px", fontWeight: "600" }],
-        caption: ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        // Oversized display tokens for hero titles (above the base 40px scale).
-        "display-xxl": ["56px", { lineHeight: "58px", fontWeight: "800" }],
-        "display-xl": ["48px", { lineHeight: "52px", fontWeight: "800" }],
-        // Aliases for legacy names → closest PULSE value.
-        "display-lg": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display
-        "display-md": ["40px", { lineHeight: "48px", fontWeight: "800" }], // →display
-        "headline-lg": ["28px", { lineHeight: "34px", fontWeight: "700" }], // →h2
-        "headline-mobile": ["24px", { lineHeight: "30px", fontWeight: "600" }], // →h3
-        "title-md": ["20px", { lineHeight: "28px", fontWeight: "600" }], // →title
-        "title-lg": ["24px", { lineHeight: "30px", fontWeight: "700" }], // →h3
-        "title-xl": ["28px", { lineHeight: "34px", fontWeight: "700" }], // →h2
-        "title-xxl": ["32px", { lineHeight: "40px", fontWeight: "700" }], // →h1
-        "body-lg": ["18px", { lineHeight: "26px", fontWeight: "400" }], // →subtitle weight 400-ish
-        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }], // →body
-        "label-md": ["15px", { lineHeight: "20px", fontWeight: "600" }], // →button
-        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }], // →caption
+        // Escala nativa do Tailwind com os valores do design system. Nomes
+        // nativos de propósito: `text-xl` é o que qualquer dev já sabe ler, e o
+        // tailwind-merge reconhece o grupo de fábrica — por isso src/lib/cn.ts
+        // não registra classGroup de font-size.
+        //
+        // Antes existia uma escala semântica paralela (display/h1/title-md/
+        // label-sm/…): 24 tokens para 13 valores distintos, 11 duplicatas
+        // exatas e 10 nunca usados. Cada tupla embutia um fontWeight que 52%
+        // dos call sites sobrescreviam (100% nos títulos), então a classe nunca
+        // dizia a verdade. Peso agora é sempre explícito no <Text>.
+        //
+        // Todas as chaves são redeclaradas, inclusive as que batem com o
+        // nativo, para a escala caber inteira numa leitura só.
+        xs: ["12px", { lineHeight: "16px" }], // micro-label, caption
+        sm: ["14px", { lineHeight: "20px" }], // texto secundário
+        base: ["16px", { lineHeight: "24px" }], // corpo, label de controle
+        lg: ["18px", { lineHeight: "26px" }],
+        xl: ["20px", { lineHeight: "28px" }], // título de card/seção
+        "2xl": ["24px", { lineHeight: "30px" }],
+        "3xl": ["28px", { lineHeight: "34px" }],
+        "4xl": ["32px", { lineHeight: "40px" }], // título de página
+        "5xl": ["56px", { lineHeight: "58px" }], // hero de auth
       },
+      // Quatro raios, um por papel. Antes eram ~11 valores com os papéis
+      // misturados: card aparecia em 28px e 20px sem critério, e botão de
+      // ícone em 10, 12 e 20. `rounded` e `rounded-md` eram o mesmo 8px.
+      //
+      // O salto container→controle (28→12) é o que mantém o aninhamento
+      // harmônico sem auditoria: o elemento de dentro sempre lê menos redondo
+      // que o de fora.
       borderRadius: {
-        // PULSE radius scale (reduces existing ~4px).
-        sm: "4px",
-        DEFAULT: "8px",
-        md: "8px",
-        lg: "12px",
-        xl: "20px",
-        "2xl": "28px",
-        "3xl": "36px",
-        full: "9999px",
+        sm: "4px", // micro: tag, marcador
+        lg: "12px", // controle: input, botão, chip, tile de ícone
+        "2xl": "28px", // container: card, painel, modal, sheet
+        full: "9999px", // pílula, avatar, círculo, track
       },
+      // Escala única, numérica (1=4px … 16=64px). Os antigos xs/sm/md/lg/xl
+      // eram apelidos exatos de 1/2/4/6/10 e conviviam com ela, então o mesmo
+      // 16px atendia por `p-md` e `p-4` sem critério de qual usar.
       spacing: {
-        // PULSE numeric scale (1=4 … 16=64) in addition to the legacy named
-        // tokens, which are kept as a subset so existing class names still work.
         1: "4px",
         2: "8px",
         3: "12px",
@@ -173,12 +108,6 @@ module.exports = {
         14: "56px",
         15: "60px",
         16: "64px",
-        // Legacy named subset of the same scale.
-        xs: "4px",
-        sm: "8px",
-        md: "16px",
-        lg: "24px",
-        xl: "40px",
       },
       boxShadow: elevation,
       transitionDuration: motion.duration,

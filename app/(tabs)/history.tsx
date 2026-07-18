@@ -28,8 +28,10 @@ import {
   formatDayMonthYear,
   toISODate,
 } from "../../src/lib/date";
-import { TRACK } from "../../src/lib/ui";
 import type { SessionStatus } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
+import { Card } from "../../src/components/ui/Card";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -37,24 +39,24 @@ const STATUS_META: Record<
 > = {
   complete: {
     label: "Concluído",
-    badge: "bg-primary/15",
-    text: "text-primary-fixed-dim",
+    badge: "bg-purple-300/15",
+    text: "text-purple-100",
     Icon: Check,
-    icon: "#22C55E",
+    icon: color.success,
   },
   incomplete: {
     label: "Incompleto",
     badge: "bg-warning/15",
     text: "text-warning",
     Icon: TriangleAlert,
-    icon: "#F59E0B",
+    icon: color.warning,
   },
   skipped: {
     label: "Pulado",
     badge: "bg-error/15",
     text: "text-error",
     Icon: X,
-    icon: "#EF4444",
+    icon: color.error,
   },
 };
 
@@ -127,7 +129,7 @@ export default function HistoryScreen() {
   }, [workouts.length, fetchWorkouts]);
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       <ScrollView
         contentContainerClassName="px-5 pt-2 pb-[112px]"
         showsVerticalScrollIndicator={false}
@@ -135,49 +137,41 @@ export default function HistoryScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
       >
         {/* Header */}
-        <View className="flex-row items-center justify-between mt-2">
-          <Text className="text-title-xxl font-bold text-on-surface">
-            Histórico
-          </Text>
+        <View className="mt-2 flex-row items-center justify-between">
+          <Text className="text-4xl font-bold text-white">Histórico</Text>
           <Pressable
             onPress={onRefresh}
             disabled={refreshing}
-            className="w-10 h-10 rounded-full border border-white/10 bg-surface-low items-center justify-center active:opacity-70"
+            className="h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-gray-600 active:opacity-70"
           >
             {refreshing ? (
-              <ActivityIndicator size="small" color="#B26CFF" />
+              <ActivityIndicator size="small" color={color["purple-200"]} />
             ) : (
-              <RefreshCw size={19} color="#B26CFF" />
+              <RefreshCw size={19} color={color["purple-200"]} />
             )}
           </Pressable>
         </View>
 
         {/* De / Até */}
-        <View className="flex-row gap-2.5 mt-4">
-          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
-            <Text
-              className="text-label-sm font-bold uppercase text-outline-variant"
-              style={TRACK}
-            >
+        <View className="mt-4 flex-row gap-3">
+          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
+            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
               De
             </Text>
-            <Text className="text-body-lg font-bold text-on-surface mt-2">
+            <Text className="mt-2 text-lg font-bold text-white">
               {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
-          <View className="flex-1 bg-surface-low border border-white/10 rounded-lg px-3 py-2.5">
-            <Text
-              className="text-label-sm font-bold uppercase text-outline-variant"
-              style={TRACK}
-            >
+          <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
+            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
               Até
             </Text>
-            <Text className="text-body-lg font-bold text-on-surface mt-2">
+            <Text className="mt-2 text-lg font-bold text-white">
               {formatDayMonthYear(to.toISOString())}
             </Text>
           </View>
@@ -195,14 +189,16 @@ export default function HistoryScreen() {
               <Pressable
                 key={p.key}
                 onPress={() => setPreset(p.key)}
-                className={`rounded-full px-3.5 py-2 border ${
-                  active ? "bg-primary" : "bg-transparent border-white/10"
-                }`}
+                className={cn(
+                  "rounded-full border px-4 py-2",
+                  active ? "bg-purple-300" : "border-white/12 bg-transparent",
+                )}
               >
                 <Text
-                  className={`text-label-md font-semibold ${
-                    active ? "text-on-surface" : "text-on-surface-variant"
-                  }`}
+                  className={cn(
+                    "text-base font-semibold",
+                    active ? "text-white" : "text-gray-200",
+                  )}
                 >
                   {p.label}
                 </Text>
@@ -212,29 +208,22 @@ export default function HistoryScreen() {
         </ScrollView>
 
         {loading ? (
-          <View className="items-center justify-center py-xl">
-            <ActivityIndicator size="large" color="#c8a3ff" />
+          <View className="items-center justify-center py-10">
+            <ActivityIndicator size="large" color={color["purple-100"]} />
           </View>
         ) : error ? (
-          <View className="items-center justify-center py-xl gap-md">
+          <View className="items-center justify-center gap-4 py-10">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar"
               description="Verifique sua conexão e tente novamente."
             />
-            <Button
-              label="Tentar novamente"
-              size="sm"
-              onPress={reload}
-            />
+            <Button label="Tentar novamente" size="sm" onPress={reload} />
           </View>
         ) : (
           <>
             {/* Sessões realizadas */}
-            <Text
-              className="text-label-sm font-bold uppercase text-on-surface-variant mt-6 mb-3"
-              style={TRACK}
-            >
+            <Text className="mb-3 mt-6 text-xs font-bold uppercase tracking-wider text-gray-200">
               Treinos realizados
             </Text>
 
@@ -254,35 +243,38 @@ export default function HistoryScreen() {
                   const meta = STATUS_META[s.status];
                   const StatusIcon = meta.Icon;
                   return (
-                    <Pressable
+                    <Card
                       key={s.id}
                       onPress={() => router.push(`/session/${s.id}`)}
-                      className="w-[200px] bg-surface-low border border-card-border rounded-2xl p-4 active:opacity-80"
+                      className="w-[200px]"
                     >
                       <View className="flex-row items-center justify-between">
                         <View
-                          className={`px-2.5 py-1 rounded-full ${meta.badge}`}
+                          className={cn("rounded-full px-3 py-1", meta.badge)}
                         >
                           <Text
-                            className={`text-label-sm font-bold uppercase ${meta.text}`}
-                            style={TRACK}
+                            className={cn(
+                              "tracking-wider",
+                              "text-xs font-bold uppercase",
+                              meta.text,
+                            )}
                           >
                             {meta.label}
                           </Text>
                         </View>
-                        <Text className="text-label-sm text-outline-variant">
+                        <Text className="text-xs font-medium text-gray-300">
                           {formatDayMonth(s.date)}
                         </Text>
                       </View>
 
                       <Text
-                        className="text-title-lg font-bold text-on-surface mt-3.5"
+                        className="mt-4 text-2xl font-bold text-white"
                         numberOfLines={1}
                       >
                         {workoutName(s.workout_id)}
                       </Text>
 
-                      <View className="h-px bg-white/10 my-3.5" />
+                      <View className="my-4 h-px bg-white/10" />
 
                       <View className="flex-row items-center justify-between">
                         <StatusIcon
@@ -291,32 +283,26 @@ export default function HistoryScreen() {
                           strokeWidth={2.4}
                         />
                         <View className="flex-row items-center gap-1">
-                          <Text
-                            className="text-label-sm font-bold text-secondary"
-                            style={TRACK}
-                          >
+                          <Text className="text-xs font-bold tracking-wider text-purple-200">
                             VER DETALHES
                           </Text>
                           <ChevronRight
                             size={13}
-                            color="#B26CFF"
+                            color={color["purple-200"]}
                             strokeWidth={2.2}
                           />
                         </View>
                       </View>
-                    </Pressable>
+                    </Card>
                   );
                 })}
               </ScrollView>
             )}
 
             {/* Treinos perdidos */}
-            <View className="flex-row items-center gap-2 mt-6 mb-3">
-              <Skull size={16} color="#6c6971" strokeWidth={1.9} />
-              <Text
-                className="text-label-sm font-bold uppercase text-outline-variant"
-                style={TRACK}
-              >
+            <View className="mb-3 mt-6 flex-row items-center gap-2">
+              <Skull size={16} color={color["gray-300"]} strokeWidth={1.9} />
+              <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
                 Treinos perdidos
               </Text>
             </View>
@@ -336,21 +322,18 @@ export default function HistoryScreen() {
                 {missed.map((m, i) => (
                   <View
                     key={`${m.workout_id}-${m.date}-${i}`}
-                    className="w-[170px] bg-error/5 border border-card-border rounded-xl p-4"
+                    className="w-[170px] rounded-2xl border border-white/7 bg-error/5 p-4"
                   >
-                    <Text className="text-label-sm font-semibold text-outline-variant">
+                    <Text className="text-xs font-semibold text-gray-300">
                       {formatDayMonthYear(m.date)}
                     </Text>
                     <Text
-                      className="text-title-lg font-bold text-on-surface mt-2"
+                      className="mt-2 text-2xl font-bold text-white"
                       numberOfLines={1}
                     >
                       {m.workout_name}
                     </Text>
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-error/80 mt-2.5"
-                      style={TRACK}
-                    >
+                    <Text className="mt-3 text-xs font-semibold uppercase tracking-wider text-error/80">
                       Missão falhada
                     </Text>
                   </View>

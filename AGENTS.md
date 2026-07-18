@@ -34,4 +34,55 @@ There is no E2E suite. Unit/component tests live next to the code as `*.test.ts(
 - `src/components/ui/` — themed primitives (Button, Card, Input, Badge, Toast, EmptyState). `Toast` is provided via a `ToastProvider` at the root layout.
 - `src/types/api.types.ts` — shared API types.
 
-Visual identity is "Cyber-Athletic": high-contrast dark mode, electric purple + cyan. Root background is `#131314`. Tokens live in `tailwind.config.js`.
+Visual identity is high-contrast dark mode with purple as the accent. Root
+background is `gray-700` (`#111113`).
+
+**Styling rules:**
+
+- Colors live in `src/theme/palette.js` (flat object, typed by `palette.d.ts`),
+  which `tailwind.config.js` consumes. Each key is exactly the Tailwind class
+  suffix, so `bg-purple-100`, `text-purple-100` and `color={color["purple-100"]}`
+  are visibly the same color. The scale is literal (`purple-300`, `gray-600`),
+  not semantic — `primary`/`surface-low`/`on-surface` were removed because ~10
+  aliases pointed at the same hex. `error`/`success`/`warning`/`info` and
+  `difficulty-*` stay semantic on purpose.
+- Never hardcode a hex. In `className` use the token; in a JS prop (Lucide
+  `color=`, `LinearGradient colors=`, `ActivityIndicator`) import `color` from
+  the palette.
+- Any conditional `className` goes through `cn()` (`src/lib/cn.ts`, clsx +
+  tailwind-merge). No template literals. `cn.test.ts` guards the custom
+  classGroups — only `shadow` is custom now; a custom scale that isn't
+  registered there makes the merge fail silently.
+- **Typography is the native Tailwind scale** (`text-xs` … `text-5xl`), with the
+  design system's px values overriding the native ones in `tailwind.config.js`.
+  The old semantic scale (`display`/`h1`/`title-md`/`label-sm`/…) is gone: it was
+  24 tokens for 13 distinct values, 11 exact duplicates and 10 never used.
+- **Weight is always explicit** — `text-base font-semibold`, never `text-base`
+  alone expecting a default. The old tokens baked a `fontWeight` into each
+  `fontSize` tuple and 52% of call sites overrode it anyway (100% of titles), so
+  the class never told the truth. `fontSize` tuples now carry size + lineHeight
+  only.
+- Never use an arbitrary size (`text-[17px]`). `src/lib/typography.test.ts`
+  fails on any legacy token or arbitrary size and names the file:line. Genuine
+  outliers go in its `ALLOWED_ARBITRARY` list with the reason written down.
+- Letter-spacing is the native scale; `tracking-wider` is the one in use, on
+  small uppercase labels. The config no longer overrides `letterSpacing` — it
+  used to zero out every value except a custom `label`, so 34 of 48 `tracking-*`
+  classes in the app rendered nothing.
+- `style={{}}` only for what a class cannot express: `LinearGradient` and
+  `Animated.View` (no cssInterop registered, they ignore `className`), shadows,
+  and genuinely dynamic values.
+- **Radius is four values, one per role**: `rounded-sm` 4px (micro),
+  `rounded-lg` 12px (control: input, button, chip, icon tile), `rounded-2xl`
+  28px (container: card, panel, modal, sheet), `rounded-full` (pill, circle).
+  The container→control gap keeps nesting harmonious by construction: an inner
+  element always reads less round than its container. Don't add a fifth.
+- **Spacing is the numeric scale only** (`p-4`, `gap-2`, `mt-6`). The
+  `xs/sm/md/lg/xl` aliases were removed — they were exact duplicates of
+  `1/2/4/6/10`. Half-steps (`p-2.5`) are gone too. Note that `h-`, `w-`, `top-`
+  and `left-` read the same scale, so a stale alias there fails silently.
+- `Card` (`src/components/ui/Card.tsx`) is the card surface — use it instead of
+  hand-writing `rounded-2xl border border-white/7 bg-gray-600 p-4`. Pass `p-0`
+  for image/menu containers that need the surface without the padding.
+- `npm run format` runs prettier + prettier-plugin-tailwindcss, which sorts
+  classes (including inside `cn()`).

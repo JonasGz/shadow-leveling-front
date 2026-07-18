@@ -20,6 +20,8 @@ import { workoutsService } from "../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import { DAY_ORDER, DAY_UPPER } from "../../src/lib/date";
 import type { DayOfWeek } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 const DAYS = DAY_ORDER.map((value) => ({ value, label: DAY_UPPER[value] }));
 
@@ -79,17 +81,17 @@ export default function CreateWorkoutScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Criar treino</Text>
+        <Text className="text-2xl font-bold text-white">Criar treino</Text>
         {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
@@ -99,7 +101,7 @@ export default function CreateWorkoutScreen() {
         className="flex-1"
       >
         <ScrollView
-          contentContainerClassName="px-md py-md gap-lg"
+          contentContainerClassName="px-4 py-4 gap-6"
           keyboardShouldPersistTaps="handled"
         >
           <Controller
@@ -137,27 +139,29 @@ export default function CreateWorkoutScreen() {
             )}
           />
 
-          <View className="gap-1.5">
-            <Text className="text-label-md uppercase tracking-widest text-on-surface-variant text-center">
+          <View className="gap-2">
+            <Text className="text-center text-base font-semibold uppercase text-gray-200">
               Dias da semana
             </Text>
-            <View className="flex-row flex-wrap gap-sm">
+            <View className="flex-row flex-wrap gap-2">
               {DAYS.map((d) => {
                 const active = days.includes(d.value);
                 return (
                   <Pressable
                     key={d.value}
                     onPress={() => toggleDay(d.value)}
-                    className={`rounded-full px-4 py-2.5 border active:opacity-70 ${
+                    className={cn(
+                      "rounded-full border px-4 py-3 active:opacity-70",
                       active
-                        ? "bg-primary"
-                        : "bg-transparent border-outline-variant"
-                    }`}
+                        ? "bg-purple-300"
+                        : "border-gray-300 bg-transparent",
+                    )}
                   >
                     <Text
-                      className={`text-label-md uppercase tracking-widest ${
-                        active ? "text-white" : "text-on-surface"
-                      }`}
+                      className={cn(
+                        "text-base font-semibold uppercase",
+                        active ? "text-white" : "text-white",
+                      )}
                     >
                       {d.label}
                     </Text>
@@ -166,18 +170,20 @@ export default function CreateWorkoutScreen() {
               })}
             </View>
             {daysError ? (
-              <Text className="text-label-sm text-error">{daysError}</Text>
+              <Text className="text-xs font-medium text-error">
+                {daysError}
+              </Text>
             ) : null}
           </View>
 
-          <View className="mt-md">
+          <View className="mt-4">
             <Button
               label="Criar treino"
               onPress={handleSubmit(onSubmit)}
               loading={loading}
               fullWidth
             />
-            <Text className="text-label-sm text-center mt-2 text-outline-variant">
+            <Text className="mt-2 text-center text-xs font-medium text-gray-300">
               Você poderá adicionar exercícios no próximo passo.
             </Text>
           </View>

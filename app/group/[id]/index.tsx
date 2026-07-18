@@ -24,6 +24,8 @@ import LogOut from "lucide-react-native/icons/log-out";
 import Award from "lucide-react-native/icons/award";
 import Share2 from "lucide-react-native/icons/share-2";
 import type { GroupDetail, FeedItem } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const POLL_MS = 15000;
 
@@ -42,11 +44,9 @@ function signature(
 // renderizadas não refazem trabalho.
 const FeedRow = memo(function FeedRow({
   item,
-  first,
   groupId,
 }: {
   item: FeedItem;
-  first: boolean;
   groupId: string;
 }) {
   const initial = item.name.charAt(0).toUpperCase();
@@ -54,39 +54,62 @@ const FeedRow = memo(function FeedRow({
   return (
     <Pressable
       onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
-      className={`flex-row items-center bg-surface-container rounded-lg px-3 gap-3 py-3 active:opacity-70 ${
-        first ? "" : "border-t border-white/5"
-      }`}
+      className="flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70"
     >
       {item.photo_url ? (
         <Image
           source={{ uri: item.photo_url }}
-          className="w-12 h-12 rounded-full"
+          className="h-12 w-12 rounded-full"
         />
       ) : (
-        <View className="w-12 h-12 rounded-full bg-surface-container border border-white/[0.07] items-center justify-center">
-          <Text className="text-label-md text-secondary font-bold">
-            {initial}
-          </Text>
+        <View className="h-12 w-12 items-center justify-center rounded-full border border-white/7 bg-gray-600">
+          <Text className="text-base font-bold text-purple-200">{initial}</Text>
         </View>
       )}
       <View className="flex-1">
-        <Text className="text-body-lg text-on-surface font-bold">
+        <Text className="text-lg font-bold text-white">
           {item.workout_name}
         </Text>
-        <Text className="text-label-sm text-on-surface-variant mt-0.5">
-          {item.name}
-        </Text>
+        {/* Avatar do autor. O círculo grande da esquerda é a foto do treino
+            (ws.photo_url), não a pessoa — por isso o nome carrega o seu. */}
+        <View className="mt-1 flex-row items-center gap-1.5">
+          {item.avatar_url ? (
+            <Image
+              source={{ uri: item.avatar_url }}
+              className="h-5 w-5 rounded-full"
+            />
+          ) : (
+            <View className="h-5 w-5 items-center justify-center rounded-full bg-gray-500">
+              <Text className="text-xs font-bold text-purple-200">
+                {initial}
+              </Text>
+            </View>
+          )}
+          <Text className="text-xs font-medium text-gray-200">{item.name}</Text>
+        </View>
         {hasSocial && (
-          <Text className="text-label-sm text-on-surface-variant mt-1">
-            {item.reaction_count > 0 &&
-              `${item.top_emoji ?? "🔥"} ${item.reaction_count}`}
-            {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
-            {item.comment_count > 0 && `💬 ${item.comment_count}`}
-          </Text>
+          <View className="absolute bottom-[-22px] right-0">
+            {/* Emoji num Text aninhado: cresce sem levar o contador junto, que
+                fica de propósito discreto no text-xs. */}
+            <Text className="mt-1 text-xs font-medium text-gray-200">
+              {item.reaction_count > 0 && (
+                <>
+                  <Text className="text-base">{item.top_emoji ?? "🔥"}</Text>
+                  {` ${item.reaction_count}`}
+                </>
+              )}
+              {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
+              {item.comment_count > 0 && (
+                <>
+                  <Text className="text-base">💬</Text>
+                  {` ${item.comment_count}`}
+                </>
+              )}
+            </Text>
+          </View>
         )}
       </View>
-      <Text className="text-label-sm text-on-surface-variant font-semibold">
+      <Text className="text-xs font-semibold text-gray-200">
         {formatTime(item.created_at)}
       </Text>
     </Pressable>
@@ -111,14 +134,15 @@ function PodiumItem({
   return (
     <View className="flex-row items-center gap-2">
       <View
-        className={`rounded-full bg-surface-container items-center justify-center overflow-hidden ${
-          badge === "you" ? "w-[52px] h-[52px]" : "w-[60px] h-[60px]"
-        }`}
+        className={cn(
+          "items-center justify-center overflow-hidden rounded-full bg-gray-600",
+          badge === "you" ? "h-[52px] w-[52px]" : "h-[60px] w-[60px]",
+        )}
         style={
           badge === "leader"
             ? {
                 borderWidth: 1,
-                borderColor: "#8113D3",
+                borderColor: color["purple-300"],
                 boxShadow: "0px 0px 0px 3px rgba(129, 19, 211,0.2)",
               }
             : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }
@@ -127,23 +151,23 @@ function PodiumItem({
         {avatarUrl ? (
           <Image
             source={{ uri: avatarUrl }}
-            style={{ width: "100%", height: "100%" }}
+            className="h-full w-full"
             resizeMode="cover"
           />
         ) : (
-          <Text className="text-title-md text-secondary font-bold">
-            {initial}
-          </Text>
+          <Text className="text-xl font-bold text-purple-200">{initial}</Text>
         )}
       </View>
-      <View className="justify-center items-center">
-        <Text className="text-body-lg text-on-surface font-bold">{score}</Text>
+      <View className="items-center justify-center">
+        <Text className="text-lg font-bold text-white">{score}</Text>
         {badge === "leader" ? (
-          <Award size={20} color="#B26CFF" style={{ marginTop: 3 }} />
+          <Award
+            size={20}
+            color={color["purple-200"]}
+            style={{ marginTop: 3 }}
+          />
         ) : (
-          <Text className="text-label-sm text-on-surface-variant mt-0.5">
-            Você
-          </Text>
+          <Text className="mt-1 text-xs font-medium text-gray-200">Você</Text>
         )}
       </View>
     </View>
@@ -291,16 +315,16 @@ export default function GroupDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator color="#c8a3ff" />
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700">
+        <ActivityIndicator color={color["purple-100"]} />
       </SafeAreaView>
     );
   }
 
   if (!group) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-md">
-        <Text className="text-on-surface-variant">Grupo indisponível.</Text>
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700 px-4">
+        <Text className="text-gray-200">Grupo indisponível.</Text>
       </SafeAreaView>
     );
   }
@@ -308,15 +332,15 @@ export default function GroupDetailScreen() {
   const myName = user?.nickname ?? user?.email?.split("@")[0] ?? "Você";
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma das outras telas) */}
-      <View className="flex-row items-center px-md h-16">
+      <View className="h-16 flex-row items-center px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
       </View>
       <ScrollView
@@ -325,7 +349,7 @@ export default function GroupDetailScreen() {
           <RefreshControl
             refreshing={false}
             onRefresh={load}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
         onScrollEndDrag={loadMore}
@@ -333,36 +357,34 @@ export default function GroupDetailScreen() {
         {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
-          className="h-[140px] px-md items-center justify-center overflow-hidden"
+          className="rounded-4xl h-[140px] items-center justify-center overflow-hidden px-4"
         >
           {group.cover_url ? (
             <Image
               source={{ uri: group.cover_url }}
-              className="w-full h-full"
+              className="h-full w-full rounded-3xl"
             />
           ) : (
             // ponytail: the mockup's radial purple glow isn't expressible with
             // expo-linear-gradient — approximated by the diagonal purple stops.
-            <View className="w-full h-full bg-surface-container rounded-lg items-center justify-center">
-              <Text className="text-label-sm uppercase text-on-surface-variant">
+            <View className="h-full w-full items-center justify-center rounded-lg bg-gray-600">
+              <Text className="text-xs font-medium uppercase text-gray-200">
                 {isOwner ? "Toque para definir a capa" : "Sem capa"}
               </Text>
             </View>
           )}
           {uploadingCover && (
-            <View className="absolute inset-0 bg-black/40 items-center justify-center">
-              <ActivityIndicator color="#c8a3ff" />
+            <View className="absolute inset-0 items-center justify-center bg-black/40">
+              <ActivityIndicator color={color["purple-100"]} />
             </View>
           )}
         </Pressable>
 
         {/* Title row */}
-        <View className="px-md pt-md pb-1 flex-row items-center justify-between">
+        <View className="flex-row items-center justify-between px-4 pb-1 pt-4">
           <View className="flex-1 pr-2">
-            <Text className="text-title-xxl text-on-surface font-bold">
-              {group.name}
-            </Text>
-            <Text className="text-label-sm text-on-surface-variant mt-1">
+            <Text className="text-4xl font-bold text-white">{group.name}</Text>
+            <Text className="mt-1 text-xs font-medium text-gray-200">
               {group.member_count}{" "}
               {group.member_count === 1 ? "membro" : "membros"}
             </Text>
@@ -371,16 +393,16 @@ export default function GroupDetailScreen() {
             <Pressable
               onPress={shareInvite}
               hitSlop={8}
-              className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/30 items-center justify-center active:opacity-70"
+              className="h-12 w-12 items-center justify-center rounded-lg border border-purple-300/30 bg-purple-300/10 active:opacity-70"
             >
-              <Share2 size={17} color="#CAA4FF" />
+              <Share2 size={17} color={color["purple-100"]} />
             </Pressable>
             <Pressable
               onPress={confirmLeave}
               hitSlop={8}
-              className="w-12 h-12 rounded-lg bg-error/10 border border-error/30 items-center justify-center active:opacity-70"
+              className="h-12 w-12 items-center justify-center rounded-lg border border-error/30 bg-error/10 active:opacity-70"
             >
-              <LogOut size={17} color="#FF5C74" />
+              <LogOut size={17} color={color.error} />
             </Pressable>
           </View>
         </View>
@@ -402,26 +424,21 @@ export default function GroupDetailScreen() {
         </View>
 
         {/* Feed grouped by day */}
-        <View className="px-md">
+        <View className="px-4">
           {sections.length === 0 ? (
-            <Text className="text-on-surface-variant py-lg">
+            <Text className="py-6 text-gray-200">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
-            <View className="pb-xl">
+            <View className="pb-10">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="text-label-sm text-center uppercase tracking-widest text-on-surface-variant mt-md mb-2 ml-1">
+                  <Text className="mb-2 ml-1 mt-4 text-center text-xs font-medium uppercase text-gray-200">
                     {label}
                   </Text>
-                  <View className="flex flex-col gap-2">
-                    {items.map((it, i) => (
-                      <FeedRow
-                        key={it.session_id}
-                        item={it}
-                        first={i === 0}
-                        groupId={id}
-                      />
+                  <View className="flex flex-col gap-5">
+                    {items.map((it) => (
+                      <FeedRow key={it.session_id} item={it} groupId={id} />
                     ))}
                   </View>
                 </View>

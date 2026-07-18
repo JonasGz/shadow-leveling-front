@@ -28,5 +28,5 @@ api.interceptors.response.use(
       router.replace("/(auth)/login");
     }
     return Promise.reject(error);
-  }
+  },
 );

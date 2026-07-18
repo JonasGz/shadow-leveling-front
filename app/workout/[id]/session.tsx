@@ -44,6 +44,8 @@ import type {
   WorkoutExercise,
   WorkoutSession,
 } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const FINISH_SHADOW = { boxShadow: "0px 6px 18px rgba(129, 19, 211, 0.4)" };
 
@@ -73,7 +75,9 @@ export default function WorkoutSessionScreen() {
     Record<string, LocalSet[]>
   >({});
   // Dica de progressão por exercício (keyed by workoutExercise.id).
-  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>({});
+  const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>(
+    {},
+  );
 
   // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
   // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
@@ -289,9 +293,9 @@ export default function WorkoutSessionScreen() {
 
   if (booting) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator size="large" color="#c8a3ff" />
-        <Text className="text-on-surface-variant text-label-md uppercase tracking-widest mt-md">
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700">
+        <ActivityIndicator size="large" color={color["purple-100"]} />
+        <Text className="mt-4 text-base font-semibold uppercase text-gray-200">
           Preparando sessão...
         </Text>
       </SafeAreaView>
@@ -300,7 +304,7 @@ export default function WorkoutSessionScreen() {
 
   if (bootError || !workout) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
+      <SafeAreaView className="flex-1 items-center justify-center gap-4 bg-gray-700 px-6">
         <EmptyState
           icon={TriangleAlert}
           title="Não foi possível iniciar"
@@ -313,7 +317,7 @@ export default function WorkoutSessionScreen() {
 
   if (exercises.length === 0) {
     return (
-      <SafeAreaView className="flex-1 bg-background items-center justify-center px-lg gap-md">
+      <SafeAreaView className="flex-1 items-center justify-center gap-4 bg-gray-700 px-6">
         <EmptyState
           icon={Dumbbell}
           title="Treino sem exercícios"
@@ -329,29 +333,29 @@ export default function WorkoutSessionScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="px-md pt-sm">
-        <View className="flex-row justify-between items-center gap-2">
-          <View className="flex-row items-center gap-3 flex-1">
+      <View className="px-4 pt-2">
+        <View className="flex-row items-center justify-between gap-2">
+          <View className="flex-1 flex-row items-center gap-3">
             <LinearGradient
-              colors={["#8113D3", "#6E00B3"]}
+              colors={[color["purple-300"], color["purple-400"]]}
               start={{ x: 0, y: 0 }}
               end={{ x: 0.5, y: 0.87 }} // ≈ 150deg
               style={{
                 width: 50,
                 height: 50,
-                borderRadius: 24,
+                borderRadius: 9999, // circulo: 50x50
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0px 0px 16px rgba(129, 19, 211, 0.5)",
               }}
             >
-              <Zap size={20} color="#FFF" fill="#FFF" />
+              <Zap size={20} color={color.white} fill={color.white} />
             </LinearGradient>
             <View className="flex-1">
               <Text
-                className="text-title-lg text-secondary uppercase font-bold"
+                className="text-2xl font-bold uppercase text-purple-200"
                 numberOfLines={1}
               >
                 {workout.name}
@@ -366,7 +370,7 @@ export default function WorkoutSessionScreen() {
             onPress={confirmQuit}
           />
         </View>
-        <View className="h-px bg-[#FFFFFF14] mt-md" />
+        <View className="mt-4 h-px bg-white/12" />
       </View>
 
       <ExerciseChips
@@ -378,18 +382,18 @@ export default function WorkoutSessionScreen() {
       />
 
       {/* Progresso */}
-      <View className="px-md pb-md">
-        <View className="flex-row justify-between items-end mb-2">
-          <Text className="text-label-sm font-bold text-on-surface-variant uppercase tracking-widest">
+      <View className="px-4 pb-4">
+        <View className="mb-2 flex-row items-end justify-between">
+          <Text className="text-xs font-bold uppercase text-gray-200">
             Exercício {current + 1} de {exercises.length}
           </Text>
-          <Text className="text-label-sm font-bold text-secondary">
+          <Text className="text-xs font-bold text-purple-200">
             {progressPct}% Concluído
           </Text>
         </View>
-        <View className="h-2 w-full bg-surface-high rounded-full overflow-hidden">
+        <View className="h-2 w-full overflow-hidden rounded-full bg-gray-500">
           <LinearGradient
-            colors={["#6E00B3", "#8113D3"]}
+            colors={[color["purple-400"], color["purple-300"]]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={{ width: `${progressPct}%`, height: "100%" }}
@@ -436,19 +440,20 @@ export default function WorkoutSessionScreen() {
       </KeyboardAvoidingView>
 
       {/* Dots de paginação */}
-      <View className="flex-row justify-center gap-1.5 pb-10">
+      <View className="flex-row justify-center gap-2 pb-10">
         {exercises.map((we, i) => (
           <View
             key={we.id}
-            className={`h-1.5 rounded-full ${
-              i === current ? "w-5 bg-secondary" : "w-1.5 bg-surface-high"
-            }`}
+            className={cn(
+              "h-1.5 rounded-full",
+              i === current ? "w-5 bg-purple-200" : "w-1.5 bg-gray-500",
+            )}
           />
         ))}
       </View>
 
       {/* Finalizar sempre disponível — pode-se pular exercícios sem concluir */}
-      <View className="px-md pb-8">
+      <View className="px-4 pb-8">
         <Button
           label="Finalizar treino"
           size="md"

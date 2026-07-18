@@ -2,12 +2,7 @@ import { api, TOKEN_KEY } from "./api";
 import * as SecureStore from "expo-secure-store";
 import { unregisterPush } from "../lib/push";
 import { buildImageForm } from "./groups.service";
-import type {
-  AuthToken,
-  User,
-  Session,
-  UserLevel,
-} from "../types/api.types";
+import type { AuthToken, User, Session, UserLevel } from "../types/api.types";
 
 export type SocialProvider = "google" | "apple";
 
@@ -19,14 +14,23 @@ export const authService = {
 
   /** Verifies the emailed code and stores the returned session token. */
   async verifyEmailCode(email: string, code: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/email/verify", { email, code });
+    const { data } = await api.post<AuthToken>("/auth/email/verify", {
+      email,
+      code,
+    });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
   },
 
   /** Exchanges a provider ID token for a session and stores it. */
-  async socialLogin(provider: SocialProvider, idToken: string): Promise<AuthToken> {
-    const { data } = await api.post<AuthToken>("/auth/social", { provider, id_token: idToken });
+  async socialLogin(
+    provider: SocialProvider,
+    idToken: string,
+  ): Promise<AuthToken> {
+    const { data } = await api.post<AuthToken>("/auth/social", {
+      provider,
+      id_token: idToken,
+    });
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
     return data;
   },
@@ -55,9 +59,13 @@ export const authService = {
 
   /** Uploads a new profile picture (local URI from expo-image-picker). */
   async updateAvatar(uri: string): Promise<User> {
-    const { data } = await api.patch<User>("/auth/me/avatar", buildImageForm(uri), {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const { data } = await api.patch<User>(
+      "/auth/me/avatar",
+      buildImageForm(uri),
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      },
+    );
     return data;
   },
 

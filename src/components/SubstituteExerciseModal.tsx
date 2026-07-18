@@ -14,6 +14,8 @@ import ArrowLeftRight from "lucide-react-native/icons/arrow-left-right";
 import { exercisesService } from "../services/exercises.service";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import type { Exercise } from "../types/api.types";
+import { color } from "../theme/palette";
+import { Card } from "./ui/Card";
 
 interface SubstituteExerciseModalProps {
   visible: boolean;
@@ -92,24 +94,20 @@ export function SubstituteExerciseModal({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <Pressable
-        className="flex-1 bg-black/70 justify-end"
-        onPress={onClose}
-      >
+      <Pressable className="flex-1 justify-end bg-black/70" onPress={onClose}>
         <Pressable
           onPress={() => {}}
-          className="bg-surface-container border-t border-outline-variant rounded-t-2xl pb-xl"
-          style={{ maxHeight: "85%" }}
+          className="max-h-[85%] rounded-t-2xl border-t border-gray-300 bg-gray-600 pb-10"
         >
           {/* Header */}
-          <View className="px-lg pt-lg pb-md">
-            <View className="flex-row items-center gap-2 mb-1">
-              <ArrowLeftRight size={18} color="#c8a3ff" />
-              <Text className="text-title-md text-on-surface font-bold">
+          <View className="px-6 pb-4 pt-6">
+            <View className="mb-1 flex-row items-center gap-2">
+              <ArrowLeftRight size={18} color={color["purple-100"]} />
+              <Text className="text-xl font-bold text-white">
                 Trocar exercício
               </Text>
             </View>
-            <Text className="text-label-sm text-on-surface-variant">
+            <Text className="text-xs font-medium text-gray-200">
               {origin
                 ? `Máquina ocupada? Substitua "${origin.name}" por hoje.`
                 : "Substituir o exercício atual por esta sessão."}
@@ -117,35 +115,38 @@ export function SubstituteExerciseModal({
           </View>
 
           {/* Manual search */}
-          <View className="px-lg pb-md">
-            <View className="flex-row items-center gap-2 bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3">
-              <Search size={16} color="#958ea0" />
+          <View className="px-6 pb-4">
+            <View className="flex-row items-center gap-2 rounded-lg border border-white/12 bg-gray-600 px-4 py-3">
+              <Search size={16} color={color["gray-200"]} />
               <TextInput
                 value={search}
                 onChangeText={setSearch}
                 placeholder="Buscar outro exercício..."
-                placeholderTextColor="#958ea0"
-                className="flex-1 text-on-surface text-body-md"
+                placeholderTextColor={color["gray-200"]}
+                className="flex-1 text-base font-normal text-white"
               />
             </View>
           </View>
 
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-lg pb-md"
+            contentContainerClassName="px-6 pb-4"
           >
             {/* Suggested substitutes (only when no active search) */}
             {search.trim().length < 2 && (
-              <View className="mb-md">
-                <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant font-bold mb-2">
+              <View className="mb-4">
+                <Text className="mb-2 text-xs font-bold uppercase text-gray-200">
                   Sugestões
                 </Text>
                 {loadingSuggestions ? (
-                  <View className="py-lg items-center">
-                    <ActivityIndicator size="small" color="#c8a3ff" />
+                  <View className="items-center py-6">
+                    <ActivityIndicator
+                      size="small"
+                      color={color["purple-100"]}
+                    />
                   </View>
                 ) : suggestions.length === 0 ? (
-                  <Text className="text-label-sm text-on-surface-variant">
+                  <Text className="text-xs font-medium text-gray-200">
                     Nenhuma sugestão automática. Use a busca acima.
                   </Text>
                 ) : (
@@ -160,11 +161,14 @@ export function SubstituteExerciseModal({
             {search.trim().length >= 2 && (
               <View>
                 {searching ? (
-                  <View className="py-lg items-center">
-                    <ActivityIndicator size="small" color="#c8a3ff" />
+                  <View className="items-center py-6">
+                    <ActivityIndicator
+                      size="small"
+                      color={color["purple-100"]}
+                    />
                   </View>
                 ) : searchResults.length === 0 ? (
-                  <Text className="text-label-sm text-on-surface-variant">
+                  <Text className="text-xs font-medium text-gray-200">
                     Nenhum exercício encontrado.
                   </Text>
                 ) : (
@@ -192,36 +196,37 @@ function SubstituteRow({
   // user-created. Display-only — the ranking query runs against EN columns.
   const equipment = exercise.equipment_pt ?? exercise.equipment ?? null;
   const mechanic = exercise.mechanic_pt ?? exercise.mechanic ?? null;
-  const muscles = (exercise.primary_muscles_pt ?? exercise.primary_muscles ?? []).slice(0, 3);
+  const muscles = (
+    exercise.primary_muscles_pt ??
+    exercise.primary_muscles ??
+    []
+  ).slice(0, 3);
 
   const chips: string[] = [];
   if (equipment) chips.push(equipment);
   if (mechanic) chips.push(mechanic);
 
   return (
-    <Pressable
+    <Card
       onPress={() => onPick(exercise)}
-      className="bg-surface-low border border-[#FFFFFF14] rounded-xl p-md mb-2 active:opacity-70 flex-row items-center gap-3"
+      className="mb-2 flex-row items-center gap-3 border-white/12"
     >
-      <View className="w-10 h-10 rounded-lg bg-primary/20 items-center justify-center">
-        <Dumbbell size={18} color="#c8a3ff" />
+      <View className="h-10 w-10 items-center justify-center rounded-lg bg-purple-300/20">
+        <Dumbbell size={18} color={color["purple-100"]} />
       </View>
       <View className="flex-1">
-        <Text
-          className="text-body-md text-on-surface font-semibold"
-          numberOfLines={2}
-        >
+        <Text className="text-base font-semibold text-white" numberOfLines={2}>
           {exercise.name}
         </Text>
         {(muscles.length > 0 || chips.length > 0) && (
           <Text
-            className="text-label-sm text-on-surface-variant mt-1"
+            className="mt-1 text-xs font-medium text-gray-200"
             numberOfLines={1}
           >
             {[...chips, ...muscles].join(" · ")}
           </Text>
         )}
       </View>
-    </Pressable>
+    </Card>
   );
 }

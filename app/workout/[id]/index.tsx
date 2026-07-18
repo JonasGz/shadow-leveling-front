@@ -20,6 +20,9 @@ import { workoutsService } from "../../../src/services/workouts.service";
 import { DAY_UPPER } from "../../../src/lib/date";
 import type { WorkoutExercise } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
+import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
+import { Card } from "../../../src/components/ui/Card";
 
 function repsLabel(ex: WorkoutExercise): string {
   if (ex.exercise.type === "time") {
@@ -38,14 +41,12 @@ function repsLabel(ex: WorkoutExercise): string {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <View className="flex-1 bg-surface-low border border-card-border rounded-xl p-md items-center">
-      <Text className="text-title-xl text-on-surface font-extrabold">
-        {value}
-      </Text>
-      <Text className="text-label-md text-on-surface-variant mt-1.5">
+    <Card className="flex-1 items-center">
+      <Text className="text-3xl font-extrabold text-white">{value}</Text>
+      <Text className="mt-2 text-base font-semibold text-gray-200">
         {label}
       </Text>
-    </View>
+    </Card>
   );
 }
 
@@ -59,21 +60,16 @@ function ExerciseCard({
   onDelete: (item: WorkoutExercise) => void;
 }) {
   return (
-    <View className="bg-surface-low border border-card-border rounded-xl px-md py-md flex-row items-center gap-3">
-      <View className="w-10 h-10 rounded-[9px] bg-surface-highest items-center justify-center">
-        <Text className="text-label-md text-outline font-bold">
-          {index + 1}
-        </Text>
+    <Card className="flex-row items-center gap-3">
+      <View className="h-10 w-10 items-center justify-center rounded-lg bg-gray-500">
+        <Text className="text-base font-bold text-gray-400">{index + 1}</Text>
       </View>
 
       <View className="flex-1 items-center">
-        <Text
-          className="text-title-md text-[#ECECEE] font-semibold"
-          numberOfLines={1}
-        >
+        <Text className="text-xl font-semibold text-gray-50" numberOfLines={1}>
           {item.exercise.name}
         </Text>
-        <Text className="text-body-sm font-light text-outline mt-0.5">
+        <Text className="mt-1 text-sm font-light text-gray-400">
           {repsLabel(item)}
         </Text>
       </View>
@@ -81,11 +77,11 @@ function ExerciseCard({
       <Pressable
         onPress={() => onDelete(item)}
         hitSlop={8}
-        className="w-8 h-8 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
+        className="h-8 w-8 items-center justify-center rounded-full bg-error/15 active:bg-error/30"
       >
-        <Text className="text-error text-base font-bold">✕</Text>
+        <Text className="text-base font-bold text-error">✕</Text>
       </Pressable>
-    </View>
+    </Card>
   );
 }
 
@@ -132,17 +128,17 @@ export default function WorkoutDetailScreen() {
     .join(" · ");
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">Treino</Text>
+        <Text className="text-2xl font-bold text-white">Treino</Text>
         <IconButton
           icon={Play}
           variant="primary"
@@ -152,10 +148,10 @@ export default function WorkoutDetailScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
@@ -165,31 +161,34 @@ export default function WorkoutDetailScreen() {
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-md gap-md pb-xl"
+          contentContainerClassName="px-4 py-4 gap-4 pb-10"
           showsVerticalScrollIndicator={false}
         >
           {/* Status + dias */}
           <View className="flex-row items-center gap-2">
             <View
-              className={`flex-row items-center gap-1.5 px-3 py-1 rounded-full ${
-                workout?.active ? "bg-success/15" : "bg-surface-variant"
-              }`}
+              className={cn(
+                "flex-row items-center gap-2 rounded-full px-3 py-1",
+                workout?.active ? "bg-success/15" : "",
+              )}
             >
               <View
-                className={`w-2 h-2 rounded-full ${
-                  workout?.active ? "bg-success" : "bg-outline"
-                }`}
+                className={cn(
+                  "h-2 w-2 rounded-full",
+                  workout?.active ? "bg-success" : "bg-gray-400",
+                )}
               />
               <Text
-                className={`text-label-sm font-bold ${
-                  workout?.active ? "text-[#4ADE80]" : "text-on-surface-variant"
-                }`}
+                className={cn(
+                  "text-xs font-bold",
+                  workout?.active ? "text-success" : "text-gray-200",
+                )}
               >
                 {workout?.active ? "Ativo" : "Inativo"}
               </Text>
             </View>
             {daysLabel ? (
-              <Text className="text-label-sm uppercase tracking-widest text-secondary">
+              <Text className="text-xs font-medium uppercase text-purple-200">
                 {daysLabel}
               </Text>
             ) : null}
@@ -197,18 +196,18 @@ export default function WorkoutDetailScreen() {
 
           {/* Título + descrição */}
           <View className="gap-1">
-            <Text className="text-title-xl text-center text-white font-bold">
+            <Text className="text-center text-3xl font-bold text-white">
               {workout?.name ?? "Treino"}
             </Text>
             {workout?.description ? (
-              <Text className="text-body-sm text-on-surface-variant">
+              <Text className="text-sm font-normal text-gray-200">
                 {workout.description}
               </Text>
             ) : null}
           </View>
 
           {/* Stats */}
-          <View className="flex-row gap-md">
+          <View className="flex-row gap-4">
             <StatCard label="Exercícios" value={String(exercises.length)} />
             <StatCard label="Séries" value={String(totalSets)} />
             <StatCard
@@ -230,10 +229,10 @@ export default function WorkoutDetailScreen() {
             />
           ) : (
             <>
-              <Text className="text-title-md text-center text-white font-bold mt-sm">
+              <Text className="mt-2 text-center text-xl font-bold text-white">
                 Exercícios
               </Text>
-              <View className="gap-sm">
+              <View className="gap-2">
                 {exercises
                   .slice()
                   .sort((a, b) => a.sort_order - b.sort_order)
@@ -247,12 +246,12 @@ export default function WorkoutDetailScreen() {
                   ))}
               </View>
 
-              <View className="items-center gap-sm mt-sm">
+              <View className="mt-2 items-center gap-2">
                 <IconButton
                   icon={Plus}
                   onPress={() => router.push(`/workout/${id}/add-exercise`)}
                 />
-                <Text className="text-label-md text-on-surface-variant">
+                <Text className="text-base font-semibold text-gray-200">
                   Adicionar exercício
                 </Text>
               </View>

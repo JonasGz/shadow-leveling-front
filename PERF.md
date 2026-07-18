@@ -13,11 +13,11 @@ Rode antes e depois de qualquer mudança que mexa em dependências ou imports.
 
 ## Histórico
 
-| Quando | Bundle iOS (Hermes) | O que mudou |
-|---|---|---|
-| Antes do refactor | 7,69 MB | baseline |
-| Imports de ícone por subpath | 5,88 MB | −1,81 MB (−23,5%) |
-| + `@shopify/flash-list` | **6,02 MB** | +0,14 MB (custo da lib) |
+| Quando                       | Bundle iOS (Hermes) | O que mudou             |
+| ---------------------------- | ------------------- | ----------------------- |
+| Antes do refactor            | 7,69 MB             | baseline                |
+| Imports de ícone por subpath | 5,88 MB             | −1,81 MB (−23,5%)       |
+| + `@shopify/flash-list`      | **6,02 MB**         | +0,14 MB (custo da lib) |
 
 Saldo: **−1,67 MB (−21,7%)** contra o baseline.
 
@@ -37,8 +37,8 @@ Antes: presente. Depois: ausente.
 **Regra:** importe ícone sempre por subpath.
 
 ```ts
-import Timer from "lucide-react-native/icons/timer";        // ✅
-import { Timer } from "lucide-react-native";                // ❌ puxa 1500
+import Timer from "lucide-react-native/icons/timer"; // ✅
+import { Timer } from "lucide-react-native"; // ❌ puxa 1500
 ```
 
 O nome do módulo é kebab-case (`ArrowLeftRight` → `arrow-left-right`,

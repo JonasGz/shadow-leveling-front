@@ -25,6 +25,7 @@ import {
 } from "../src/lib/push";
 import { installOpenSans } from "../src/lib/fonts";
 import { parseInviteCode, setPendingInvite } from "../src/lib/invite";
+import { color } from "../src/theme/palette";
 
 installOpenSans();
 
@@ -76,7 +77,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: "#000000" },
+          contentStyle: { backgroundColor: color["gray-700"] },
         }}
       />
     </ToastProvider>

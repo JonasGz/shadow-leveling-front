@@ -2,6 +2,8 @@ import { View, Text, Pressable, ScrollView } from "react-native";
 import Check from "lucide-react-native/icons/check";
 import type { LocalSet } from "./SetRow";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
+import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 interface ExerciseChipsProps {
   exercises: WorkoutExercise[];
@@ -23,8 +25,8 @@ export function ExerciseChips({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{ flexGrow: 0 }}
-      contentContainerClassName="px-md pb-8 gap-2 py-3"
+      className="grow-0"
+      contentContainerClassName="px-4 pb-8 gap-2 py-3"
       keyboardShouldPersistTaps="handled"
     >
       {exercises.map((we, i) => {
@@ -36,32 +38,39 @@ export function ExerciseChips({
           <Pressable
             key={we.id}
             onPress={() => onSelect(i)}
-            className={`w-36 h-24 px-3 py-3 rounded-xl border justify-between active:opacity-70 ${
+            className={cn(
+              "h-24 w-36 justify-between rounded-lg border px-3 py-3 active:opacity-70",
               allDone
-                ? "bg-secondary/15 border-secondary/60"
+                ? "border-purple-200/60 bg-purple-200/15"
                 : active
-                  ? "bg-primary/20 border-primary/60"
-                  : "bg-surface-low border-[#FFFFFF29]"
-            }`}
+                  ? "border-purple-300/60 bg-purple-300/20"
+                  : "border-white/12 bg-gray-600",
+            )}
           >
             <View className="flex-row items-center justify-between">
               <Text
-                className={`text-xs font-bold ${
-                  active ? "text-secondary" : "text-outline"
-                }`}
+                className={cn(
+                  "text-xs font-bold",
+                  active ? "text-purple-200" : "text-gray-400",
+                )}
               >
                 {i + 1}
               </Text>
               {allDone && (
-                <View className="w-5 h-5 rounded-full bg-secondary/25 items-center justify-center">
-                  <Check size={13} color="#B26CFF" strokeWidth={3} />
+                <View className="h-5 w-5 items-center justify-center rounded-full bg-purple-200/25">
+                  <Check
+                    size={13}
+                    color={color["purple-200"]}
+                    strokeWidth={3}
+                  />
                 </View>
               )}
             </View>
             <Text
-              className={`text-label-md font-semibold ${
-                active ? "text-on-surface" : "text-on-surface-variant"
-              }`}
+              className={cn(
+                "text-base font-semibold",
+                active ? "text-white" : "text-gray-200",
+              )}
               numberOfLines={3}
             >
               {name}

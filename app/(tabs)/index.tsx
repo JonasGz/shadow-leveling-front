@@ -30,6 +30,8 @@ import { useScreenData } from "../../src/hooks/useScreenData";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
+import { color } from "../../src/theme/palette";
+import { Card } from "../../src/components/ui/Card";
 
 function titleCase(s: string) {
   return s
@@ -66,8 +68,8 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
     <Svg width={size} height={size}>
       <Defs>
         <SvgLinearGradient id="weeklyGoalGrad" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#6E00B3" />
-          <Stop offset="1" stopColor="#B26CFF" />
+          <Stop offset="0" stopColor={color["purple-400"]} />
+          <Stop offset="1" stopColor={color["purple-200"]} />
         </SvgLinearGradient>
       </Defs>
       <Circle
@@ -75,7 +77,7 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
         cy={size / 2}
         r={r}
         fill="none"
-        stroke="#29282C"
+        stroke={color["gray-500"]}
         strokeWidth={stroke}
       />
       <Circle
@@ -91,7 +93,7 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
       <SvgText
-        fill="#fff"
+        fill={color.white}
         fontSize={22}
         fontWeight="800"
         textAnchor="middle"
@@ -117,15 +119,15 @@ function StatCard({
 }) {
   const Icon = icon;
   return (
-    <View className="flex-1 bg-surface-low rounded-2xl p-lg border border-card-border">
+    <Card className="flex-1">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
-      <Text className="text-on-surface text-center font-extrabold text-title-xl mt-2">
+      <Text className="mt-2 text-center text-3xl font-extrabold text-white">
         {value}
       </Text>
-      <Text className="text-center text-label-md text-on-surface-variant mt-1">
+      <Text className="mt-1 text-center text-base font-semibold text-gray-200">
         {label}
       </Text>
-    </View>
+    </Card>
   );
 }
 
@@ -186,57 +188,50 @@ export default function HomeScreen() {
   }, [metrics]);
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-md py-md">
+      <View className="flex-row items-center justify-between px-4 py-4">
         <View>
-          <Text className="text-title-xxl text-white font-bold">
-            Hey, {name} 👋
-          </Text>
+          <Text className="text-4xl font-bold text-white">Hey, {name} 👋</Text>
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
-          className="w-14 h-14 rounded-full items-center justify-center overflow-hidden active:opacity-70"
-          style={{ backgroundColor: "#8113D3" }}
+          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-purple-300 active:opacity-70"
         >
           {user?.avatar_url ? (
             <Image
               source={{ uri: user.avatar_url }}
-              style={{ width: "100%", height: "100%" }}
+              className="h-full w-full"
               resizeMode="cover"
             />
           ) : (
-            <Text className="text-white font-bold">{initials}</Text>
+            <Text className="font-bold text-white">{initials}</Text>
           )}
         </Pressable>
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error ? (
-        <View className="flex-1 items-center justify-center px-lg gap-md">
+        <View className="flex-1 items-center justify-center gap-4 px-6">
           <EmptyState
             icon={TriangleAlert}
             title="Não foi possível carregar"
             description="Verifique sua conexão e tente novamente."
           />
-          <Button
-            label="Tentar novamente"
-            size="sm"
-            onPress={reload}
-          />
+          <Button label="Tentar novamente" size="sm" onPress={reload} />
         </View>
       ) : (
         <ScrollView
-          contentContainerClassName="px-md py-md gap-lg pb-[112px]"
+          contentContainerClassName="px-4 py-4 gap-6 pb-[112px]"
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#c8a3ff"
+              tintColor={color["purple-100"]}
             />
           }
         >
@@ -256,21 +251,19 @@ export default function HomeScreen() {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 12,
-                  borderRadius: 20,
+                  borderRadius: 28, // rounded-2xl (container)
                   padding: 16,
                   borderWidth: 1,
-                  borderColor: "#8113D34D",
+                  // purple-300 a 30%; LinearGradient só aceita style.
+                  borderColor: `${color["purple-300"]}4D`,
                 }}
               >
                 <WeeklyGoalRing pct={goalPct} />
                 <View className="flex-1">
-                  <Text className="text-title-lg text-on-surface font-bold text-center">
+                  <Text className="text-center text-2xl font-bold text-white">
                     Meta semanal
                   </Text>
-                  <Text
-                    className="text-body-sm mt-1 text-center"
-                    style={{ color: "#B5B4B8" }}
-                  >
+                  <Text className="mt-1 text-center text-sm font-normal text-gray-100">
                     {goalScheduled === 0
                       ? "Defina sua meta semanal"
                       : goalCompleted >= goalScheduled
@@ -286,17 +279,17 @@ export default function HomeScreen() {
           ) : null}
 
           {/* Stat cards */}
-          <View className="flex-row gap-md">
+          <View className="flex-row gap-4">
             <StatCard
               icon={Flame}
-              iconColor="#F59E0B"
-              iconFill="#F59E0B"
+              iconColor={color.warning}
+              iconFill={color.warning}
               value={String(streak)}
               label="Dia de streak"
             />
             <StatCard
               icon={TrendingUp}
-              iconColor="#B26CFF"
+              iconColor={color["purple-200"]}
               value={rank}
               label={`Nível ${lvlNumber}`}
             />
@@ -304,62 +297,56 @@ export default function HomeScreen() {
 
           {/* Today's workout */}
           <View>
-            <Text className="text-title-lg text-white text-center font-bold mb-md">
+            <Text className="mb-4 text-center text-2xl font-bold text-white">
               Treino de hoje
             </Text>
 
             {featured ? (
-              <Pressable
+              <Card
                 onPress={() => router.push(`/workout/${featured.id}`)}
-                className="rounded-2xl overflow-hidden border border-card-border active:opacity-80"
-                style={{ backgroundColor: "#1A191C" }}
+                className="overflow-hidden p-0"
               >
-                <View
-                  className="px-md py-md"
-                  style={{ backgroundColor: "#6E00B3" }}
-                >
-                  <View
-                    className="self-start px-2 py-1 mt-6 rounded-full"
-                    style={{ backgroundColor: "rgba(0,0,0,0.35)" }}
-                  >
-                    <Text className="text-white text-label-sm uppercase">
+                <View className="bg-purple-400 px-4 py-4">
+                  <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
+                    <Text className="text-xs font-medium uppercase text-white">
                       {featured.is_completed ? "Concluído" : "Próximo"}
                     </Text>
                   </View>
                 </View>
 
-                <View className="p-lg items-center">
+                <View className="items-center p-6">
                   <Text
-                    className="text-title-xl text-on-surface font-bold"
+                    className="text-3xl font-bold text-white"
                     numberOfLines={1}
                   >
                     {featured.name}
                   </Text>
-                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                  <Text className="mt-1 text-sm font-normal text-gray-200">
                     {featured.estimated_duration_min} min ·{" "}
                     {featured.exercise_count} exercício
                     {featured.exercise_count === 1 ? "" : "s"}
                   </Text>
 
-                  <View className="w-full mt-md">
+                  <View className="mt-4 w-full">
                     <StartWorkoutButton
                       workoutId={featured.id}
                       done={featured.is_completed}
                     />
                   </View>
                 </View>
-              </Pressable>
+              </Card>
             ) : (
-              <View
-                className="rounded-2xl p-lg items-center gap-md border border-card-border"
-                style={{ backgroundColor: "#1A191C" }}
-              >
-                <Calendar size={36} color="#908D94" strokeWidth={1.5} />
+              <Card className="items-center gap-4">
+                <Calendar
+                  size={36}
+                  color={color["gray-200"]}
+                  strokeWidth={1.5}
+                />
                 <View className="items-center">
-                  <Text className="text-title-md text-on-surface font-semibold">
+                  <Text className="text-xl font-semibold text-white">
                     Nenhum treino para hoje
                   </Text>
-                  <Text className="text-body-sm text-on-surface-variant mt-1">
+                  <Text className="mt-1 text-sm font-normal text-gray-200">
                     Aproveite para descansar ou criar um novo treino.
                   </Text>
                 </View>
@@ -368,7 +355,7 @@ export default function HomeScreen() {
                   size="sm"
                   onPress={() => router.push("/workout/create")}
                 />
-              </View>
+              </Card>
             )}
           </View>
         </ScrollView>

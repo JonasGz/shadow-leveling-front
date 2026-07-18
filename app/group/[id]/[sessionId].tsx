@@ -10,7 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -26,8 +26,8 @@ import type {
   SessionSocialDetail,
   SessionComment,
 } from "../../../src/types/api.types";
-
-const HERO_HEIGHT = Math.round(Dimensions.get("window").height * 0.55);
+import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 function Avatar({
   uri,
@@ -53,22 +53,18 @@ function Avatar({
         ...(ring
           ? {
               borderWidth: 2.5,
-              borderColor: "#8113D3",
+              borderColor: color["purple-300"],
               boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
             }
           : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }),
       }}
-      className="bg-surface-high"
+      className="bg-gray-500"
     >
       {uri ? (
-        <Image
-          source={{ uri }}
-          style={{ width: "100%", height: "100%" }}
-          resizeMode="cover"
-        />
+        <Image source={{ uri }} className="h-full w-full" resizeMode="cover" />
       ) : (
         <Text
-          className="text-secondary font-bold"
+          className="font-bold text-purple-200"
           style={{ fontSize: size / 2.6 }}
         >
           {initial}
@@ -88,19 +84,17 @@ function CommentRow({
   return (
     <Pressable
       onLongPress={comment.is_mine ? () => onDelete(comment) : undefined}
-      className="flex-row gap-3 mb-5 active:opacity-80"
+      className="mb-5 flex-row gap-3 active:opacity-80"
     >
       <Avatar uri={comment.avatar_url} name={comment.name} size={36} />
       <View className="flex-1">
         <View className="flex-row items-baseline gap-2">
-          <Text className="text-body-sm text-on-surface font-bold">
-            {comment.name}
-          </Text>
-          <Text className="text-caption text-on-surface-variant">
+          <Text className="text-sm font-bold text-white">{comment.name}</Text>
+          <Text className="text-xs font-medium text-gray-200">
             {relativeTime(comment.created_at)}
           </Text>
         </View>
-        <Text className="text-body-sm text-on-surface mt-0.5">
+        <Text className="mt-1 text-sm font-normal text-white">
           {comment.body}
         </Text>
       </View>
@@ -115,6 +109,9 @@ export default function SessionPostScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const { showToast } = useToast();
+  // Antes era const de módulo, calculada uma vez no load do bundle: em
+  // split-screen ou foldable o hero ficava com a altura da tela anterior.
+  const heroHeight = Math.round(useWindowDimensions().height * 0.55);
 
   const [detail, setDetail] = useState<SessionSocialDetail | null>(null);
   const [comments, setComments] = useState<SessionComment[]>([]);
@@ -209,22 +206,22 @@ export default function SessionPostScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-background items-center justify-center">
-        <ActivityIndicator color="#c8a3ff" />
+      <View className="flex-1 items-center justify-center bg-gray-700">
+        <ActivityIndicator color={color["purple-100"]} />
       </View>
     );
   }
 
   if (!detail) {
     return (
-      <View className="flex-1 bg-background items-center justify-center px-md">
-        <Text className="text-on-surface-variant">Treino indisponível.</Text>
+      <View className="flex-1 items-center justify-center bg-gray-700 px-4">
+        <Text className="text-gray-200">Treino indisponível.</Text>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-gray-700">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -235,19 +232,19 @@ export default function SessionPostScreen() {
           keyboardShouldPersistTaps="handled"
         >
           {/* 1. Hero photo */}
-          <View style={{ height: HERO_HEIGHT }} className="w-full">
+          <View style={{ height: heroHeight }} className="w-full">
             {detail.photo_url ? (
               <Image
                 source={{ uri: detail.photo_url }}
-                style={{ width: "100%", height: "100%" }}
+                className="h-full w-full"
                 resizeMode="cover"
               />
             ) : (
-              <View className="w-full h-full bg-surface-high" />
+              <View className="h-full w-full bg-gray-500" />
             )}
             {/* fade into the page */}
             <LinearGradient
-              colors={["transparent", "rgba(17,17,19,0.7)", "#111113"]}
+              colors={["transparent", "rgba(17,17,19,0.7)", color["gray-700"]]}
               locations={[0.55, 0.85, 1]}
               style={{
                 position: "absolute",
@@ -262,52 +259,54 @@ export default function SessionPostScreen() {
               onPress={() => router.back()}
               hitSlop={8}
               style={{ top: insets.top + 8 }}
-              className="absolute left-5 w-11 h-11 rounded-full bg-surface/60 border border-white/[0.12] items-center justify-center active:opacity-70"
+              className="absolute left-5 h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-gray-600/60 active:opacity-70"
             >
-              <ChevronLeft size={22} color="#fff" />
+              <ChevronLeft size={22} color={color.white} />
             </Pressable>
           </View>
 
           {/* 2. Author */}
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
-            <View className="flex-1 pt-0.5">
-              <Text className="text-body-lg text-on-surface font-bold">
+            <View className="flex-1 pt-1">
+              <Text className="text-lg font-bold text-white">
                 {detail.name}
               </Text>
-              <Text className="text-body-sm text-secondary font-semibold mt-0.5">
+              <Text className="mt-1 text-sm font-semibold text-purple-200">
                 {detail.workout_name}
               </Text>
             </View>
-            <Text className="text-body-sm text-on-surface-variant pt-1">
+            <Text className="pt-1 text-sm font-normal text-gray-200">
               {relativeTime(detail.created_at)}
             </Text>
           </View>
 
           {/* 3. Reactions */}
-          <View className="flex-row flex-wrap items-center gap-2.5 px-5 pt-5">
+          <View className="flex-row flex-wrap items-center gap-3 px-5 pt-5">
             {detail.reactions.map((rc) => {
               const active = rc.emoji === detail.my_reaction;
               return (
                 <Pressable
                   key={rc.emoji}
                   onPress={() => react(rc.emoji)}
-                  className={`flex-row items-center gap-1.5 h-9 px-3.5 rounded-full border active:opacity-70 ${
+                  className={cn(
+                    "h-9 flex-row items-center gap-2 rounded-full border px-4 active:opacity-70",
                     active
-                      ? "bg-primary/15 border-primary"
-                      : "bg-surface-low border-white/[0.07]"
-                  }`}
+                      ? "border-purple-300 bg-purple-300/15"
+                      : "border-white/7 bg-gray-600",
+                  )}
                   style={
                     active
                       ? { boxShadow: "0px 0px 14px rgba(129, 19, 211,0.35)" }
                       : undefined
                   }
                 >
-                  <Text style={{ fontSize: 16 }}>{rc.emoji}</Text>
+                  <Text className="text-base font-normal">{rc.emoji}</Text>
                   <Text
-                    className={`text-body-sm font-bold ${
-                      active ? "text-on-surface" : "text-on-surface-variant"
-                    }`}
+                    className={cn(
+                      "text-sm font-bold",
+                      active ? "text-white" : "text-gray-200",
+                    )}
                   >
                     {rc.count}
                   </Text>
@@ -316,21 +315,21 @@ export default function SessionPostScreen() {
             })}
             <Pressable
               onPress={() => setPickerOpen(true)}
-              className="w-9 h-9 rounded-full bg-primary/15 border border-primary/40 items-center justify-center active:opacity-70"
+              className="h-9 w-9 items-center justify-center rounded-full border border-purple-300/40 bg-purple-300/15 active:opacity-70"
             >
-              <Plus size={18} color="#CAA4FF" />
+              <Plus size={18} color={color["purple-100"]} />
             </Pressable>
           </View>
 
-          <View className="h-px bg-white/[0.07] mx-5 mt-5" />
+          <View className="mx-5 mt-5 h-px bg-white/7" />
 
           {/* 4. Comments */}
           <View className="px-5 pt-5">
-            <Text className="text-caption font-bold uppercase text-on-surface-variant mb-4">
+            <Text className="mb-4 text-xs font-bold uppercase text-gray-200">
               Comentários
             </Text>
             {comments.length === 0 ? (
-              <Text className="text-body-sm text-on-surface-variant pb-4">
+              <Text className="pb-4 text-sm font-normal text-gray-200">
                 Seja o primeiro a comentar.
               </Text>
             ) : (
@@ -340,7 +339,7 @@ export default function SessionPostScreen() {
             )}
             {cursor && (
               <Pressable onPress={loadMoreComments} className="py-2">
-                <Text className="text-body-sm text-secondary font-semibold">
+                <Text className="text-sm font-semibold text-purple-200">
                   Carregar mais
                 </Text>
               </Pressable>
@@ -351,15 +350,15 @@ export default function SessionPostScreen() {
         {/* 5. Fixed composer */}
         <View
           style={{ paddingBottom: insets.bottom + 12 }}
-          className="flex-row items-center gap-2.5 px-5 pt-3 bg-background border-t border-white/[0.07]"
+          className="flex-row items-center gap-3 border-t border-white/7 bg-gray-700 px-5 pt-3"
         >
-          <View className="flex-1 flex-row items-center h-12 px-4 rounded-full bg-surface-low border border-white/[0.07]">
+          <View className="h-12 flex-1 flex-row items-center rounded-full border border-white/7 bg-gray-600 px-4">
             <TextInput
               value={draft}
               onChangeText={setDraft}
               placeholder="Adicionar comentário…"
-              placeholderTextColor="#908D94"
-              className="flex-1 text-body-sm py-0 text-on-surface"
+              placeholderTextColor={color["gray-200"]}
+              className="flex-1 py-0 text-sm font-normal text-white"
               multiline
               maxLength={500}
               onSubmitEditing={sendComment}
@@ -368,16 +367,16 @@ export default function SessionPostScreen() {
           <Pressable
             onPress={sendComment}
             disabled={sending || draft.trim().length === 0}
-            className="w-12 h-12 rounded-full bg-primary items-center justify-center active:opacity-80"
+            className="h-12 w-12 items-center justify-center rounded-full bg-purple-300 active:opacity-80"
             style={{
               boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
               opacity: draft.trim().length === 0 ? 0.5 : 1,
             }}
           >
             {sending ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={color.white} size="small" />
             ) : (
-              <Send size={20} color="#fff" />
+              <Send size={20} color={color.white} />
             )}
           </Pressable>
         </View>
@@ -392,20 +391,20 @@ export default function SessionPostScreen() {
         enableSearchBar
         theme={{
           backdrop: "#00000099",
-          knob: "#8113D3",
-          container: "#1A191C",
-          header: "#908D94",
+          knob: color["purple-300"],
+          container: color["gray-600"],
+          header: color["gray-200"],
           category: {
-            icon: "#908D94",
-            iconActive: "#fff",
-            container: "#111113",
-            containerActive: "#8113D3",
+            icon: color["gray-200"],
+            iconActive: color.white,
+            container: color["gray-700"],
+            containerActive: color["purple-300"],
           },
           search: {
-            text: "#fff",
-            placeholder: "#908D94",
-            background: "#111113",
-            icon: "#908D94",
+            text: color.white,
+            placeholder: color["gray-200"],
+            background: color["gray-700"],
+            icon: color["gray-200"],
           },
         }}
       />

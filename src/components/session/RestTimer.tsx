@@ -5,6 +5,7 @@ import Timer from "lucide-react-native/icons/timer";
 import Plus from "lucide-react-native/icons/plus";
 import X from "lucide-react-native/icons/x";
 import { formatDuration } from "../../lib/date";
+import { color } from "../../theme/palette";
 
 interface RestTimerProps {
   /** Segundos iniciais da contagem. */
@@ -36,7 +37,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
 
   return (
     <View
-      className="absolute bottom-8 self-center bg-surface-high border border-secondary/40 rounded-2xl pl-3 pr-2.5 py-2.5 flex-row items-center gap-3"
+      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-purple-200/40 bg-gray-500 py-3 pl-3 pr-3"
       style={{
         left: 0,
         right: 0,
@@ -46,25 +47,25 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
       }}
     >
       <LinearGradient
-        colors={["#8113D3", "#6E00B3"]}
+        colors={[color["purple-300"], color["purple-400"]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0.5, y: 0.87 }}
         style={{
           width: 40,
           height: 40,
-          borderRadius: 14,
+          borderRadius: 12, // rounded-lg (controle)
           alignItems: "center",
           justifyContent: "center",
           boxShadow: "0px 0px 14px rgba(129, 19, 211, 0.5)",
         }}
       >
-        <Timer size={20} color="#FFF" />
+        <Timer size={20} color={color.white} />
       </LinearGradient>
       <View className="flex-1">
-        <Text className="text-label-sm text-on-surface-variant uppercase tracking-widest font-bold">
+        <Text className="text-xs font-bold uppercase text-gray-200">
           Descanso
         </Text>
-        <Text className="text-title-md text-secondary font-bold leading-none mt-0.5">
+        <Text className="mt-1 text-xl font-bold leading-none text-purple-200">
           {formatDuration(remaining)}
         </Text>
       </View>
@@ -72,17 +73,17 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Adicionar 15 segundos ao descanso"
         onPress={() => setRemaining((r) => r + 15)}
-        className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-lg border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
-        <Plus size={16} color="#B26CFF" strokeWidth={2.5} />
+        <Plus size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Encerrar descanso"
         onPress={onDismiss}
-        className="bg-surface-lowest w-9 h-9 rounded-xl items-center justify-center border border-secondary/25 active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-lg border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
-        <X size={16} color="#B26CFF" strokeWidth={2.5} />
+        <X size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>
     </View>
   );

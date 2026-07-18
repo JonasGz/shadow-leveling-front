@@ -14,6 +14,7 @@ import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
 import { finishAuth } from "../../src/lib/finishAuth";
+import { color } from "../../src/theme/palette";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -62,25 +63,25 @@ export default function EmailAuthScreen() {
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1 bg-background">
+    <KeyboardAvoidingView behavior="padding" className="flex-1 bg-gray-700">
       <SafeAreaView className="flex-1">
         <Pressable
           onPress={() => (step === "code" ? setStep("email") : router.back())}
           hitSlop={12}
-          className="absolute left-md top-20 z-10 p-1"
+          className="absolute left-4 top-20 z-10 p-1"
         >
-          <ChevronLeft size={28} color="#fff" />
+          <ChevronLeft size={28} color={color.white} />
         </Pressable>
         <ScrollView
-          contentContainerClassName="flex-grow justify-center px-lg"
+          contentContainerClassName="flex-grow justify-center px-6"
           keyboardShouldPersistTaps="handled"
         >
           {step === "email" ? (
-            <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">
+            <View className="gap-4">
+              <Text className="text-2xl font-bold text-white">
                 Entrar com e-mail
               </Text>
-              <Text className="text-body-md text-on-surface-variant">
+              <Text className="text-base font-normal text-gray-200">
                 Enviaremos um código de acesso para o seu e-mail.
               </Text>
               <Input
@@ -100,11 +101,11 @@ export default function EmailAuthScreen() {
               />
             </View>
           ) : (
-            <View className="gap-md">
-              <Text className="text-headline-mobile text-on-surface font-bold">
+            <View className="gap-4">
+              <Text className="text-2xl font-bold text-white">
                 Digite o código
               </Text>
-              <Text className="text-body-md text-on-surface-variant">
+              <Text className="text-base font-normal text-gray-200">
                 Enviamos um código de 6 dígitos para {email}.
               </Text>
               <Input
@@ -120,12 +121,12 @@ export default function EmailAuthScreen() {
                 loading={loading}
                 fullWidth
               />
-              <View className="flex-row justify-center gap-1 mt-1">
-                <Text className="text-body-md text-on-surface-variant">
+              <View className="mt-1 flex-row justify-center gap-1">
+                <Text className="text-base font-normal text-gray-200">
                   Não recebeu?
                 </Text>
                 <Pressable onPress={sendCode} disabled={loading}>
-                  <Text className="text-body-md text-secondary font-semibold">
+                  <Text className="text-base font-semibold text-purple-200">
                     Reenviar
                   </Text>
                 </Pressable>
@@ -134,7 +135,7 @@ export default function EmailAuthScreen() {
                 onPress={() => setStep("email")}
                 className="items-center"
               >
-                <Text className="text-body-md text-on-surface-variant">
+                <Text className="text-base font-normal text-gray-200">
                   Usar outro e-mail
                 </Text>
               </Pressable>

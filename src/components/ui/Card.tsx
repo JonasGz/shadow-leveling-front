@@ -1,4 +1,5 @@
 import { Pressable, PressableProps, View, ViewProps } from "react-native";
+import { cn } from "../../lib/cn";
 
 type Variant = "flat" | "default" | "raised";
 
@@ -21,13 +22,17 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  const base = `bg-surface-low border border-outline-variant rounded-md p-md ${variantStyles[variant]}`;
+  // className vem por último para vencer a base no merge.
+  const base = cn(
+    "rounded-2xl border border-white/7 bg-gray-600 p-4",
+    variantStyles[variant],
+  );
 
   if (onPress) {
     return (
       <Pressable
         onPress={onPress}
-        className={`${base} active:opacity-80 ${className}`}
+        className={cn(base, "active:opacity-80", className)}
       >
         {children}
       </Pressable>
@@ -35,7 +40,7 @@ export function Card({
   }
 
   return (
-    <View {...props} className={`${base} ${className}`}>
+    <View {...props} className={cn(base, className)}>
       {children}
     </View>
   );

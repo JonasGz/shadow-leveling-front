@@ -22,6 +22,8 @@ import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
 import { useScreenData } from "../../src/hooks/useScreenData";
+import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 // Overlapping member avatars for a group card. Shows up to 3 real avatars and a
 // "+N" bubble for the remaining members. Falls back to a plain purple circle
@@ -34,24 +36,30 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       {shown.map((url, i) => (
         <View
           key={i}
-          className={`w-6 h-6 rounded-full overflow-hidden border-[1.5px] border-surface-container bg-surface-high ${
-            i > 0 ? "-ml-2" : ""
-          }`}
+          className={cn(
+            "h-7 w-7 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500",
+            i > 0 && "-ml-2",
+          )}
         >
           <Image
             source={{ uri: url }}
-            style={{ width: "100%", height: "100%" }}
+            className="h-full w-full"
             resizeMode="cover"
           />
         </View>
       ))}
       {rest > 0 && (
         <View
-          className={`w-6 h-6 rounded-full border-[1.5px] border-surface-container bg-primary/25 items-center justify-center ${
-            shown.length > 0 ? "-ml-2" : ""
-          }`}
+          className={cn(
+            "h-7 w-7 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25",
+            shown.length > 0 && "-ml-2",
+          )}
         >
-          <Text className="text-[9px] font-bold text-secondary">+{rest}</Text>
+          {/* Sem teto o texto estoura o círculo: um grupo de 150 renderiza
+              "+147". +99 é o pior caso e cabe nos 28px. */}
+          <Text className="text-xs font-bold text-purple-200">
+            {rest > 99 ? "+99" : `+${rest}`}
+          </Text>
         </View>
       )}
     </View>
@@ -92,31 +100,31 @@ export default function GroupsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
-      <View className="flex-row justify-between items-center px-md h-16">
-        <Text className="text-title-xxl text-white font-bold">Grupos</Text>
+      <View className="h-16 flex-row items-center justify-between px-4">
+        <Text className="text-4xl font-bold text-white">Grupos</Text>
         <Pressable
           onPress={() => setCreating(true)}
-          className="w-14 h-14 items-center justify-center rounded-full border bg-surface-container border-card-border active:bg-primary"
+          className="h-14 w-14 items-center justify-center rounded-full border border-white/7 bg-gray-600 active:bg-purple-300"
         >
-          <Text className="text-primary text-3xl">＋</Text>
+          <Text className="text-3xl text-purple-300">＋</Text>
         </Pressable>
       </View>
 
       <ScrollView
-        className="flex-1 px-md"
-        contentContainerClassName="pb-[112px] pt-md"
+        className="flex-1 px-4"
+        contentContainerClassName="pb-[112px] pt-4"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={refresh}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
       >
         {loading ? (
-          <ActivityIndicator className="mt-xl" color="#c8a3ff" />
+          <ActivityIndicator className="mt-10" color={color["purple-100"]} />
         ) : groups.length === 0 ? (
           <EmptyState
             icon={Swords}
@@ -124,16 +132,16 @@ export default function GroupsScreen() {
             description="Crie um grupo no + ou entre pelo link de convite de um amigo."
           />
         ) : (
-          <View className="pb-xl">
-            <View className="gap-md">
+          <View className="pb-10">
+            <View className="gap-4">
               {groups.map((g) => (
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative bg-surface-container rounded-xl overflow-hidden pl-5 pr-md py-md flex-row items-center justify-between gap-3 active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-4 pl-5 pr-4 active:opacity-80"
                 >
                   <LinearGradient
-                    colors={["#B26CFF", "#8113D3"]}
+                    colors={[color["purple-200"], color["purple-300"]]}
                     style={{
                       position: "absolute",
                       left: 0,
@@ -143,12 +151,12 @@ export default function GroupsScreen() {
                     }}
                   />
                   <View className="flex-1">
-                    <Text className="text-title-md text-on-surface font-bold">
+                    <Text className="text-xl font-bold text-white">
                       {g.name}
                     </Text>
-                    <Text className="text-label-sm text-on-surface-variant mt-1">
+                    <Text className="mt-1 text-xs font-medium text-gray-200">
                       Código:{" "}
-                      <Text className="font-semibold text-on-surface">
+                      <Text className="font-semibold text-white">
                         {g.invite_code}
                       </Text>
                     </Text>
@@ -158,7 +166,7 @@ export default function GroupsScreen() {
                       avatars={g.member_avatars}
                       count={g.member_count}
                     />
-                    <ChevronRight size={18} color="#6C6971" />
+                    <ChevronRight size={18} color={color["gray-300"]} />
                   </View>
                 </Pressable>
               ))}
@@ -176,10 +184,10 @@ export default function GroupsScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 bg-black/70 items-center justify-center px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
-            <Text className="text-title-md text-on-surface font-bold">
+          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
+            <Text className="text-xl font-bold text-white">
               Criar novo grupo
             </Text>
             <Input
@@ -190,16 +198,16 @@ export default function GroupsScreen() {
               maxLength={100}
               autoFocus
             />
-            <View className="flex-row gap-md mt-sm">
+            <View className="mt-2 flex-row gap-4">
               <Pressable
                 onPress={() => {
                   setName("");
                   setCreating(false);
                 }}
                 disabled={busy}
-                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase">
+                <Text className="text-base font-semibold uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import ArrowRight from "lucide-react-native/icons/arrow-right";
 import { Badge } from "../../src/components/ui/Badge";
+import { color } from "../../src/theme/palette";
 
 const ATTRIBUTES = ["Força", "Resistência", "Foco"];
 
@@ -27,55 +28,53 @@ export default function LandingScreen() {
       <LinearGradient
         colors={["rgb(25, 3, 42)", "rgba(27, 24, 28, 0.868)", "#130023"]}
         locations={[0, 0.55, 1]}
+        // LinearGradient não tem cssInterop registrado: só aceita style.
         style={{ flex: 1 }}
       >
-        <SafeAreaView className="flex-1 px-lg justify-between">
-          <View className="items-center pt-xl">
-            <Text className="text-title-xl text-on-surface font-bold tracking-tight">
-              SHADOW{" "}
-              <Text className="font-light text-on-surface-variant">
-                Leveling
-              </Text>
+        <SafeAreaView className="flex-1 justify-between px-6">
+          <View className="items-center pt-10">
+            <Text className="text-3xl font-bold text-white">
+              SHADOW <Text className="font-light text-gray-200">Leveling</Text>
             </Text>
           </View>
 
-          <View className="pb-md">
-            <View className="flex-row justify-center gap-2 mb-4">
+          <View className="pb-4">
+            <View className="mb-4 flex-row justify-center gap-2">
               {ATTRIBUTES.map((attr) => (
                 <Badge key={attr} label={attr} tone="secondary" />
               ))}
             </View>
 
-            <Text className="text-display-xxl text-on-surface text-center tracking-tight">
+            <Text className="text-center text-5xl font-extrabold text-white">
               Desperte{"\n"}Sua Força
             </Text>
-            <Text className="text-body-lg text-on-surface-variant text-center mt-3">
+            <Text className="mt-3 text-center text-lg font-normal text-gray-200">
               Evolua seus atributos todos os dias.
             </Text>
 
             <Pressable
               onPress={goToLogin}
-              className="flex-row items-center justify-center gap-2 w-full h-16 mt-6 rounded-lg bg-primary active:opacity-80"
+              className="mt-6 h-16 w-full flex-row items-center justify-center gap-2 rounded-lg bg-purple-300 active:opacity-80"
               style={{
-                shadowColor: "#8113D3",
+                shadowColor: color["purple-300"],
                 shadowOpacity: 0.5,
                 shadowRadius: 20,
                 shadowOffset: { width: 0, height: 8 },
                 elevation: 8,
               }}
             >
-              <Text className="text-body-lg uppercase text-on-primary font-bold">
+              <Text className="text-lg font-bold uppercase text-gray-50">
                 Evoluir Agora
               </Text>
-              <ArrowRight size={18} color="#fff" />
+              <ArrowRight size={18} color={color.white} />
             </Pressable>
 
             <Pressable
               onPress={goToLogin}
-              className="items-center mt-3 p-2 active:opacity-60"
+              className="mt-3 items-center p-2 active:opacity-60"
             >
-              <Text className="text-body-md text-on-surface font-semibold">
-                Já tenho conta · <Text className="text-secondary">Entrar</Text>
+              <Text className="text-base font-semibold text-white">
+                Já tenho conta · <Text className="text-purple-200">Entrar</Text>
               </Text>
             </Pressable>
           </View>

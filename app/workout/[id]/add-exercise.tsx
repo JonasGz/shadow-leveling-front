@@ -22,12 +22,14 @@ import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import { useDebouncedSearch } from "../../../src/hooks/useDebouncedSearch";
 import type { Exercise, ExerciseType } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
+import { Card } from "../../../src/components/ui/Card";
 
 type Stage = "search" | "configure";
 
-// gap-sm entre as linhas; o FlashList recicla itens e não aceita `gap` no
+// gap-2 entre as linhas; o FlashList recicla itens e não aceita `gap` no
 // contentContainer, então o espaçamento vira separador.
-const ExerciseSeparator = () => <View className="h-sm" />;
+const ExerciseSeparator = () => <View className="h-2" />;
 
 // Componente de topo e memoizado: uma closure inline aqui seria recriada a
 // cada tecla digitada na busca, anulando a reciclagem do FlashList.
@@ -39,17 +41,17 @@ const ExerciseRow = memo(function ExerciseRow({
   onSelect: (exercise: Exercise) => void;
 }) {
   return (
-    <Pressable
+    <Card
       onPress={() => onSelect(exercise)}
-      className="bg-surface-low border border-card-border rounded-xl text-on-surface-variant px-md py-md flex-row items-center justify-between active:opacity-80"
+      className="flex-row items-center justify-between text-gray-200"
     >
       <View className="flex-1">
-        <Text className="text-body-lg font-semibold text-on-surface">
+        <Text className="text-lg font-semibold text-white">
           {exercise.name}
         </Text>
       </View>
-      <Text className="text-secondary text-title-lg">+</Text>
-    </Pressable>
+      <Text className="text-2xl font-bold text-purple-200">+</Text>
+    </Card>
   );
 });
 
@@ -180,9 +182,9 @@ export default function AddExerciseScreen() {
     !results.some((e) => e.name.toLowerCase() === query.trim().toLowerCase());
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
-      <View className="flex-row justify-between items-center px-md h-16">
+      <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() =>
             stage === "configure" ? setStage("search") : router.back()
@@ -190,9 +192,9 @@ export default function AddExerciseScreen() {
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
-        <Text className="text-title-lg text-white font-bold">
+        <Text className="text-2xl font-bold text-white">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
         </Text>
         {/* espaçador para manter o título centralizado */}
@@ -200,8 +202,8 @@ export default function AddExerciseScreen() {
       </View>
 
       {stage === "search" ? (
-        <View className="flex-1 px-md">
-          <View className="py-sm">
+        <View className="flex-1 px-4">
+          <View className="py-2">
             <SearchInput
               value={query}
               onChangeText={setQuery}
@@ -213,7 +215,7 @@ export default function AddExerciseScreen() {
 
           {searching && results.length === 0 ? (
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color="#c8a3ff" />
+              <ActivityIndicator size="large" color={color["purple-100"]} />
             </View>
           ) : (
             <FlashList
@@ -222,7 +224,7 @@ export default function AddExerciseScreen() {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
               // FlashList não é registrado no NativeWind, então os tokens
-              // (pt-5 / pb-xl / gap-sm) vêm resolvidos de tailwind.config.
+              // (pt-5 / pb-10 / gap-2) vêm resolvidos de tailwind.config.
               contentContainerStyle={{ paddingTop: 20, paddingBottom: 40 }}
               ItemSeparatorComponent={ExerciseSeparator}
               onEndReached={loadMore}
@@ -232,12 +234,15 @@ export default function AddExerciseScreen() {
               )}
               ListFooterComponent={
                 loadingMore ? (
-                  <ActivityIndicator color="#c8a3ff" className="py-md" />
+                  <ActivityIndicator
+                    color={color["purple-100"]}
+                    className="py-4"
+                  />
                 ) : null
               }
               ListEmptyComponent={
                 !searching ? (
-                  <View className="mt-xl">
+                  <View className="mt-10">
                     <EmptyState
                       icon={Search}
                       title="Nenhum exercício encontrado"
@@ -254,11 +259,11 @@ export default function AddExerciseScreen() {
           )}
 
           {showCreateOption && (
-            <View className="py-sm gap-sm pb-10">
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant text-center">
+            <View className="gap-2 py-2 pb-10">
+              <Text className="text-center text-xs font-medium uppercase text-gray-200">
                 {`Criar "${query.trim()}" como:`}
               </Text>
-              <View className="flex-row gap-sm">
+              <View className="flex-row gap-2">
                 <View className="flex-1">
                   <Button
                     label="Repetições"
@@ -286,16 +291,16 @@ export default function AddExerciseScreen() {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="flex-1 justify-start"
         >
-          <View className="flex-1 px-md gap-md">
-            <View className="bg-surface-low border border-card-border rounded-2xl p-md px-lg">
-              <Text className="text-title-md text-on-surface font-semibold">
+          <View className="flex-1 gap-4 px-4">
+            <Card>
+              <Text className="text-xl font-semibold text-white">
                 {selected?.name}
               </Text>
-              <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant mt-1">
+              <Text className="mt-1 text-xs font-medium uppercase text-gray-200">
                 {isTimeBased ? "Baseado em tempo" : "Baseado em repetições"} ·{" "}
                 {selected?.unit}
               </Text>
-            </View>
+            </Card>
 
             <Input
               label="Séries"
@@ -318,7 +323,7 @@ export default function AddExerciseScreen() {
                 placeholder="60"
               />
             ) : (
-              <View className="flex-row gap-md">
+              <View className="flex-row gap-4">
                 <View className="flex-1">
                   <Input
                     label="Reps mín."
@@ -355,7 +360,7 @@ export default function AddExerciseScreen() {
             />
           </View>
 
-          <View className="px-md pb-10">
+          <View className="px-4 pb-10">
             <Button
               label="Adicionar ao treino"
               onPress={handleAdd}

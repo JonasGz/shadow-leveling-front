@@ -29,10 +29,11 @@ import { useToast } from "../../src/components/ui/Toast";
 import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
 import { formatDateSlash } from "../../src/lib/date";
 import { pickImage } from "../../src/lib/pickImage";
-import { TRACK } from "../../src/lib/ui";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import type { User, UserLevel } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
+import { Card } from "../../src/components/ui/Card";
 
 export default function ProfileScreen() {
   const { showToast } = useToast();
@@ -168,7 +169,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       <ScrollView
         contentContainerClassName="px-5 pt-2 pb-[112px]"
         showsVerticalScrollIndicator={false}
@@ -176,21 +177,19 @@ export default function ProfileScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
       >
         {/* Header */}
-        <Text className="text-title-xxl font-bold text-on-surface mt-2">
-          Perfil
-        </Text>
+        <Text className="mt-2 text-4xl font-bold text-white">Perfil</Text>
 
         {loading ? (
-          <View className="items-center justify-center py-xl">
-            <ActivityIndicator size="large" color="#c8a3ff" />
+          <View className="items-center justify-center py-10">
+            <ActivityIndicator size="large" color={color["purple-100"]} />
           </View>
         ) : error ? (
-          <View className="items-center justify-center py-xl gap-md">
+          <View className="items-center justify-center gap-4 py-10">
             <EmptyState
               icon={TriangleAlert}
               title="Não foi possível carregar o perfil"
@@ -208,19 +207,19 @@ export default function ProfileScreen() {
         ) : (
           <>
             {/* Avatar + identidade */}
-            <View className="items-center mt-5">
+            <View className="mt-5 items-center">
               <View className="relative">
                 <View
-                  className="w-[88px] h-[88px] rounded-full p-[3px]"
+                  className="h-[88px] w-[88px] rounded-full p-[3px]"
                   style={{
-                    shadowColor: "#8113D3",
+                    shadowColor: color["purple-300"],
                     shadowOpacity: 0.45,
                     shadowRadius: 22,
                     shadowOffset: { width: 0, height: 0 },
                   }}
                 >
                   <LinearGradient
-                    colors={["#8113D3", "#6E00B3"]}
+                    colors={[color["purple-300"], color["purple-400"]]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -229,15 +228,15 @@ export default function ProfileScreen() {
                       borderRadius: 9999,
                     }}
                   />
-                  <View className="w-full h-full rounded-full bg-surface-high items-center justify-center overflow-hidden">
+                  <View className="h-full w-full items-center justify-center overflow-hidden rounded-full bg-gray-500">
                     {user?.avatar_url ? (
                       <Image
                         source={{ uri: user.avatar_url }}
-                        style={{ width: "100%", height: "100%" }}
+                        className="h-full w-full"
                         resizeMode="cover"
                       />
                     ) : (
-                      <Text className="text-title-xxl font-extrabold text-on-surface">
+                      <Text className="text-4xl font-extrabold text-white">
                         {initial}
                       </Text>
                     )}
@@ -247,36 +246,38 @@ export default function ProfileScreen() {
                 <Pressable
                   onPress={changeAvatar}
                   disabled={uploadingAvatar}
-                  className="absolute -right-0.5 -bottom-0.5 w-[30px] h-[30px] rounded-full bg-primary border-[3px] border-background items-center justify-center active:opacity-80"
+                  className="absolute -bottom-0.5 -right-0.5 h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-gray-700 bg-purple-300 active:opacity-80"
                 >
                   {uploadingAvatar ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={color.white} />
                   ) : (
-                    <Pencil size={14} color="#fff" strokeWidth={2} />
+                    <Pencil size={14} color={color.white} strokeWidth={2} />
                   )}
                 </Pressable>
               </View>
 
               <Pressable
                 onPress={openNicknameEditor}
-                className="flex-row items-center gap-2 mt-3.5 active:opacity-70"
+                className="mt-4 flex-row items-center gap-2 active:opacity-70"
               >
-                <Text className="text-title-lg font-bold text-on-surface capitalize">
+                {/* shrink + 1 linha: sem isso um nome longo empurra o lápis
+                    para fora da tela em 320px, porque Text não encolhe. */}
+                <Text
+                  numberOfLines={1}
+                  className="shrink text-2xl font-bold capitalize text-white"
+                >
                   {displayName}
                 </Text>
-                <Pencil size={14} color="#B26CFF" strokeWidth={2} />
+                <Pencil size={14} color={color["purple-200"]} strokeWidth={2} />
               </Pressable>
 
-              <Text className="text-body-md text-on-surface-variant mt-1.5">
+              <Text className="mt-2 text-base font-normal text-gray-200">
                 {email}
               </Text>
 
               {user?.created_at ? (
-                <View className="mt-3 px-3.5 py-1.5 rounded-full border border-white/10">
-                  <Text
-                    className="text-label-sm font-semibold uppercase text-on-surface-variant"
-                    style={TRACK}
-                  >
+                <View className="mt-3 rounded-full border border-white/12 px-4 py-2">
+                  <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                     Caçador desde {formatDateSlash(user.created_at)}
                   </Text>
                 </View>
@@ -286,48 +287,39 @@ export default function ProfileScreen() {
             {level ? (
               <>
                 {/* Rank / Nível */}
-                <View className="flex-row gap-3 mt-5">
-                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
-                      style={TRACK}
-                    >
+                <View className="mt-5 flex-row gap-3">
+                  <Card className="flex-1 items-center">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Rank
                     </Text>
-                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                    <Text className="mt-3 text-3xl font-extrabold text-purple-200">
                       {level.rank}
                     </Text>
-                  </View>
-                  <View className="flex-1 bg-surface-low border border-card-border rounded-2xl p-4 items-center">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
-                      style={TRACK}
-                    >
+                  </Card>
+                  <Card className="flex-1 items-center">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Nível
                     </Text>
-                    <Text className="text-title-xl font-extrabold text-secondary mt-3">
+                    <Text className="mt-3 text-3xl font-extrabold text-purple-200">
                       {level.level}
                     </Text>
-                  </View>
+                  </Card>
                 </View>
 
                 {/* Progresso do nível */}
-                <View className="bg-surface-low border border-card-border rounded-2xl p-6 mt-3">
+                <Card className="mt-3">
                   <View className="flex-row items-center justify-between">
-                    <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
-                      style={TRACK}
-                    >
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
                       Progresso do nível
                     </Text>
-                    <Text className="text-label-md font-bold text-secondary">
+                    <Text className="text-base font-bold text-purple-200">
                       {level.xp_into_level} / {level.xp_for_next_level} XP
                     </Text>
                   </View>
 
-                  <View className="h-3 w-full bg-surface-high rounded-full overflow-hidden mt-3">
+                  <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-500">
                     <LinearGradient
-                      colors={["#6E00B3", "#8113D3"]}
+                      colors={[color["purple-400"], color["purple-300"]]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={{
@@ -338,67 +330,84 @@ export default function ProfileScreen() {
                     />
                   </View>
 
-                  <View className="flex-row items-center justify-between mt-3">
-                    <Text className="text-label-md text-outline-variant">
+                  <View className="mt-3 flex-row items-center justify-between">
+                    <Text className="text-base font-semibold text-gray-300">
                       {level.total_xp.toLocaleString("pt-BR")} XP total
                     </Text>
-                    <View className="flex-row items-center gap-1.5">
-                      <Flame size={14} color="#F59E0B" fill="#F59E0B" />
-                      <Text className="text-label-md font-bold text-warning">
+                    <View className="flex-row items-center gap-2">
+                      <Flame
+                        size={14}
+                        color={color.warning}
+                        fill={color.warning}
+                      />
+                      <Text className="text-base font-bold text-warning">
                         {level.current_streak}{" "}
                         {level.current_streak === 1 ? "dia" : "dias"} de streak
                       </Text>
                     </View>
                   </View>
-                </View>
+                </Card>
               </>
             ) : null}
 
             {/* Menu */}
-            <View className="bg-surface-low border border-card-border rounded-xl mt-3 overflow-hidden">
+            <Card className="mt-3 overflow-hidden p-0">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
               >
-                <Target size={18} color="#B26CFF" strokeWidth={1.9} />
-                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                <Target
+                  size={18}
+                  color={color["purple-200"]}
+                  strokeWidth={1.9}
+                />
+                <Text className="flex-1 text-base font-semibold text-white">
                   Meta semanal
                 </Text>
                 {user?.weekly_goal_days != null && (
-                  <Text className="text-label-md text-on-surface-variant">
+                  <Text className="text-base font-semibold text-gray-200">
                     {user.weekly_goal_days}x
                   </Text>
                 )}
-                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+                <ChevronRight
+                  size={17}
+                  color={color["gray-300"]}
+                  strokeWidth={2}
+                />
               </Pressable>
-              <View className="h-px bg-outline-variant/40" />
+              <View className="h-px bg-gray-300/40" />
               <Pressable
                 onPress={() => showToast("Conquistas — em breve.", "info")}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
               >
-                <Trophy size={18} color="#B26CFF" strokeWidth={1.9} />
-                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                <Trophy
+                  size={18}
+                  color={color["purple-200"]}
+                  strokeWidth={1.9}
+                />
+                <Text className="flex-1 text-base font-semibold text-white">
                   Conquistas
                 </Text>
-                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+                <ChevronRight
+                  size={17}
+                  color={color["gray-300"]}
+                  strokeWidth={2}
+                />
               </Pressable>
-            </View>
+            </Card>
 
             {/* Sair */}
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
-              className="w-full h-[50px] mt-4 rounded-xl border border-error/40 bg-error/10 flex-row items-center justify-center gap-2.5 active:opacity-80"
+              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-3 rounded-lg border border-error/40 bg-error/10 active:opacity-80"
             >
               {loggingOut ? (
-                <ActivityIndicator size="small" color="#EF4444" />
+                <ActivityIndicator size="small" color={color.error} />
               ) : (
                 <>
-                  <LogOut size={18} color="#EF4444" strokeWidth={2} />
-                  <Text
-                    className="text-label-md font-semibold text-error"
-                    style={TRACK}
-                  >
+                  <LogOut size={18} color={color.error} strokeWidth={2} />
+                  <Text className="text-base font-semibold tracking-wider text-error">
                     Sair
                   </Text>
                 </>
@@ -417,33 +426,31 @@ export default function ProfileScreen() {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 bg-black/70 items-center justify-center px-lg"
+          className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full bg-surface-container border border-outline-variant rounded-xl p-lg gap-md">
-            <Text className="text-title-md text-on-surface font-bold">
-              Editar nick
-            </Text>
-            <Text className="text-label-sm text-on-surface-variant">
+          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
+            <Text className="text-xl font-bold text-white">Editar nick</Text>
+            <Text className="text-xs font-medium text-gray-200">
               Como você quer ser chamado? (2 a 30 caracteres)
             </Text>
             <TextInput
               value={nicknameInput}
               onChangeText={setNicknameInput}
               placeholder={generatedName}
-              placeholderTextColor="#958ea0"
+              placeholderTextColor={color["gray-200"]}
               maxLength={30}
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="bg-surface-low border border-[#FFFFFF1F] rounded-xl px-md py-3 text-on-surface text-body-lg"
+              className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-lg font-normal text-white"
             />
-            <View className="flex-row gap-md mt-sm">
+            <View className="mt-2 flex-row gap-4">
               <Pressable
                 onPress={() => setEditing(false)}
                 disabled={savingNick}
-                className="flex-1 rounded-lg border border-outline-variant py-3 items-center active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-on-surface-variant text-label-md uppercase">
+                <Text className="text-base font-semibold uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

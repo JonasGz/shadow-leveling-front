@@ -5,6 +5,8 @@ import TrendingUp from "lucide-react-native/icons/trending-up";
 import { SetRow, type LocalSet, type SetField } from "./SetRow";
 import type { Hint } from "../../features/progression";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
+import { color } from "../../theme/palette";
+import { Card } from "../ui/Card";
 
 interface ExercisePageProps {
   workoutExercise: WorkoutExercise;
@@ -54,46 +56,46 @@ export const ExercisePage = memo(function ExercisePage({
   return (
     <ScrollView
       style={{ width: pageWidth }}
-      contentContainerClassName="px-md py-sm pb-6"
+      contentContainerClassName="px-4 py-2 pb-6"
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="bg-surface-low border border-card-border rounded-2xl overflow-hidden">
-        <View className="p-lg bg-primary/20">
+      <Card className="overflow-hidden p-0">
+        <View className="bg-purple-300/20 p-6">
           {swapped && (
-            <View className="flex-row items-center gap-1.5 mb-2 bg-secondary/20 border border-secondary/40 rounded-full px-2.5 py-1 self-start">
-              <RotateCcw size={11} color="#B26CFF" />
-              <Text className="text-label-sm text-secondary uppercase tracking-widest font-bold">
+            <View className="mb-2 flex-row items-center gap-2 self-start rounded-full border border-purple-200/40 bg-purple-200/20 px-3 py-1">
+              <RotateCcw size={11} color={color["purple-200"]} />
+              <Text className="text-xs font-bold uppercase text-purple-200">
                 Substituído p/ hoje
               </Text>
             </View>
           )}
           <Text
-            className="text-title-xl text-white font-extrabold"
+            className="text-3xl font-extrabold text-white"
             numberOfLines={2}
           >
             {effective.name}
           </Text>
           {swapped && (
-            <Text className="text-label-sm text-white/50 mt-1 line-through">
+            <Text className="mt-1 text-xs font-medium text-white/50 line-through">
               {we.exercise.name}
             </Text>
           )}
-          <View className="flex-row items-center gap-2 mt-2.5 flex-wrap">
-            <View className="bg-black/30 px-2.5 py-1 rounded-full">
-              <Text className="text-[#E5D6FF] text-label-sm uppercase tracking-widest font-bold">
+          <View className="mt-3 flex-row flex-wrap items-center gap-2">
+            <View className="rounded-full bg-black/30 px-3 py-1">
+              <Text className="text-xs font-bold uppercase text-purple-50">
                 {timed ? "Tempo" : "Força"}
               </Text>
             </View>
-            <Text className="text-on-surface-variant text-label-sm font-semibold">
+            <Text className="text-xs font-semibold text-gray-200">
               {we.sets} séries
               {repsRangeLabel(we, timed)}
             </Text>
             <Pressable
               onPress={onRequestSwap}
-              className="bg-surface-lowest/60 border border-[#FFFFFF29] px-2.5 py-1 rounded-full active:opacity-70"
+              className="rounded-full border border-white/12 bg-gray-700/60 px-3 py-1 active:opacity-70"
             >
-              <Text className="text-white/90 text-label-sm uppercase tracking-widest font-bold">
+              <Text className="text-xs font-bold uppercase text-white/90">
                 Trocar (máquina ocupada)
               </Text>
             </Pressable>
@@ -103,28 +105,28 @@ export const ExercisePage = memo(function ExercisePage({
         {/* Dica de progressão (Diferencial 2): meta discreta no topo do
             exercício, baseada na última sessão. */}
         {hint && (
-          <View className="flex-row items-center gap-2 px-lg pt-3 pb-1">
+          <View className="flex-row items-center gap-2 px-6 pb-1 pt-3">
             <TrendingUp size={15} color="#5CE1E6" />
-            <Text className="flex-1 text-label-md text-info font-semibold">
+            <Text className="flex-1 text-base font-semibold text-info">
               {hint.text}
             </Text>
           </View>
         )}
 
-        <View className="p-3.5">
+        <View className="p-4">
           <View className="flex-row items-center gap-2 px-2 pb-3">
-            <Text className="w-10 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="w-10 text-center text-xs font-medium uppercase text-gray-300">
               Série
             </Text>
-            <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="flex-1 text-center text-xs font-medium uppercase text-gray-300">
               {timed ? "Duração (s)" : "Peso (kg)"}
             </Text>
             {!timed && (
-              <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+              <Text className="flex-1 text-center text-xs font-medium uppercase text-gray-300">
                 Reps
               </Text>
             )}
-            <Text className="w-9 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="w-9 text-center text-xs font-medium uppercase text-gray-300">
               ✓
             </Text>
           </View>
@@ -143,7 +145,7 @@ export const ExercisePage = memo(function ExercisePage({
             />
           ))}
         </View>
-      </View>
+      </Card>
     </ScrollView>
   );
 });
