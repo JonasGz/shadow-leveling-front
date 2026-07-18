@@ -24,10 +24,10 @@ const ToastContext = createContext<ToastContextValue>({ showToast: () => {} });
 // PULSE semantic colours drive the left border + tint. Container stays on the
 // neutral surface so the toast reads as a system message, not a banner.
 const typeStyles: Record<ToastType, string> = {
-  success: "bg-surface-high border-l-4 border-success",
-  error: "bg-surface-high border-l-4 border-error",
-  warning: "bg-surface-high border-l-4 border-warning",
-  info: "bg-surface-high border-l-4 border-info",
+  success: "bg-gray-500 border-l-4 border-success",
+  error: "bg-gray-500 border-l-4 border-error",
+  warning: "bg-gray-500 border-l-4 border-warning",
+  info: "bg-gray-500 border-l-4 border-info",
 };
 
 let counter = 0;
@@ -60,7 +60,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={`rounded-md px-4 py-3 ${typeStyles[t.type]}`}
           >
-            <Text className="text-body-md text-on-surface">{t.message}</Text>
+            <Text className="text-body-md text-white">{t.message}</Text>
           </View>
         ))}
       </View>

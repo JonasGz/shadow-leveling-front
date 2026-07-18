@@ -13,6 +13,7 @@ import Users from "lucide-react-native/icons/users";
 import History from "lucide-react-native/icons/history";
 import UserPen from "lucide-react-native/icons/user-pen";
 import Dumbbell from "lucide-react-native/icons/dumbbell";
+import { color } from "../../src/theme/palette";
 
 const TABS = [
   { name: "index", title: "Home", Icon: Home },
@@ -82,11 +83,11 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View
             style={{
-              backgroundColor: "#8113D3",
+              backgroundColor: color["purple-300"],
               borderRadius: 38,
               paddingHorizontal: 38,
               paddingVertical: 36,
-              shadowColor: "#8113D3",
+              shadowColor: color["purple-300"],
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.6,
               shadowRadius: 8,
@@ -118,7 +119,10 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
               justifyContent: "center",
             }}
           >
-            <Icon size={26} color={colorIndex === i ? "#fff" : "#958ea0"} />
+            <Icon
+              size={26}
+              color={colorIndex === i ? color.white : color["gray-200"]}
+            />
           </Pressable>
         );
       })}

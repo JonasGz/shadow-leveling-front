@@ -21,7 +21,7 @@ export function Card({
   children,
   ...props
 }: CardProps) {
-  const base = `bg-surface-low border border-outline-variant rounded-md p-md ${variantStyles[variant]}`;
+  const base = `bg-gray-600 border border-gray-300 rounded-md p-md ${variantStyles[variant]}`;
 
   if (onPress) {
     return (

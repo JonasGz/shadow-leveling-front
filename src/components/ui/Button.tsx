@@ -5,6 +5,7 @@ import {
   PressableProps,
 } from "react-native";
 import type { LucideIcon } from "lucide-react-native";
+import { color } from "../../theme/palette";
 
 type Variant = "default" | "tonal" | "ghost" | "destructive";
 type Size = "sm" | "md";
@@ -33,28 +34,28 @@ const variantStyles: Record<
   { container: string; text: string; icon: string; spinner: string }
 > = {
   default: {
-    container: "bg-primary active:opacity-80",
-    text: "text-on-primary font-semibold",
-    icon: "#FFF",
-    spinner: "#DCDCDD", // neutral-50 (on-primary)
+    container: "bg-purple-300 active:opacity-80",
+    text: "text-gray-50 font-semibold",
+    icon: color.white,
+    spinner: color["gray-50"], // neutral-50 (on-primary)
   },
   tonal: {
-    container: "bg-[#8113D31F] active:opacity-80",
-    text: "text-[#CAA4FF] font-semibold",
-    icon: "#CAA4FF", // purple-100
-    spinner: "#CAA4FF",
+    container: "bg-purple-300/12 active:opacity-80",
+    text: "text-purple-100 font-semibold",
+    icon: color["purple-100"], // purple-100
+    spinner: color["purple-100"],
   },
   ghost: {
     container: "active:opacity-60",
-    text: "text-on-surface-variant font-semibold",
-    icon: "#908D94",
-    spinner: "#908D94", // neutral-200
+    text: "text-gray-200 font-semibold",
+    icon: color["gray-200"],
+    spinner: color["gray-200"], // neutral-200
   },
   destructive: {
     container: "bg-error active:opacity-80",
-    text: "text-on-error font-semibold",
-    icon: "#DCDCDD",
-    spinner: "#DCDCDD", // neutral-50 (on-error)
+    text: "text-gray-50 font-semibold",
+    icon: color["gray-50"],
+    spinner: color["gray-50"], // neutral-50 (on-error)
   },
 };
 

@@ -24,6 +24,7 @@ import { StartWorkoutButton } from "../../src/components/ui/StartWorkoutButton";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import { DAY_SHORT, dayOfWeekFromDate } from "../../src/lib/date";
 import type { DayOfWeek, Workout } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
 
 function exerciseCountLabel(w: Workout) {
   const n = w.exercises?.length ?? 0;
@@ -41,7 +42,7 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
       style={{
         borderRadius: 20, // rounded-xl
         borderLeftWidth: 4,
-        borderLeftColor: "#8113D3", // secondary
+        borderLeftColor: color["purple-300"], // secondary
         overflow: "hidden",
         borderWidth: 1,
         borderColor:
@@ -51,28 +52,28 @@ function TodayWorkoutCard({ workout }: { workout: Workout }) {
       <View className="gap-lg p-md">
         <Pressable onPress={() => router.push(`/workout/${workout.id}`)}>
           <View className="mb-1 flex-row items-start justify-between">
-            <Text className="flex-1 pr-2 text-headline-mobile font-bold text-on-surface">
+            <Text className="flex-1 pr-2 text-headline-mobile font-bold text-white">
               {workout.name}
             </Text>
-            <Text className="text-label-sm uppercase tracking-widest text-secondary">
+            <Text className="text-label-sm uppercase tracking-widest text-purple-200">
               {workout.done_today ? "Feito" : "Ativo"}
             </Text>
           </View>
           {workout.description ? (
-            <Text className="mb-md text-label-md text-on-surface-variant">
+            <Text className="mb-md text-label-md text-gray-200">
               {workout.description}
             </Text>
           ) : null}
           <View className="flex-row gap-xl">
             <View className="flex-row items-center gap-1">
-              <Dumbbell size={16} color="#6C6971" />
-              <Text className="text-label-sm text-on-surface-variant">
+              <Dumbbell size={16} color={color["gray-300"]} />
+              <Text className="text-label-sm text-gray-200">
                 {exerciseCountLabel(workout)}
               </Text>
             </View>
             <View className="flex-row items-center gap-1">
-              <CalendarRange size={16} color="#6C6971" />
-              <Text className="text-label-sm text-on-surface-variant">
+              <CalendarRange size={16} color={color["gray-300"]} />
+              <Text className="text-label-sm text-gray-200">
                 {workout.days_of_week.length}x / sem
               </Text>
             </View>
@@ -99,16 +100,16 @@ function LibraryWorkoutCard({
   return (
     <Pressable
       onPress={() => router.push(`/workout/${workout.id}`)}
-      className={`rounded-xl border border-card-border bg-surface-container p-md active:bg-surface-high ${
+      className={`rounded-xl border border-white/7 bg-gray-600 p-md active:bg-gray-500 ${
         workout.active ? "" : "opacity-60"
       }`}
     >
       <View className="mb-md flex-row items-start justify-between">
         <View className="flex-1 pr-2">
-          <Text className="text-title-lg font-bold text-on-surface">
+          <Text className="text-title-lg font-bold text-white">
             {workout.name}
           </Text>
-          <Text className="mt-1 ps-5 text-label-sm text-on-surface-variant">
+          <Text className="mt-1 ps-5 text-label-sm text-gray-200">
             {daysLabel || "Sem dias definidos"}
           </Text>
         </View>
@@ -121,20 +122,20 @@ function LibraryWorkoutCard({
         </Pressable>
       </View>
 
-      <View className="mb-md flex-row items-center justify-between rounded-lg bg-surface-lowest p-md">
+      <View className="mb-md flex-row items-center justify-between rounded-lg bg-gray-700 p-md">
         <View>
-          <Text className="text-label-sm uppercase tracking-widest text-outline">
+          <Text className="text-label-sm uppercase tracking-widest text-gray-400">
             Exercícios
           </Text>
-          <Text className="text-center text-title-lg font-semibold text-on-surface">
+          <Text className="text-center text-title-lg font-semibold text-white">
             {count}
           </Text>
         </View>
         <View className="items-end">
-          <Text className="text-label-sm uppercase tracking-widest text-outline">
+          <Text className="text-label-sm uppercase tracking-widest text-gray-400">
             Frequência
           </Text>
-          <Text className="text-center text-title-lg font-semibold text-on-surface">
+          <Text className="text-center text-title-lg font-semibold text-white">
             {workout.days_of_week.length}x / sem
           </Text>
         </View>
@@ -142,15 +143,15 @@ function LibraryWorkoutCard({
 
       <View className="flex-row flex-wrap gap-sm">
         {workout.done_today ? (
-          <View className="rounded bg-primary/15 px-2 py-1">
-            <Text className="text-label-sm uppercase tracking-widest text-primary">
+          <View className="rounded bg-purple-300/15 px-2 py-1">
+            <Text className="text-label-sm uppercase tracking-widest text-purple-300">
               Feito hoje
             </Text>
           </View>
         ) : null}
         {!workout.active ? (
-          <View className="bg-surface-variant rounded px-2 py-1">
-            <Text className="text-label-sm uppercase tracking-widest text-on-surface-variant">
+          <View className="rounded px-2 py-1">
+            <Text className="text-label-sm uppercase tracking-widest text-gray-200">
               Inativo
             </Text>
           </View>
@@ -231,7 +232,7 @@ export default function WorkoutsScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
       <View className="h-16 flex-row items-center justify-between px-md">
         <View className="flex-row items-center gap-3">
@@ -241,15 +242,15 @@ export default function WorkoutsScreen() {
         </View>
         <Pressable
           onPress={() => router.push("/workout/create")}
-          className="h-14 w-14 items-center justify-center rounded-full border border-card-border bg-surface-container active:bg-primary"
+          className="h-14 w-14 items-center justify-center rounded-full border border-white/7 bg-gray-600 active:bg-purple-300"
         >
-          <Text className="text-3xl text-primary">＋</Text>
+          <Text className="text-3xl text-purple-300">＋</Text>
         </Pressable>
       </View>
 
       {loading && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error && workouts.length === 0 ? (
         <View className="flex-1 items-center justify-center gap-md px-lg">
@@ -268,7 +269,7 @@ export default function WorkoutsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#c8a3ff"
+              tintColor={color["purple-100"]}
             />
           }
         >
@@ -283,10 +284,8 @@ export default function WorkoutsScreen() {
           {todayWorkouts.length > 0 && (
             <View className="gap-md">
               <View className="flex-row items-center justify-between">
-                <Text className="text-title-md font-bold text-on-surface">
-                  Hoje
-                </Text>
-                <View className="h-2 w-2 rounded-full bg-secondary" />
+                <Text className="text-title-md font-bold text-white">Hoje</Text>
+                <View className="h-2 w-2 rounded-full bg-purple-200" />
               </View>
               {todayWorkouts.map((w) => (
                 <TodayWorkoutCard key={w.id} workout={w} />
@@ -296,7 +295,7 @@ export default function WorkoutsScreen() {
 
           {/* Sua Biblioteca */}
           <View className="flex items-center justify-between">
-            <Text className="text-title-md font-bold text-on-surface">
+            <Text className="text-title-md font-bold text-white">
               Outros treinos
             </Text>
           </View>
@@ -328,9 +327,7 @@ export default function WorkoutsScreen() {
                   icon={Plus}
                   onPress={() => router.push("/workout/create")}
                 />
-                <Text className="text-label-md text-on-surface-variant">
-                  Novo treino
-                </Text>
+                <Text className="text-label-md text-gray-200">Novo treino</Text>
               </View>
             )}
           </View>

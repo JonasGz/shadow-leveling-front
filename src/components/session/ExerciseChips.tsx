@@ -2,6 +2,7 @@ import { View, Text, Pressable, ScrollView } from "react-native";
 import Check from "lucide-react-native/icons/check";
 import type { LocalSet } from "./SetRow";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
+import { color } from "../../theme/palette";
 
 interface ExerciseChipsProps {
   exercises: WorkoutExercise[];
@@ -38,29 +39,33 @@ export function ExerciseChips({
             onPress={() => onSelect(i)}
             className={`h-24 w-36 justify-between rounded-xl border px-3 py-3 active:opacity-70 ${
               allDone
-                ? "border-secondary/60 bg-secondary/15"
+                ? "border-purple-200/60 bg-purple-200/15"
                 : active
-                  ? "border-primary/60 bg-primary/20"
-                  : "border-[#FFFFFF29] bg-surface-low"
+                  ? "border-purple-300/60 bg-purple-300/20"
+                  : "border-white/12 bg-gray-600"
             }`}
           >
             <View className="flex-row items-center justify-between">
               <Text
                 className={`text-xs font-bold ${
-                  active ? "text-secondary" : "text-outline"
+                  active ? "text-purple-200" : "text-gray-400"
                 }`}
               >
                 {i + 1}
               </Text>
               {allDone && (
-                <View className="h-5 w-5 items-center justify-center rounded-full bg-secondary/25">
-                  <Check size={13} color="#B26CFF" strokeWidth={3} />
+                <View className="h-5 w-5 items-center justify-center rounded-full bg-purple-200/25">
+                  <Check
+                    size={13}
+                    color={color["purple-200"]}
+                    strokeWidth={3}
+                  />
                 </View>
               )}
             </View>
             <Text
               className={`text-label-md font-semibold ${
-                active ? "text-on-surface" : "text-on-surface-variant"
+                active ? "text-white" : "text-gray-200"
               }`}
               numberOfLines={3}
             >

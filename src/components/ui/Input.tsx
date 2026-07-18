@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, TextInputProps, Pressable } from "react-native";
+import { color } from "../../theme/palette";
 
 type LabelSize = "sm" | "md" | "lg";
 
@@ -37,7 +38,7 @@ export function Input({
   return (
     <View className="gap-1.5">
       <Text
-        className={`${labelSizes[labelSize]} uppercase tracking-widest text-on-surface-variant ${
+        className={`${labelSizes[labelSize]} uppercase tracking-widest text-gray-200 ${
           centeredLabel ? "text-center" : ""
         }`}
       >
@@ -60,7 +61,7 @@ export function Input({
           }
           autoComplete={secureTextEntry ? "off" : props.autoComplete}
           passwordRules=""
-          placeholderTextColor="#49474D" // neutral-400
+          placeholderTextColor={color["gray-400"]} // neutral-400
           style={[
             // O text-body-md traz lineHeight 24 para uma fonte de 16 — no Android
             // essa sobra vai toda para baixo do texto. lineHeight = fontSize
@@ -68,14 +69,14 @@ export function Input({
             { fontSize: 18, lineHeight: 20, includeFontPadding: false },
             focused && !error ? FOCUS_RING : null,
           ]}
-          className={`w-full rounded-xl border bg-surface-low px-5 py-5 text-body-md text-on-surface ${error ? "border-error" : focused ? "border-primary" : "border-[#FFFFFF1F]"} `}
+          className={`w-full rounded-xl border bg-gray-600 px-5 py-5 text-body-md text-white ${error ? "border-error" : focused ? "border-purple-300" : "border-white/12"} `}
         />
         {secureToggle && (
           <Pressable
             onPress={() => setHidden((h) => !h)}
             className="absolute bottom-0 right-4 top-0 justify-center"
           >
-            <Text className="text-label-sm text-on-surface-variant">
+            <Text className="text-label-sm text-gray-200">
               {hidden ? "MOSTRAR" : "OCULTAR"}
             </Text>
           </Pressable>

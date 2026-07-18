@@ -19,12 +19,12 @@ interface BadgeProps {
 
 const toneStyles: Record<Tone, { container: string; text: string }> = {
   primary: {
-    container: "bg-primary/15 border border-primary/35",
-    text: "text-primary",
+    container: "bg-purple-300/15 border border-purple-300/35",
+    text: "text-purple-300",
   },
   secondary: {
-    container: "bg-secondary/15 border border-secondary/35",
-    text: "text-secondary",
+    container: "bg-purple-200/15 border border-purple-200/35",
+    text: "text-purple-200",
   },
   success: {
     container: "bg-success/15 border border-success/35",
@@ -40,8 +40,8 @@ const toneStyles: Record<Tone, { container: string; text: string }> = {
   },
   info: { container: "bg-info/15 border border-info/35", text: "text-info" },
   neutral: {
-    container: "bg-surface-high border border-outline/40",
-    text: "text-on-surface-variant",
+    container: "bg-gray-500 border border-gray-400/40",
+    text: "text-gray-200",
   },
 };
 

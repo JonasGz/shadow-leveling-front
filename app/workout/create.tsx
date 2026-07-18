@@ -20,6 +20,7 @@ import { workoutsService } from "../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import { DAY_ORDER, DAY_UPPER } from "../../src/lib/date";
 import type { DayOfWeek } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
 
 const DAYS = DAY_ORDER.map((value) => ({ value, label: DAY_UPPER[value] }));
 
@@ -79,7 +80,7 @@ export default function CreateWorkoutScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
@@ -87,7 +88,7 @@ export default function CreateWorkoutScreen() {
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
         <Text className="text-title-lg font-bold text-white">Criar treino</Text>
         {/* espaçador para manter o título centralizado */}
@@ -138,7 +139,7 @@ export default function CreateWorkoutScreen() {
           />
 
           <View className="gap-1.5">
-            <Text className="text-center text-label-md uppercase tracking-widest text-on-surface-variant">
+            <Text className="text-center text-label-md uppercase tracking-widest text-gray-200">
               Dias da semana
             </Text>
             <View className="flex-row flex-wrap gap-sm">
@@ -150,13 +151,13 @@ export default function CreateWorkoutScreen() {
                     onPress={() => toggleDay(d.value)}
                     className={`rounded-full border px-4 py-2.5 active:opacity-70 ${
                       active
-                        ? "bg-primary"
-                        : "border-outline-variant bg-transparent"
+                        ? "bg-purple-300"
+                        : "border-gray-300 bg-transparent"
                     }`}
                   >
                     <Text
                       className={`text-label-md uppercase tracking-widest ${
-                        active ? "text-white" : "text-on-surface"
+                        active ? "text-white" : "text-white"
                       }`}
                     >
                       {d.label}
@@ -177,7 +178,7 @@ export default function CreateWorkoutScreen() {
               loading={loading}
               fullWidth
             />
-            <Text className="mt-2 text-center text-label-sm text-outline-variant">
+            <Text className="mt-2 text-center text-label-sm text-gray-300">
               Você poderá adicionar exercícios no próximo passo.
             </Text>
           </View>

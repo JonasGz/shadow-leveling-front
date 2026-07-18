@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { View, Text, TextInput, Pressable } from "react-native";
 import Check from "lucide-react-native/icons/check";
+import { color } from "../../theme/palette";
 
 /** Uma linha de série em edição. `remoteId` só existe após gravar na API. */
 export interface LocalSet {
@@ -43,19 +44,21 @@ export const SetRow = memo(function SetRow({
   // altura vem do padding: h-[..] + py-* juntos zeram a área do texto
   const fieldClass = `py-3 rounded-lg border text-center ${
     isActiveRow && !set.done
-      ? "bg-background border-primary/60 text-[#fff]"
-      : "bg-[#151417] border-[#FFFFFF14] text-on-surface-variant"
+      ? "bg-gray-700 border-purple-300/60 text-white"
+      : "bg-gray-700 border-white/12 text-gray-200"
   } ${set.done ? "opacity-50" : ""}`;
 
   return (
     <View
       className={`mt-1 flex-row items-center gap-2 rounded-xl border px-2 py-4 ${
-        isActiveRow ? "border-primary/50 bg-primary/10" : "border-transparent"
+        isActiveRow
+          ? "border-purple-300/50 bg-purple-300/10"
+          : "border-transparent"
       }`}
     >
       <Text
         className={`w-8 text-center text-body-md font-bold ${
-          isActiveRow ? "text-secondary" : "text-outline"
+          isActiveRow ? "text-purple-200" : "text-gray-400"
         }`}
       >
         {index + 1}
@@ -69,7 +72,7 @@ export const SetRow = memo(function SetRow({
         editable={!set.done}
         keyboardType="numeric"
         placeholder="– –"
-        placeholderTextColor="#49474D"
+        placeholderTextColor={color["gray-400"]}
         style={SET_FIELD_TEXT}
         className={`flex-1 ${fieldClass}`}
       />
@@ -81,7 +84,7 @@ export const SetRow = memo(function SetRow({
           editable={!set.done}
           keyboardType="numeric"
           placeholder="– –"
-          placeholderTextColor="#49474D"
+          placeholderTextColor={color["gray-400"]}
           style={SET_FIELD_TEXT}
           className={`flex-1 ${fieldClass}`}
         />
@@ -93,13 +96,13 @@ export const SetRow = memo(function SetRow({
           disabled={set.done}
           className={`h-[22px] w-[22px] items-center justify-center rounded-full border-2 ${
             set.done
-              ? "border-secondary bg-secondary/20"
+              ? "border-purple-200 bg-purple-200/20"
               : isActiveRow
-                ? "border-outline active:border-primary"
-                : "border-[#3A393E]"
+                ? "border-gray-400 active:border-purple-300"
+                : "border-gray-500"
           }`}
         >
-          {set.done && <Check size={12} color="#B26CFF" />}
+          {set.done && <Check size={12} color={color["purple-200"]} />}
         </Pressable>
       </View>
     </View>

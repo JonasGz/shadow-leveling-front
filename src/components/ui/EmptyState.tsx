@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import type { LucideIcon } from "lucide-react-native";
 import { Button } from "./Button";
+import { color } from "../../theme/palette";
 
 interface EmptyStateProps {
   icon?: LucideIcon;
@@ -17,15 +18,15 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <View className="items-center rounded-2xl border border-dashed border-[#FFFFFF24] bg-surface-low p-lg">
-      <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-surface-highest">
-        <Icon size={26} color="#6C6971" strokeWidth={1.6} />
+    <View className="items-center rounded-2xl border border-dashed border-white/12 bg-gray-600 p-lg">
+      <View className="h-[52px] w-[52px] items-center justify-center rounded-full bg-gray-500">
+        <Icon size={26} color={color["gray-300"]} strokeWidth={1.6} />
       </View>
-      <Text className="mt-3 text-center text-title-md font-bold text-[#ECECEE]">
+      <Text className="mt-3 text-center text-title-md font-bold text-gray-50">
         {title}
       </Text>
       {description ? (
-        <Text className="mt-1.5 text-center text-body-md text-on-surface-variant">
+        <Text className="mt-1.5 text-center text-body-md text-gray-200">
           {description}
         </Text>
       ) : null}

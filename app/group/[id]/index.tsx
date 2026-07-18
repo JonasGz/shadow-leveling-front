@@ -24,6 +24,7 @@ import LogOut from "lucide-react-native/icons/log-out";
 import Award from "lucide-react-native/icons/award";
 import Share2 from "lucide-react-native/icons/share-2";
 import type { GroupDetail, FeedItem } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
 
 const POLL_MS = 15000;
 
@@ -54,8 +55,8 @@ const FeedRow = memo(function FeedRow({
   return (
     <Pressable
       onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
-      className={`flex-row items-center gap-3 rounded-lg bg-surface-container px-3 py-3 active:opacity-70 ${
-        first ? "" : "border-t border-white/5"
+      className={`flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70 ${
+        first ? "" : "border-t border-white/7"
       }`}
     >
       {item.photo_url ? (
@@ -64,21 +65,19 @@ const FeedRow = memo(function FeedRow({
           className="h-12 w-12 rounded-full"
         />
       ) : (
-        <View className="h-12 w-12 items-center justify-center rounded-full border border-white/[0.07] bg-surface-container">
-          <Text className="text-label-md font-bold text-secondary">
+        <View className="h-12 w-12 items-center justify-center rounded-full border border-white/7 bg-gray-600">
+          <Text className="text-label-md font-bold text-purple-200">
             {initial}
           </Text>
         </View>
       )}
       <View className="flex-1">
-        <Text className="text-body-lg font-bold text-on-surface">
+        <Text className="text-body-lg font-bold text-white">
           {item.workout_name}
         </Text>
-        <Text className="mt-0.5 text-label-sm text-on-surface-variant">
-          {item.name}
-        </Text>
+        <Text className="mt-0.5 text-label-sm text-gray-200">{item.name}</Text>
         {hasSocial && (
-          <Text className="mt-1 text-label-sm text-on-surface-variant">
+          <Text className="mt-1 text-label-sm text-gray-200">
             {item.reaction_count > 0 &&
               `${item.top_emoji ?? "🔥"} ${item.reaction_count}`}
             {item.reaction_count > 0 && item.comment_count > 0 && "  ·  "}
@@ -86,7 +85,7 @@ const FeedRow = memo(function FeedRow({
           </Text>
         )}
       </View>
-      <Text className="text-label-sm font-semibold text-on-surface-variant">
+      <Text className="text-label-sm font-semibold text-gray-200">
         {formatTime(item.created_at)}
       </Text>
     </Pressable>
@@ -111,14 +110,14 @@ function PodiumItem({
   return (
     <View className="flex-row items-center gap-2">
       <View
-        className={`items-center justify-center overflow-hidden rounded-full bg-surface-container ${
+        className={`items-center justify-center overflow-hidden rounded-full bg-gray-600 ${
           badge === "you" ? "h-[52px] w-[52px]" : "h-[60px] w-[60px]"
         }`}
         style={
           badge === "leader"
             ? {
                 borderWidth: 1,
-                borderColor: "#8113D3",
+                borderColor: color["purple-300"],
                 boxShadow: "0px 0px 0px 3px rgba(129, 19, 211,0.2)",
               }
             : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }
@@ -131,19 +130,21 @@ function PodiumItem({
             resizeMode="cover"
           />
         ) : (
-          <Text className="text-title-md font-bold text-secondary">
+          <Text className="text-title-md font-bold text-purple-200">
             {initial}
           </Text>
         )}
       </View>
       <View className="items-center justify-center">
-        <Text className="text-body-lg font-bold text-on-surface">{score}</Text>
+        <Text className="text-body-lg font-bold text-white">{score}</Text>
         {badge === "leader" ? (
-          <Award size={20} color="#B26CFF" style={{ marginTop: 3 }} />
+          <Award
+            size={20}
+            color={color["purple-200"]}
+            style={{ marginTop: 3 }}
+          />
         ) : (
-          <Text className="mt-0.5 text-label-sm text-on-surface-variant">
-            Você
-          </Text>
+          <Text className="mt-0.5 text-label-sm text-gray-200">Você</Text>
         )}
       </View>
     </View>
@@ -291,16 +292,16 @@ export default function GroupDetailScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color="#c8a3ff" />
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700">
+        <ActivityIndicator color={color["purple-100"]} />
       </SafeAreaView>
     );
   }
 
   if (!group) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background px-md">
-        <Text className="text-on-surface-variant">Grupo indisponível.</Text>
+      <SafeAreaView className="flex-1 items-center justify-center bg-gray-700 px-md">
+        <Text className="text-gray-200">Grupo indisponível.</Text>
       </SafeAreaView>
     );
   }
@@ -308,7 +309,7 @@ export default function GroupDetailScreen() {
   const myName = user?.nickname ?? user?.email?.split("@")[0] ?? "Você";
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma das outras telas) */}
       <View className="h-16 flex-row items-center px-md">
         <Pressable
@@ -316,7 +317,7 @@ export default function GroupDetailScreen() {
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
       </View>
       <ScrollView
@@ -325,7 +326,7 @@ export default function GroupDetailScreen() {
           <RefreshControl
             refreshing={false}
             onRefresh={load}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
         onScrollEndDrag={loadMore}
@@ -343,15 +344,15 @@ export default function GroupDetailScreen() {
           ) : (
             // ponytail: the mockup's radial purple glow isn't expressible with
             // expo-linear-gradient — approximated by the diagonal purple stops.
-            <View className="h-full w-full items-center justify-center rounded-lg bg-surface-container">
-              <Text className="text-label-sm uppercase text-on-surface-variant">
+            <View className="h-full w-full items-center justify-center rounded-lg bg-gray-600">
+              <Text className="text-label-sm uppercase text-gray-200">
                 {isOwner ? "Toque para definir a capa" : "Sem capa"}
               </Text>
             </View>
           )}
           {uploadingCover && (
             <View className="absolute inset-0 items-center justify-center bg-black/40">
-              <ActivityIndicator color="#c8a3ff" />
+              <ActivityIndicator color={color["purple-100"]} />
             </View>
           )}
         </Pressable>
@@ -359,10 +360,10 @@ export default function GroupDetailScreen() {
         {/* Title row */}
         <View className="flex-row items-center justify-between px-md pb-1 pt-md">
           <View className="flex-1 pr-2">
-            <Text className="text-title-xxl font-bold text-on-surface">
+            <Text className="text-title-xxl font-bold text-white">
               {group.name}
             </Text>
-            <Text className="mt-1 text-label-sm text-on-surface-variant">
+            <Text className="mt-1 text-label-sm text-gray-200">
               {group.member_count}{" "}
               {group.member_count === 1 ? "membro" : "membros"}
             </Text>
@@ -371,16 +372,16 @@ export default function GroupDetailScreen() {
             <Pressable
               onPress={shareInvite}
               hitSlop={8}
-              className="h-12 w-12 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 active:opacity-70"
+              className="h-12 w-12 items-center justify-center rounded-lg border border-purple-300/30 bg-purple-300/10 active:opacity-70"
             >
-              <Share2 size={17} color="#CAA4FF" />
+              <Share2 size={17} color={color["purple-100"]} />
             </Pressable>
             <Pressable
               onPress={confirmLeave}
               hitSlop={8}
               className="h-12 w-12 items-center justify-center rounded-lg border border-error/30 bg-error/10 active:opacity-70"
             >
-              <LogOut size={17} color="#FF5C74" />
+              <LogOut size={17} color={color.error} />
             </Pressable>
           </View>
         </View>
@@ -404,14 +405,14 @@ export default function GroupDetailScreen() {
         {/* Feed grouped by day */}
         <View className="px-md">
           {sections.length === 0 ? (
-            <Text className="py-lg text-on-surface-variant">
+            <Text className="py-lg text-gray-200">
               Nenhum treino registrado ainda esta semana.
             </Text>
           ) : (
             <View className="pb-xl">
               {sections.map(([label, items]) => (
                 <View key={label}>
-                  <Text className="mb-2 ml-1 mt-md text-center text-label-sm uppercase tracking-widest text-on-surface-variant">
+                  <Text className="mb-2 ml-1 mt-md text-center text-label-sm uppercase tracking-widest text-gray-200">
                     {label}
                   </Text>
                   <View className="flex flex-col gap-2">

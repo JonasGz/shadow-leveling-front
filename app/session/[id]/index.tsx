@@ -24,14 +24,19 @@ import { TRACK } from "../../../src/lib/ui";
 import type { ExerciseSet, SessionStatus } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
+import { color } from "../../../src/theme/palette";
 
 const STATUS_META: Record<
   SessionStatus,
   { label: string; Icon: LucideIcon; color: string }
 > = {
-  complete: { label: "Concluído", Icon: Check, color: "#22C55E" },
-  incomplete: { label: "Incompleto", Icon: TriangleAlert, color: "#F59E0B" },
-  skipped: { label: "Pulado", Icon: X, color: "#EF4444" },
+  complete: { label: "Concluído", Icon: Check, color: color.success },
+  incomplete: {
+    label: "Incompleto",
+    Icon: TriangleAlert,
+    color: color.warning,
+  },
+  skipped: { label: "Pulado", Icon: X, color: color.error },
 };
 
 export default function SessionDetailScreen() {
@@ -67,7 +72,7 @@ export default function SessionDetailScreen() {
   const status = session ? STATUS_META[session.status] : null;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
@@ -75,7 +80,7 @@ export default function SessionDetailScreen() {
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
         <Text className="text-title-lg font-bold text-white">Sessão</Text>
         {/* espaçador para manter o título centralizado */}
@@ -84,7 +89,7 @@ export default function SessionDetailScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error || !session || !status ? (
         <View className="flex-1 items-center justify-center gap-md px-lg">
@@ -101,17 +106,17 @@ export default function SessionDetailScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Resumo */}
-          <View className="rounded-2xl border border-card-border bg-surface-low p-[18px]">
-            <Text className="text-title-lg font-bold text-on-surface">
+          <View className="rounded-2xl border border-white/7 bg-gray-600 p-[18px]">
+            <Text className="text-title-lg font-bold text-white">
               {workoutName}
             </Text>
-            <Text className="mt-2 text-body-md text-on-surface-variant">
+            <Text className="mt-2 text-body-md text-gray-200">
               {formatFullDate(session.date)}
             </Text>
             <View className="mt-3 flex-row items-center gap-2">
               <status.Icon size={15} color={status.color} strokeWidth={2.4} />
               <Text
-                className="text-label-md font-bold uppercase text-secondary"
+                className="text-label-md font-bold uppercase text-purple-200"
                 style={TRACK}
               >
                 {status.label}
@@ -128,12 +133,12 @@ export default function SessionDetailScreen() {
             ].map((stat) => (
               <View
                 key={stat.label}
-                className="flex-1 items-center rounded-xl border border-card-border bg-surface-low p-3"
+                className="flex-1 items-center rounded-xl border border-white/7 bg-gray-600 p-3"
               >
-                <Text className="text-title-xl font-extrabold text-on-surface">
+                <Text className="text-title-xl font-extrabold text-white">
                   {stat.value}
                 </Text>
-                <Text className="mt-1 text-label-sm text-on-surface-variant">
+                <Text className="mt-1 text-label-sm text-gray-200">
                   {stat.label}
                 </Text>
               </View>
@@ -158,17 +163,17 @@ export default function SessionDetailScreen() {
               return (
                 <View
                   key={exerciseId}
-                  className="rounded-2xl border border-card-border bg-surface-low p-4"
+                  className="rounded-2xl border border-white/7 bg-gray-600 p-4"
                 >
                   <View className="flex-row items-center justify-between">
                     <Text
-                      className="text-label-sm font-bold uppercase text-on-surface-variant"
+                      className="text-label-sm font-bold uppercase text-gray-200"
                       style={TRACK}
                     >
                       Exercício
                     </Text>
                     <Text
-                      className="ml-3 flex-1 text-right text-label-md font-semibold text-on-surface"
+                      className="ml-3 flex-1 text-right text-label-md font-semibold text-white"
                       numberOfLines={1}
                     >
                       {exerciseNames[exerciseId] ?? "Exercício"}
@@ -183,29 +188,27 @@ export default function SessionDetailScreen() {
                           key={set.id}
                           className={`flex-row items-center justify-between rounded-xl px-3.5 py-3 ${
                             isBest
-                              ? "border border-primary/35 bg-primary/10"
-                              : "bg-background"
+                              ? "border border-purple-300/35 bg-purple-300/10"
+                              : "bg-gray-700"
                           }`}
                         >
                           <View className="flex-row items-center gap-2">
                             {isBest ? (
                               <Trophy
                                 size={14}
-                                color="#CAA4FF"
+                                color={color["purple-100"]}
                                 strokeWidth={2}
                               />
                             ) : null}
                             <Text
                               className={`text-label-md font-semibold ${
-                                isBest
-                                  ? "text-primary-fixed-dim"
-                                  : "text-on-surface-variant"
+                                isBest ? "text-purple-100" : "text-gray-200"
                               }`}
                             >
                               Série {set.set_number}
                             </Text>
                           </View>
-                          <Text className="text-body-lg font-extrabold text-on-surface">
+                          <Text className="text-body-lg font-extrabold text-white">
                             {formatSet(set)}
                           </Text>
                         </View>
@@ -215,8 +218,12 @@ export default function SessionDetailScreen() {
 
                   {best ? (
                     <View className="mt-3 flex-row items-center gap-1.5">
-                      <Trophy size={13} color="#B26CFF" strokeWidth={2} />
-                      <Text className="text-label-sm text-outline-variant">
+                      <Trophy
+                        size={13}
+                        color={color["purple-200"]}
+                        strokeWidth={2}
+                      />
+                      <Text className="text-label-sm text-gray-300">
                         Melhor série: {formatSet(best)}
                       </Text>
                     </View>

@@ -33,6 +33,7 @@ import { TRACK } from "../../src/lib/ui";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
 import type { User, UserLevel } from "../../src/types/api.types";
+import { color } from "../../src/theme/palette";
 
 export default function ProfileScreen() {
   const { showToast } = useToast();
@@ -168,7 +169,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       <ScrollView
         contentContainerClassName="px-5 pt-2 pb-[112px]"
         showsVerticalScrollIndicator={false}
@@ -176,18 +177,16 @@ export default function ProfileScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
       >
         {/* Header */}
-        <Text className="mt-2 text-title-xxl font-bold text-on-surface">
-          Perfil
-        </Text>
+        <Text className="mt-2 text-title-xxl font-bold text-white">Perfil</Text>
 
         {loading ? (
           <View className="items-center justify-center py-xl">
-            <ActivityIndicator size="large" color="#c8a3ff" />
+            <ActivityIndicator size="large" color={color["purple-100"]} />
           </View>
         ) : error ? (
           <View className="items-center justify-center gap-md py-xl">
@@ -213,14 +212,14 @@ export default function ProfileScreen() {
                 <View
                   className="h-[88px] w-[88px] rounded-full p-[3px]"
                   style={{
-                    shadowColor: "#8113D3",
+                    shadowColor: color["purple-300"],
                     shadowOpacity: 0.45,
                     shadowRadius: 22,
                     shadowOffset: { width: 0, height: 0 },
                   }}
                 >
                   <LinearGradient
-                    colors={["#8113D3", "#6E00B3"]}
+                    colors={[color["purple-300"], color["purple-400"]]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -229,7 +228,7 @@ export default function ProfileScreen() {
                       borderRadius: 9999,
                     }}
                   />
-                  <View className="h-full w-full items-center justify-center overflow-hidden rounded-full bg-surface-high">
+                  <View className="h-full w-full items-center justify-center overflow-hidden rounded-full bg-gray-500">
                     {user?.avatar_url ? (
                       <Image
                         source={{ uri: user.avatar_url }}
@@ -237,7 +236,7 @@ export default function ProfileScreen() {
                         resizeMode="cover"
                       />
                     ) : (
-                      <Text className="text-title-xxl font-extrabold text-on-surface">
+                      <Text className="text-title-xxl font-extrabold text-white">
                         {initial}
                       </Text>
                     )}
@@ -247,12 +246,12 @@ export default function ProfileScreen() {
                 <Pressable
                   onPress={changeAvatar}
                   disabled={uploadingAvatar}
-                  className="absolute -bottom-0.5 -right-0.5 h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-background bg-primary active:opacity-80"
+                  className="absolute -bottom-0.5 -right-0.5 h-[30px] w-[30px] items-center justify-center rounded-full border-[3px] border-gray-700 bg-purple-300 active:opacity-80"
                 >
                   {uploadingAvatar ? (
-                    <ActivityIndicator size="small" color="#fff" />
+                    <ActivityIndicator size="small" color={color.white} />
                   ) : (
-                    <Pencil size={14} color="#fff" strokeWidth={2} />
+                    <Pencil size={14} color={color.white} strokeWidth={2} />
                   )}
                 </Pressable>
               </View>
@@ -261,20 +260,18 @@ export default function ProfileScreen() {
                 onPress={openNicknameEditor}
                 className="mt-3.5 flex-row items-center gap-2 active:opacity-70"
               >
-                <Text className="text-title-lg font-bold capitalize text-on-surface">
+                <Text className="text-title-lg font-bold capitalize text-white">
                   {displayName}
                 </Text>
-                <Pencil size={14} color="#B26CFF" strokeWidth={2} />
+                <Pencil size={14} color={color["purple-200"]} strokeWidth={2} />
               </Pressable>
 
-              <Text className="mt-1.5 text-body-md text-on-surface-variant">
-                {email}
-              </Text>
+              <Text className="mt-1.5 text-body-md text-gray-200">{email}</Text>
 
               {user?.created_at ? (
-                <View className="mt-3 rounded-full border border-white/10 px-3.5 py-1.5">
+                <View className="mt-3 rounded-full border border-white/12 px-3.5 py-1.5">
                   <Text
-                    className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                    className="text-label-sm font-semibold uppercase text-gray-200"
                     style={TRACK}
                   >
                     Caçador desde {formatDateSlash(user.created_at)}
@@ -287,47 +284,47 @@ export default function ProfileScreen() {
               <>
                 {/* Rank / Nível */}
                 <View className="mt-5 flex-row gap-3">
-                  <View className="flex-1 items-center rounded-2xl border border-card-border bg-surface-low p-4">
+                  <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
                     <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      className="text-label-sm font-semibold uppercase text-gray-200"
                       style={TRACK}
                     >
                       Rank
                     </Text>
-                    <Text className="mt-3 text-title-xl font-extrabold text-secondary">
+                    <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
                       {level.rank}
                     </Text>
                   </View>
-                  <View className="flex-1 items-center rounded-2xl border border-card-border bg-surface-low p-4">
+                  <View className="flex-1 items-center rounded-2xl border border-white/7 bg-gray-600 p-4">
                     <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      className="text-label-sm font-semibold uppercase text-gray-200"
                       style={TRACK}
                     >
                       Nível
                     </Text>
-                    <Text className="mt-3 text-title-xl font-extrabold text-secondary">
+                    <Text className="mt-3 text-title-xl font-extrabold text-purple-200">
                       {level.level}
                     </Text>
                   </View>
                 </View>
 
                 {/* Progresso do nível */}
-                <View className="mt-3 rounded-2xl border border-card-border bg-surface-low p-6">
+                <View className="mt-3 rounded-2xl border border-white/7 bg-gray-600 p-6">
                   <View className="flex-row items-center justify-between">
                     <Text
-                      className="text-label-sm font-semibold uppercase text-on-surface-variant"
+                      className="text-label-sm font-semibold uppercase text-gray-200"
                       style={TRACK}
                     >
                       Progresso do nível
                     </Text>
-                    <Text className="text-label-md font-bold text-secondary">
+                    <Text className="text-label-md font-bold text-purple-200">
                       {level.xp_into_level} / {level.xp_for_next_level} XP
                     </Text>
                   </View>
 
-                  <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-surface-high">
+                  <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-500">
                     <LinearGradient
-                      colors={["#6E00B3", "#8113D3"]}
+                      colors={[color["purple-400"], color["purple-300"]]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={{
@@ -339,11 +336,15 @@ export default function ProfileScreen() {
                   </View>
 
                   <View className="mt-3 flex-row items-center justify-between">
-                    <Text className="text-label-md text-outline-variant">
+                    <Text className="text-label-md text-gray-300">
                       {level.total_xp.toLocaleString("pt-BR")} XP total
                     </Text>
                     <View className="flex-row items-center gap-1.5">
-                      <Flame size={14} color="#F59E0B" fill="#F59E0B" />
+                      <Flame
+                        size={14}
+                        color={color.warning}
+                        fill={color.warning}
+                      />
                       <Text className="text-label-md font-bold text-warning">
                         {level.current_streak}{" "}
                         {level.current_streak === 1 ? "dia" : "dias"} de streak
@@ -355,32 +356,48 @@ export default function ProfileScreen() {
             ) : null}
 
             {/* Menu */}
-            <View className="mt-3 overflow-hidden rounded-xl border border-card-border bg-surface-low">
+            <View className="mt-3 overflow-hidden rounded-xl border border-white/7 bg-gray-600">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
               >
-                <Target size={18} color="#B26CFF" strokeWidth={1.9} />
-                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                <Target
+                  size={18}
+                  color={color["purple-200"]}
+                  strokeWidth={1.9}
+                />
+                <Text className="flex-1 text-label-md font-semibold text-white">
                   Meta semanal
                 </Text>
                 {user?.weekly_goal_days != null && (
-                  <Text className="text-label-md text-on-surface-variant">
+                  <Text className="text-label-md text-gray-200">
                     {user.weekly_goal_days}x
                   </Text>
                 )}
-                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+                <ChevronRight
+                  size={17}
+                  color={color["gray-300"]}
+                  strokeWidth={2}
+                />
               </Pressable>
-              <View className="h-px bg-outline-variant/40" />
+              <View className="h-px bg-gray-300/40" />
               <Pressable
                 onPress={() => showToast("Conquistas — em breve.", "info")}
                 className="flex-row items-center gap-3 px-5 py-4 active:opacity-70"
               >
-                <Trophy size={18} color="#B26CFF" strokeWidth={1.9} />
-                <Text className="flex-1 text-label-md font-semibold text-on-surface">
+                <Trophy
+                  size={18}
+                  color={color["purple-200"]}
+                  strokeWidth={1.9}
+                />
+                <Text className="flex-1 text-label-md font-semibold text-white">
                   Conquistas
                 </Text>
-                <ChevronRight size={17} color="#6C6971" strokeWidth={2} />
+                <ChevronRight
+                  size={17}
+                  color={color["gray-300"]}
+                  strokeWidth={2}
+                />
               </Pressable>
             </View>
 
@@ -391,10 +408,10 @@ export default function ProfileScreen() {
               className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-2.5 rounded-xl border border-error/40 bg-error/10 active:opacity-80"
             >
               {loggingOut ? (
-                <ActivityIndicator size="small" color="#EF4444" />
+                <ActivityIndicator size="small" color={color.error} />
               ) : (
                 <>
-                  <LogOut size={18} color="#EF4444" strokeWidth={2} />
+                  <LogOut size={18} color={color.error} strokeWidth={2} />
                   <Text
                     className="text-label-md font-semibold text-error"
                     style={TRACK}
@@ -419,31 +436,31 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
-            <Text className="text-title-md font-bold text-on-surface">
+          <View className="w-full gap-md rounded-xl border border-gray-300 bg-gray-600 p-lg">
+            <Text className="text-title-md font-bold text-white">
               Editar nick
             </Text>
-            <Text className="text-label-sm text-on-surface-variant">
+            <Text className="text-label-sm text-gray-200">
               Como você quer ser chamado? (2 a 30 caracteres)
             </Text>
             <TextInput
               value={nicknameInput}
               onChangeText={setNicknameInput}
               placeholder={generatedName}
-              placeholderTextColor="#958ea0"
+              placeholderTextColor={color["gray-200"]}
               maxLength={30}
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="rounded-xl border border-[#FFFFFF1F] bg-surface-low px-md py-3 text-body-lg text-on-surface"
+              className="rounded-xl border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
             />
             <View className="mt-sm flex-row gap-md">
               <Pressable
                 onPress={() => setEditing(false)}
                 disabled={savingNick}
-                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-on-surface-variant">
+                <Text className="text-label-md uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

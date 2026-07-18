@@ -13,6 +13,7 @@ import { authService } from "../services/auth.service";
 import { useAuthStore } from "../stores/auth.store";
 import { useToast } from "./ui/Toast";
 import type { User } from "../types/api.types";
+import { color } from "../theme/palette";
 
 interface WeeklyGoalModalProps {
   visible: boolean;
@@ -72,30 +73,30 @@ export function WeeklyGoalModal({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1 items-center justify-center bg-black/70 px-lg"
       >
-        <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
-          <Text className="text-title-md font-bold text-on-surface">
+        <View className="w-full gap-md rounded-xl border border-gray-300 bg-gray-600 p-lg">
+          <Text className="text-title-md font-bold text-white">
             Meta semanal
           </Text>
-          <Text className="text-label-sm text-on-surface-variant">
+          <Text className="text-label-sm text-gray-200">
             Quantos treinos você quer fazer por semana?
           </Text>
           <TextInput
             value={value}
             onChangeText={setValue}
             placeholder="ex: 5"
-            placeholderTextColor="#958ea0"
+            placeholderTextColor={color["gray-200"]}
             keyboardType="number-pad"
             autoFocus
-            className="rounded-xl border border-[#FFFFFF1F] bg-surface-low px-md py-3 text-body-lg text-on-surface"
+            className="rounded-xl border border-white/12 bg-gray-600 px-md py-3 text-body-lg text-white"
           />
           <View className="mt-sm flex-row gap-md">
             {!required && (
               <Pressable
                 onPress={onClose}
                 disabled={saving}
-                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-on-surface-variant">
+                <Text className="text-label-md uppercase text-gray-200">
                   Depois
                 </Text>
               </Pressable>
@@ -105,13 +106,13 @@ export function WeeklyGoalModal({
                 onPress={save}
                 disabled={saving || !isValid}
                 className={`items-center rounded-lg py-3 active:opacity-80 ${
-                  isValid ? "bg-primary" : "bg-primary/40"
+                  isValid ? "bg-purple-300" : "bg-purple-300/40"
                 }`}
               >
                 {saving ? (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
+                  <ActivityIndicator size="small" color={color.white} />
                 ) : (
-                  <Text className="text-label-md font-semibold uppercase text-on-primary">
+                  <Text className="text-label-md font-semibold uppercase text-gray-50">
                     Confirmar
                   </Text>
                 )}

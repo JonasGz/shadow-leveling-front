@@ -5,6 +5,7 @@ import TrendingUp from "lucide-react-native/icons/trending-up";
 import { SetRow, type LocalSet, type SetField } from "./SetRow";
 import type { Hint } from "../../features/progression";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
+import { color } from "../../theme/palette";
 
 interface ExercisePageProps {
   workoutExercise: WorkoutExercise;
@@ -58,12 +59,12 @@ export const ExercisePage = memo(function ExercisePage({
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="overflow-hidden rounded-2xl border border-card-border bg-surface-low">
-        <View className="bg-primary/20 p-lg">
+      <View className="overflow-hidden rounded-2xl border border-white/7 bg-gray-600">
+        <View className="bg-purple-300/20 p-lg">
           {swapped && (
-            <View className="mb-2 flex-row items-center gap-1.5 self-start rounded-full border border-secondary/40 bg-secondary/20 px-2.5 py-1">
-              <RotateCcw size={11} color="#B26CFF" />
-              <Text className="text-label-sm font-bold uppercase tracking-widest text-secondary">
+            <View className="mb-2 flex-row items-center gap-1.5 self-start rounded-full border border-purple-200/40 bg-purple-200/20 px-2.5 py-1">
+              <RotateCcw size={11} color={color["purple-200"]} />
+              <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-200">
                 Substituído p/ hoje
               </Text>
             </View>
@@ -81,17 +82,17 @@ export const ExercisePage = memo(function ExercisePage({
           )}
           <View className="mt-2.5 flex-row flex-wrap items-center gap-2">
             <View className="rounded-full bg-black/30 px-2.5 py-1">
-              <Text className="text-label-sm font-bold uppercase tracking-widest text-[#E5D6FF]">
+              <Text className="text-label-sm font-bold uppercase tracking-widest text-purple-50">
                 {timed ? "Tempo" : "Força"}
               </Text>
             </View>
-            <Text className="text-label-sm font-semibold text-on-surface-variant">
+            <Text className="text-label-sm font-semibold text-gray-200">
               {we.sets} séries
               {repsRangeLabel(we, timed)}
             </Text>
             <Pressable
               onPress={onRequestSwap}
-              className="rounded-full border border-[#FFFFFF29] bg-surface-lowest/60 px-2.5 py-1 active:opacity-70"
+              className="rounded-full border border-white/12 bg-gray-700/60 px-2.5 py-1 active:opacity-70"
             >
               <Text className="text-label-sm font-bold uppercase tracking-widest text-white/90">
                 Trocar (máquina ocupada)
@@ -113,18 +114,18 @@ export const ExercisePage = memo(function ExercisePage({
 
         <View className="p-3.5">
           <View className="flex-row items-center gap-2 px-2 pb-3">
-            <Text className="w-10 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="w-10 text-center text-label-sm uppercase tracking-widest text-gray-300">
               Série
             </Text>
-            <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-gray-300">
               {timed ? "Duração (s)" : "Peso (kg)"}
             </Text>
             {!timed && (
-              <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+              <Text className="flex-1 text-center text-label-sm uppercase tracking-widest text-gray-300">
                 Reps
               </Text>
             )}
-            <Text className="w-9 text-center text-label-sm uppercase tracking-widest text-outline-variant">
+            <Text className="w-9 text-center text-label-sm uppercase tracking-widest text-gray-300">
               ✓
             </Text>
           </View>

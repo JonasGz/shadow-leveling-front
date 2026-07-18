@@ -11,11 +11,13 @@ import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
 import { finishAuth } from "../../src/lib/finishAuth";
+// Aliasado: GoogleGlyph tem uma prop chamada `color`.
+import { color as palette } from "../../src/theme/palette";
 
 // Monochrome Google glyph from the mockup — lucide has no Google brand icon.
 function GoogleGlyph({
   size = 20,
-  color = "#fff",
+  color = palette.white,
 }: {
   size?: number;
   color?: string;
@@ -100,16 +102,16 @@ export default function AuthScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 justify-center bg-background px-lg">
+    <SafeAreaView className="flex-1 justify-center bg-gray-700 px-lg">
       <View className="items-center">
-        <Text className="text-display-xxl font-extrabold text-primary">
+        <Text className="text-display-xxl font-extrabold text-purple-300">
           SHADOW
         </Text>
-        <Text className="-mt-2 text-display-xxl font-extrabold text-on-surface">
+        <Text className="-mt-2 text-display-xxl font-extrabold text-white">
           LEVELING
         </Text>
         <Text
-          className="mt-4 text-label-md font-semibold uppercase text-on-surface-variant"
+          className="mt-4 text-label-md font-semibold uppercase text-gray-200"
           style={{ letterSpacing: 2 }}
         >
           Entre para evoluir
@@ -125,7 +127,7 @@ export default function AuthScreen() {
             // ponytail: custom SVG isn't a LucideIcon; Button only calls it with size/color.
             icon={GoogleGlyph as unknown as LucideIcon}
             style={{
-              shadowColor: "#8113D3",
+              shadowColor: palette["purple-300"],
               shadowOpacity: 0.4,
               shadowRadius: 20,
               shadowOffset: { width: 0, height: 6 },

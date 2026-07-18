@@ -32,6 +32,14 @@ module.exports = {
         ...color,
         difficulty,
       },
+      // 7 e 12 não existem na escala padrão (que vai de 5 em 5 a partir de 20),
+      // e sem registrá-los `border-white/7` não gera CSS nenhum — a borda some
+      // sem erro. São as duas bordas brancas do design system: /7 para card e
+      // container, /12 para controle em repouso (input, chip, botão de ícone).
+      opacity: {
+        7: "0.07",
+        12: "0.12",
+      },
       fontFamily: {
         sans: ["OpenSans_400Regular", "System"],
         // ponytail: token defined so phase-C data components can opt in; the

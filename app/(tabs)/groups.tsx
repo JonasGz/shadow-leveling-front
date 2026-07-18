@@ -22,6 +22,7 @@ import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
 import { useScreenData } from "../../src/hooks/useScreenData";
+import { color } from "../../src/theme/palette";
 
 // Overlapping member avatars for a group card. Shows up to 3 real avatars and a
 // "+N" bubble for the remaining members. Falls back to a plain purple circle
@@ -34,7 +35,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       {shown.map((url, i) => (
         <View
           key={i}
-          className={`h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-surface-container bg-surface-high ${
+          className={`h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500 ${
             i > 0 ? "-ml-2" : ""
           }`}
         >
@@ -47,11 +48,11 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       ))}
       {rest > 0 && (
         <View
-          className={`h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-surface-container bg-primary/25 ${
+          className={`h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25 ${
             shown.length > 0 ? "-ml-2" : ""
           }`}
         >
-          <Text className="text-[9px] font-bold text-secondary">+{rest}</Text>
+          <Text className="text-[9px] font-bold text-purple-200">+{rest}</Text>
         </View>
       )}
     </View>
@@ -92,15 +93,15 @@ export default function GroupsScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* TopAppBar */}
       <View className="h-16 flex-row items-center justify-between px-md">
         <Text className="text-title-xxl font-bold text-white">Grupos</Text>
         <Pressable
           onPress={() => setCreating(true)}
-          className="h-14 w-14 items-center justify-center rounded-full border border-card-border bg-surface-container active:bg-primary"
+          className="h-14 w-14 items-center justify-center rounded-full border border-white/7 bg-gray-600 active:bg-purple-300"
         >
-          <Text className="text-3xl text-primary">＋</Text>
+          <Text className="text-3xl text-purple-300">＋</Text>
         </Pressable>
       </View>
 
@@ -111,12 +112,12 @@ export default function GroupsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={refresh}
-            tintColor="#c8a3ff"
+            tintColor={color["purple-100"]}
           />
         }
       >
         {loading ? (
-          <ActivityIndicator className="mt-xl" color="#c8a3ff" />
+          <ActivityIndicator className="mt-xl" color={color["purple-100"]} />
         ) : groups.length === 0 ? (
           <EmptyState
             icon={Swords}
@@ -130,10 +131,10 @@ export default function GroupsScreen() {
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-xl bg-surface-container py-md pl-5 pr-md active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-xl bg-gray-600 py-md pl-5 pr-md active:opacity-80"
                 >
                   <LinearGradient
-                    colors={["#B26CFF", "#8113D3"]}
+                    colors={[color["purple-200"], color["purple-300"]]}
                     style={{
                       position: "absolute",
                       left: 0,
@@ -143,12 +144,12 @@ export default function GroupsScreen() {
                     }}
                   />
                   <View className="flex-1">
-                    <Text className="text-title-md font-bold text-on-surface">
+                    <Text className="text-title-md font-bold text-white">
                       {g.name}
                     </Text>
-                    <Text className="mt-1 text-label-sm text-on-surface-variant">
+                    <Text className="mt-1 text-label-sm text-gray-200">
                       Código:{" "}
-                      <Text className="font-semibold text-on-surface">
+                      <Text className="font-semibold text-white">
                         {g.invite_code}
                       </Text>
                     </Text>
@@ -158,7 +159,7 @@ export default function GroupsScreen() {
                       avatars={g.member_avatars}
                       count={g.member_count}
                     />
-                    <ChevronRight size={18} color="#6C6971" />
+                    <ChevronRight size={18} color={color["gray-300"]} />
                   </View>
                 </Pressable>
               ))}
@@ -178,8 +179,8 @@ export default function GroupsScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-lg"
         >
-          <View className="w-full gap-md rounded-xl border border-outline-variant bg-surface-container p-lg">
-            <Text className="text-title-md font-bold text-on-surface">
+          <View className="w-full gap-md rounded-xl border border-gray-300 bg-gray-600 p-lg">
+            <Text className="text-title-md font-bold text-white">
               Criar novo grupo
             </Text>
             <Input
@@ -197,9 +198,9 @@ export default function GroupsScreen() {
                   setCreating(false);
                 }}
                 disabled={busy}
-                className="flex-1 items-center rounded-lg border border-outline-variant py-3 active:opacity-70"
+                className="flex-1 items-center rounded-lg border border-gray-300 py-3 active:opacity-70"
               >
-                <Text className="text-label-md uppercase text-on-surface-variant">
+                <Text className="text-label-md uppercase text-gray-200">
                   Cancelar
                 </Text>
               </Pressable>

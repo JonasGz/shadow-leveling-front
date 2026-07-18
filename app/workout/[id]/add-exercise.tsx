@@ -22,6 +22,7 @@ import { workoutsService } from "../../../src/services/workouts.service";
 import { useWorkoutsStore } from "../../../src/stores/workouts.store";
 import { useDebouncedSearch } from "../../../src/hooks/useDebouncedSearch";
 import type { Exercise, ExerciseType } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
 
 type Stage = "search" | "configure";
 
@@ -41,14 +42,14 @@ const ExerciseRow = memo(function ExerciseRow({
   return (
     <Pressable
       onPress={() => onSelect(exercise)}
-      className="flex-row items-center justify-between rounded-xl border border-card-border bg-surface-low px-md py-md text-on-surface-variant active:opacity-80"
+      className="flex-row items-center justify-between rounded-xl border border-white/7 bg-gray-600 px-md py-md text-gray-200 active:opacity-80"
     >
       <View className="flex-1">
-        <Text className="text-body-lg font-semibold text-on-surface">
+        <Text className="text-body-lg font-semibold text-white">
           {exercise.name}
         </Text>
       </View>
-      <Text className="text-title-lg text-secondary">+</Text>
+      <Text className="text-title-lg text-purple-200">+</Text>
     </Pressable>
   );
 });
@@ -180,7 +181,7 @@ export default function AddExerciseScreen() {
     !results.some((e) => e.name.toLowerCase() === query.trim().toLowerCase());
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-md">
         <Pressable
@@ -190,7 +191,7 @@ export default function AddExerciseScreen() {
           hitSlop={8}
           className="active:opacity-60"
         >
-          <ChevronLeft size={22} color="#DCDCDD" />
+          <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
         <Text className="text-title-lg font-bold text-white">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
@@ -213,7 +214,7 @@ export default function AddExerciseScreen() {
 
           {searching && results.length === 0 ? (
             <View className="flex-1 items-center justify-center">
-              <ActivityIndicator size="large" color="#c8a3ff" />
+              <ActivityIndicator size="large" color={color["purple-100"]} />
             </View>
           ) : (
             <FlashList
@@ -232,7 +233,10 @@ export default function AddExerciseScreen() {
               )}
               ListFooterComponent={
                 loadingMore ? (
-                  <ActivityIndicator color="#c8a3ff" className="py-md" />
+                  <ActivityIndicator
+                    color={color["purple-100"]}
+                    className="py-md"
+                  />
                 ) : null
               }
               ListEmptyComponent={
@@ -255,7 +259,7 @@ export default function AddExerciseScreen() {
 
           {showCreateOption && (
             <View className="gap-sm py-sm pb-10">
-              <Text className="text-center text-label-sm uppercase tracking-widest text-on-surface-variant">
+              <Text className="text-center text-label-sm uppercase tracking-widest text-gray-200">
                 {`Criar "${query.trim()}" como:`}
               </Text>
               <View className="flex-row gap-sm">
@@ -287,11 +291,11 @@ export default function AddExerciseScreen() {
           className="flex-1 justify-start"
         >
           <View className="flex-1 gap-md px-md">
-            <View className="rounded-2xl border border-card-border bg-surface-low p-md px-lg">
-              <Text className="text-title-md font-semibold text-on-surface">
+            <View className="rounded-2xl border border-white/7 bg-gray-600 p-md px-lg">
+              <Text className="text-title-md font-semibold text-white">
                 {selected?.name}
               </Text>
-              <Text className="mt-1 text-label-sm uppercase tracking-widest text-on-surface-variant">
+              <Text className="mt-1 text-label-sm uppercase tracking-widest text-gray-200">
                 {isTimeBased ? "Baseado em tempo" : "Baseado em repetições"} ·{" "}
                 {selected?.unit}
               </Text>

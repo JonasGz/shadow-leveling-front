@@ -26,6 +26,7 @@ import type {
   SessionSocialDetail,
   SessionComment,
 } from "../../../src/types/api.types";
+import { color } from "../../../src/theme/palette";
 
 const HERO_HEIGHT = Math.round(Dimensions.get("window").height * 0.55);
 
@@ -53,12 +54,12 @@ function Avatar({
         ...(ring
           ? {
               borderWidth: 2.5,
-              borderColor: "#8113D3",
+              borderColor: color["purple-300"],
               boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
             }
           : { borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" }),
       }}
-      className="bg-surface-high"
+      className="bg-gray-500"
     >
       {uri ? (
         <Image
@@ -68,7 +69,7 @@ function Avatar({
         />
       ) : (
         <Text
-          className="font-bold text-secondary"
+          className="font-bold text-purple-200"
           style={{ fontSize: size / 2.6 }}
         >
           {initial}
@@ -93,16 +94,14 @@ function CommentRow({
       <Avatar uri={comment.avatar_url} name={comment.name} size={36} />
       <View className="flex-1">
         <View className="flex-row items-baseline gap-2">
-          <Text className="text-body-sm font-bold text-on-surface">
+          <Text className="text-body-sm font-bold text-white">
             {comment.name}
           </Text>
-          <Text className="text-caption text-on-surface-variant">
+          <Text className="text-caption text-gray-200">
             {relativeTime(comment.created_at)}
           </Text>
         </View>
-        <Text className="mt-0.5 text-body-sm text-on-surface">
-          {comment.body}
-        </Text>
+        <Text className="mt-0.5 text-body-sm text-white">{comment.body}</Text>
       </View>
     </Pressable>
   );
@@ -209,22 +208,22 @@ export default function SessionPostScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator color="#c8a3ff" />
+      <View className="flex-1 items-center justify-center bg-gray-700">
+        <ActivityIndicator color={color["purple-100"]} />
       </View>
     );
   }
 
   if (!detail) {
     return (
-      <View className="flex-1 items-center justify-center bg-background px-md">
-        <Text className="text-on-surface-variant">Treino indisponível.</Text>
+      <View className="flex-1 items-center justify-center bg-gray-700 px-md">
+        <Text className="text-gray-200">Treino indisponível.</Text>
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-gray-700">
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -243,11 +242,11 @@ export default function SessionPostScreen() {
                 resizeMode="cover"
               />
             ) : (
-              <View className="h-full w-full bg-surface-high" />
+              <View className="h-full w-full bg-gray-500" />
             )}
             {/* fade into the page */}
             <LinearGradient
-              colors={["transparent", "rgba(17,17,19,0.7)", "#111113"]}
+              colors={["transparent", "rgba(17,17,19,0.7)", color["gray-700"]]}
               locations={[0.55, 0.85, 1]}
               style={{
                 position: "absolute",
@@ -262,9 +261,9 @@ export default function SessionPostScreen() {
               onPress={() => router.back()}
               hitSlop={8}
               style={{ top: insets.top + 8 }}
-              className="absolute left-5 h-11 w-11 items-center justify-center rounded-full border border-white/[0.12] bg-surface/60 active:opacity-70"
+              className="absolute left-5 h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-gray-600/60 active:opacity-70"
             >
-              <ChevronLeft size={22} color="#fff" />
+              <ChevronLeft size={22} color={color.white} />
             </Pressable>
           </View>
 
@@ -272,14 +271,14 @@ export default function SessionPostScreen() {
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
             <View className="flex-1 pt-0.5">
-              <Text className="text-body-lg font-bold text-on-surface">
+              <Text className="text-body-lg font-bold text-white">
                 {detail.name}
               </Text>
-              <Text className="mt-0.5 text-body-sm font-semibold text-secondary">
+              <Text className="mt-0.5 text-body-sm font-semibold text-purple-200">
                 {detail.workout_name}
               </Text>
             </View>
-            <Text className="pt-1 text-body-sm text-on-surface-variant">
+            <Text className="pt-1 text-body-sm text-gray-200">
               {relativeTime(detail.created_at)}
             </Text>
           </View>
@@ -294,8 +293,8 @@ export default function SessionPostScreen() {
                   onPress={() => react(rc.emoji)}
                   className={`h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 active:opacity-70 ${
                     active
-                      ? "border-primary bg-primary/15"
-                      : "border-white/[0.07] bg-surface-low"
+                      ? "border-purple-300 bg-purple-300/15"
+                      : "border-white/7 bg-gray-600"
                   }`}
                   style={
                     active
@@ -306,7 +305,7 @@ export default function SessionPostScreen() {
                   <Text style={{ fontSize: 16 }}>{rc.emoji}</Text>
                   <Text
                     className={`text-body-sm font-bold ${
-                      active ? "text-on-surface" : "text-on-surface-variant"
+                      active ? "text-white" : "text-gray-200"
                     }`}
                   >
                     {rc.count}
@@ -316,21 +315,21 @@ export default function SessionPostScreen() {
             })}
             <Pressable
               onPress={() => setPickerOpen(true)}
-              className="h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-primary/15 active:opacity-70"
+              className="h-9 w-9 items-center justify-center rounded-full border border-purple-300/40 bg-purple-300/15 active:opacity-70"
             >
-              <Plus size={18} color="#CAA4FF" />
+              <Plus size={18} color={color["purple-100"]} />
             </Pressable>
           </View>
 
-          <View className="mx-5 mt-5 h-px bg-white/[0.07]" />
+          <View className="mx-5 mt-5 h-px bg-white/7" />
 
           {/* 4. Comments */}
           <View className="px-5 pt-5">
-            <Text className="mb-4 text-caption font-bold uppercase text-on-surface-variant">
+            <Text className="mb-4 text-caption font-bold uppercase text-gray-200">
               Comentários
             </Text>
             {comments.length === 0 ? (
-              <Text className="pb-4 text-body-sm text-on-surface-variant">
+              <Text className="pb-4 text-body-sm text-gray-200">
                 Seja o primeiro a comentar.
               </Text>
             ) : (
@@ -340,7 +339,7 @@ export default function SessionPostScreen() {
             )}
             {cursor && (
               <Pressable onPress={loadMoreComments} className="py-2">
-                <Text className="text-body-sm font-semibold text-secondary">
+                <Text className="text-body-sm font-semibold text-purple-200">
                   Carregar mais
                 </Text>
               </Pressable>
@@ -351,15 +350,15 @@ export default function SessionPostScreen() {
         {/* 5. Fixed composer */}
         <View
           style={{ paddingBottom: insets.bottom + 12 }}
-          className="flex-row items-center gap-2.5 border-t border-white/[0.07] bg-background px-5 pt-3"
+          className="flex-row items-center gap-2.5 border-t border-white/7 bg-gray-700 px-5 pt-3"
         >
-          <View className="h-12 flex-1 flex-row items-center rounded-full border border-white/[0.07] bg-surface-low px-4">
+          <View className="h-12 flex-1 flex-row items-center rounded-full border border-white/7 bg-gray-600 px-4">
             <TextInput
               value={draft}
               onChangeText={setDraft}
               placeholder="Adicionar comentário…"
-              placeholderTextColor="#908D94"
-              className="flex-1 py-0 text-body-sm text-on-surface"
+              placeholderTextColor={color["gray-200"]}
+              className="flex-1 py-0 text-body-sm text-white"
               multiline
               maxLength={500}
               onSubmitEditing={sendComment}
@@ -368,16 +367,16 @@ export default function SessionPostScreen() {
           <Pressable
             onPress={sendComment}
             disabled={sending || draft.trim().length === 0}
-            className="h-12 w-12 items-center justify-center rounded-full bg-primary active:opacity-80"
+            className="h-12 w-12 items-center justify-center rounded-full bg-purple-300 active:opacity-80"
             style={{
               boxShadow: "0px 0px 18px rgba(129, 19, 211,0.35)",
               opacity: draft.trim().length === 0 ? 0.5 : 1,
             }}
           >
             {sending ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={color.white} size="small" />
             ) : (
-              <Send size={20} color="#fff" />
+              <Send size={20} color={color.white} />
             )}
           </Pressable>
         </View>
@@ -392,20 +391,20 @@ export default function SessionPostScreen() {
         enableSearchBar
         theme={{
           backdrop: "#00000099",
-          knob: "#8113D3",
-          container: "#1A191C",
-          header: "#908D94",
+          knob: color["purple-300"],
+          container: color["gray-600"],
+          header: color["gray-200"],
           category: {
-            icon: "#908D94",
-            iconActive: "#fff",
-            container: "#111113",
-            containerActive: "#8113D3",
+            icon: color["gray-200"],
+            iconActive: color.white,
+            container: color["gray-700"],
+            containerActive: color["purple-300"],
           },
           search: {
-            text: "#fff",
-            placeholder: "#908D94",
-            background: "#111113",
-            icon: "#908D94",
+            text: color.white,
+            placeholder: color["gray-200"],
+            background: color["gray-700"],
+            icon: color["gray-200"],
           },
         }}
       />

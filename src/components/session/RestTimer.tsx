@@ -5,6 +5,7 @@ import Timer from "lucide-react-native/icons/timer";
 import Plus from "lucide-react-native/icons/plus";
 import X from "lucide-react-native/icons/x";
 import { formatDuration } from "../../lib/date";
+import { color } from "../../theme/palette";
 
 interface RestTimerProps {
   /** Segundos iniciais da contagem. */
@@ -36,7 +37,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
 
   return (
     <View
-      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-secondary/40 bg-surface-high py-2.5 pl-3 pr-2.5"
+      className="absolute bottom-8 flex-row items-center gap-3 self-center rounded-2xl border border-purple-200/40 bg-gray-500 py-2.5 pl-3 pr-2.5"
       style={{
         left: 0,
         right: 0,
@@ -46,7 +47,7 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
       }}
     >
       <LinearGradient
-        colors={["#8113D3", "#6E00B3"]}
+        colors={[color["purple-300"], color["purple-400"]]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0.5, y: 0.87 }}
         style={{
@@ -58,13 +59,13 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
           boxShadow: "0px 0px 14px rgba(129, 19, 211, 0.5)",
         }}
       >
-        <Timer size={20} color="#FFF" />
+        <Timer size={20} color={color.white} />
       </LinearGradient>
       <View className="flex-1">
-        <Text className="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">
+        <Text className="text-label-sm font-bold uppercase tracking-widest text-gray-200">
           Descanso
         </Text>
-        <Text className="mt-0.5 text-title-md font-bold leading-none text-secondary">
+        <Text className="mt-0.5 text-title-md font-bold leading-none text-purple-200">
           {formatDuration(remaining)}
         </Text>
       </View>
@@ -72,17 +73,17 @@ export function RestTimer({ seconds, onDismiss }: RestTimerProps) {
         accessibilityRole="button"
         accessibilityLabel="Adicionar 15 segundos ao descanso"
         onPress={() => setRemaining((r) => r + 15)}
-        className="h-9 w-9 items-center justify-center rounded-xl border border-secondary/25 bg-surface-lowest active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-xl border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
-        <Plus size={16} color="#B26CFF" strokeWidth={2.5} />
+        <Plus size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Encerrar descanso"
         onPress={onDismiss}
-        className="h-9 w-9 items-center justify-center rounded-xl border border-secondary/25 bg-surface-lowest active:opacity-70"
+        className="h-9 w-9 items-center justify-center rounded-xl border border-purple-200/25 bg-gray-700 active:opacity-70"
       >
-        <X size={16} color="#B26CFF" strokeWidth={2.5} />
+        <X size={16} color={color["purple-200"]} strokeWidth={2.5} />
       </Pressable>
     </View>
   );

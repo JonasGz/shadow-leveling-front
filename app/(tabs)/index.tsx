@@ -30,6 +30,7 @@ import { useScreenData } from "../../src/hooks/useScreenData";
 import { metricsService } from "../../src/services/metrics.service";
 import { authService } from "../../src/services/auth.service";
 import { useAuthStore } from "../../src/stores/auth.store";
+import { color } from "../../src/theme/palette";
 
 function titleCase(s: string) {
   return s
@@ -66,8 +67,8 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
     <Svg width={size} height={size}>
       <Defs>
         <SvgLinearGradient id="weeklyGoalGrad" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor="#6E00B3" />
-          <Stop offset="1" stopColor="#B26CFF" />
+          <Stop offset="0" stopColor={color["purple-400"]} />
+          <Stop offset="1" stopColor={color["purple-200"]} />
         </SvgLinearGradient>
       </Defs>
       <Circle
@@ -75,7 +76,7 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
         cy={size / 2}
         r={r}
         fill="none"
-        stroke="#29282C"
+        stroke={color["gray-500"]}
         strokeWidth={stroke}
       />
       <Circle
@@ -91,7 +92,7 @@ function WeeklyGoalRing({ pct }: { pct: number }) {
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
       <SvgText
-        fill="#fff"
+        fill={color.white}
         fontSize={22}
         fontWeight="800"
         textAnchor="middle"
@@ -117,12 +118,12 @@ function StatCard({
 }) {
   const Icon = icon;
   return (
-    <View className="flex-1 rounded-2xl border border-card-border bg-surface-low p-lg">
+    <View className="flex-1 rounded-2xl border border-white/7 bg-gray-600 p-lg">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
-      <Text className="mt-2 text-center text-title-xl font-extrabold text-on-surface">
+      <Text className="mt-2 text-center text-title-xl font-extrabold text-white">
         {value}
       </Text>
-      <Text className="mt-1 text-center text-label-md text-on-surface-variant">
+      <Text className="mt-1 text-center text-label-md text-gray-200">
         {label}
       </Text>
     </View>
@@ -186,7 +187,7 @@ export default function HomeScreen() {
   }, [metrics]);
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
       {/* Header */}
       <View className="flex-row items-center justify-between px-md py-md">
         <View>
@@ -197,7 +198,7 @@ export default function HomeScreen() {
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
           className="h-14 w-14 items-center justify-center overflow-hidden rounded-full active:opacity-70"
-          style={{ backgroundColor: "#8113D3" }}
+          style={{ backgroundColor: color["purple-300"] }}
         >
           {user?.avatar_url ? (
             <Image
@@ -213,7 +214,7 @@ export default function HomeScreen() {
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#c8a3ff" />
+          <ActivityIndicator size="large" color={color["purple-100"]} />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center gap-md px-lg">
@@ -232,7 +233,7 @@ export default function HomeScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="#c8a3ff"
+              tintColor={color["purple-100"]}
             />
           }
         >
@@ -260,12 +261,12 @@ export default function HomeScreen() {
               >
                 <WeeklyGoalRing pct={goalPct} />
                 <View className="flex-1">
-                  <Text className="text-center text-title-lg font-bold text-on-surface">
+                  <Text className="text-center text-title-lg font-bold text-white">
                     Meta semanal
                   </Text>
                   <Text
                     className="mt-1 text-center text-body-sm"
-                    style={{ color: "#B5B4B8" }}
+                    style={{ color: color["gray-100"] }}
                   >
                     {goalScheduled === 0
                       ? "Defina sua meta semanal"
@@ -285,14 +286,14 @@ export default function HomeScreen() {
           <View className="flex-row gap-md">
             <StatCard
               icon={Flame}
-              iconColor="#F59E0B"
-              iconFill="#F59E0B"
+              iconColor={color.warning}
+              iconFill={color.warning}
               value={String(streak)}
               label="Dia de streak"
             />
             <StatCard
               icon={TrendingUp}
-              iconColor="#B26CFF"
+              iconColor={color["purple-200"]}
               value={rank}
               label={`Nível ${lvlNumber}`}
             />
@@ -307,12 +308,12 @@ export default function HomeScreen() {
             {featured ? (
               <Pressable
                 onPress={() => router.push(`/workout/${featured.id}`)}
-                className="overflow-hidden rounded-2xl border border-card-border active:opacity-80"
-                style={{ backgroundColor: "#1A191C" }}
+                className="overflow-hidden rounded-2xl border border-white/7 active:opacity-80"
+                style={{ backgroundColor: color["gray-600"] }}
               >
                 <View
                   className="px-md py-md"
-                  style={{ backgroundColor: "#6E00B3" }}
+                  style={{ backgroundColor: color["purple-400"] }}
                 >
                   <View
                     className="mt-6 self-start rounded-full px-2 py-1"
@@ -326,12 +327,12 @@ export default function HomeScreen() {
 
                 <View className="items-center p-lg">
                   <Text
-                    className="text-title-xl font-bold text-on-surface"
+                    className="text-title-xl font-bold text-white"
                     numberOfLines={1}
                   >
                     {featured.name}
                   </Text>
-                  <Text className="mt-1 text-body-sm text-on-surface-variant">
+                  <Text className="mt-1 text-body-sm text-gray-200">
                     {featured.estimated_duration_min} min ·{" "}
                     {featured.exercise_count} exercício
                     {featured.exercise_count === 1 ? "" : "s"}
@@ -347,15 +348,19 @@ export default function HomeScreen() {
               </Pressable>
             ) : (
               <View
-                className="items-center gap-md rounded-2xl border border-card-border p-lg"
-                style={{ backgroundColor: "#1A191C" }}
+                className="items-center gap-md rounded-2xl border border-white/7 p-lg"
+                style={{ backgroundColor: color["gray-600"] }}
               >
-                <Calendar size={36} color="#908D94" strokeWidth={1.5} />
+                <Calendar
+                  size={36}
+                  color={color["gray-200"]}
+                  strokeWidth={1.5}
+                />
                 <View className="items-center">
-                  <Text className="text-title-md font-semibold text-on-surface">
+                  <Text className="text-title-md font-semibold text-white">
                     Nenhum treino para hoje
                   </Text>
-                  <Text className="mt-1 text-body-sm text-on-surface-variant">
+                  <Text className="mt-1 text-body-sm text-gray-200">
                     Aproveite para descansar ou criar um novo treino.
                   </Text>
                 </View>

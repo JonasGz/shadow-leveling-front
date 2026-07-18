@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, TextInputProps } from "react-native";
 import Search from "lucide-react-native/icons/search";
 import { FOCUS_RING } from "./Input";
+import { color } from "../../theme/palette";
 
 interface SearchInputProps extends TextInputProps {
   error?: string;
@@ -14,15 +15,15 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
     <View className="gap-1.5">
       <View
         style={focused && !error ? FOCUS_RING : undefined}
-        className={`flex-row items-center gap-sm rounded-xl border bg-surface-low px-5 py-4 ${
+        className={`flex-row items-center gap-sm rounded-xl border bg-gray-600 px-5 py-4 ${
           error
             ? "border-error"
             : focused
-              ? "border-primary"
-              : "border-[#FFFFFF1F]"
+              ? "border-purple-300"
+              : "border-white/12"
         }`}
       >
-        <Search size={20} color="#6c6971" />
+        <Search size={20} color={color["gray-300"]} />
         <TextInput
           {...props}
           onFocus={(e) => {
@@ -33,9 +34,9 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
             setFocused(false);
             props.onBlur?.(e);
           }}
-          placeholderTextColor="#6c6971"
+          placeholderTextColor={color["gray-300"]}
           style={{ fontSize: 18, lineHeight: 20, includeFontPadding: false }}
-          className="flex-1 text-body-md text-on-surface"
+          className="flex-1 text-body-md text-white"
         />
       </View>
       {error && <Text className="text-label-sm text-error">{error}</Text>}
