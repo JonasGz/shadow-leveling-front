@@ -21,6 +21,7 @@ import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import { DAY_ORDER, DAY_UPPER } from "../../src/lib/date";
 import type { DayOfWeek } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 const DAYS = DAY_ORDER.map((value) => ({ value, label: DAY_UPPER[value] }));
 
@@ -149,16 +150,18 @@ export default function CreateWorkoutScreen() {
                   <Pressable
                     key={d.value}
                     onPress={() => toggleDay(d.value)}
-                    className={`rounded-full border px-4 py-2.5 active:opacity-70 ${
+                    className={cn(
+                      "rounded-full border px-4 py-2.5 active:opacity-70",
                       active
                         ? "bg-purple-300"
-                        : "border-gray-300 bg-transparent"
-                    }`}
+                        : "border-gray-300 bg-transparent",
+                    )}
                   >
                     <Text
-                      className={`text-label-md uppercase tracking-widest ${
-                        active ? "text-white" : "text-white"
-                      }`}
+                      className={cn(
+                        "text-label-md uppercase tracking-widest",
+                        active ? "text-white" : "text-white",
+                      )}
                     >
                       {d.label}
                     </Text>

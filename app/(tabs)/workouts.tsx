@@ -25,6 +25,7 @@ import { useWorkoutsStore } from "../../src/stores/workouts.store";
 import { DAY_SHORT, dayOfWeekFromDate } from "../../src/lib/date";
 import type { DayOfWeek, Workout } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 function exerciseCountLabel(w: Workout) {
   const n = w.exercises?.length ?? 0;
@@ -100,9 +101,10 @@ function LibraryWorkoutCard({
   return (
     <Pressable
       onPress={() => router.push(`/workout/${workout.id}`)}
-      className={`rounded-xl border border-white/7 bg-gray-600 p-md active:bg-gray-500 ${
-        workout.active ? "" : "opacity-60"
-      }`}
+      className={cn(
+        "rounded-xl border border-white/7 bg-gray-600 p-md active:bg-gray-500",
+        workout.active ? "" : "opacity-60",
+      )}
     >
       <View className="mb-md flex-row items-start justify-between">
         <View className="flex-1 pr-2">

@@ -27,6 +27,7 @@ import type {
   SessionComment,
 } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const HERO_HEIGHT = Math.round(Dimensions.get("window").height * 0.55);
 
@@ -291,11 +292,12 @@ export default function SessionPostScreen() {
                 <Pressable
                   key={rc.emoji}
                   onPress={() => react(rc.emoji)}
-                  className={`h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 active:opacity-70 ${
+                  className={cn(
+                    "h-9 flex-row items-center gap-1.5 rounded-full border px-3.5 active:opacity-70",
                     active
                       ? "border-purple-300 bg-purple-300/15"
-                      : "border-white/7 bg-gray-600"
-                  }`}
+                      : "border-white/7 bg-gray-600",
+                  )}
                   style={
                     active
                       ? { boxShadow: "0px 0px 14px rgba(129, 19, 211,0.35)" }
@@ -304,9 +306,10 @@ export default function SessionPostScreen() {
                 >
                   <Text style={{ fontSize: 16 }}>{rc.emoji}</Text>
                   <Text
-                    className={`text-body-sm font-bold ${
-                      active ? "text-white" : "text-gray-200"
-                    }`}
+                    className={cn(
+                      "text-body-sm font-bold",
+                      active ? "text-white" : "text-gray-200",
+                    )}
                   >
                     {rc.count}
                   </Text>

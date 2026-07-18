@@ -2,6 +2,7 @@ import { memo } from "react";
 import { View, Text, TextInput, Pressable } from "react-native";
 import Check from "lucide-react-native/icons/check";
 import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 /** Uma linha de série em edição. `remoteId` só existe após gravar na API. */
 export interface LocalSet {
@@ -42,24 +43,28 @@ export const SetRow = memo(function SetRow({
   onToggleDone,
 }: SetRowProps) {
   // altura vem do padding: h-[..] + py-* juntos zeram a área do texto
-  const fieldClass = `py-3 rounded-lg border text-center ${
+  const fieldClass = cn(
+    "rounded-lg border py-3 text-center",
     isActiveRow && !set.done
-      ? "bg-gray-700 border-purple-300/60 text-white"
-      : "bg-gray-700 border-white/12 text-gray-200"
-  } ${set.done ? "opacity-50" : ""}`;
+      ? "border-purple-300/60 bg-gray-700 text-white"
+      : "border-white/12 bg-gray-700 text-gray-200",
+    set.done && "opacity-50",
+  );
 
   return (
     <View
-      className={`mt-1 flex-row items-center gap-2 rounded-xl border px-2 py-4 ${
+      className={cn(
+        "mt-1 flex-row items-center gap-2 rounded-xl border px-2 py-4",
         isActiveRow
           ? "border-purple-300/50 bg-purple-300/10"
-          : "border-transparent"
-      }`}
+          : "border-transparent",
+      )}
     >
       <Text
-        className={`w-8 text-center text-body-md font-bold ${
-          isActiveRow ? "text-purple-200" : "text-gray-400"
-        }`}
+        className={cn(
+          "w-8 text-center text-body-md font-bold",
+          isActiveRow ? "text-purple-200" : "text-gray-400",
+        )}
       >
         {index + 1}
       </Text>
@@ -74,7 +79,7 @@ export const SetRow = memo(function SetRow({
         placeholder="– –"
         placeholderTextColor={color["gray-400"]}
         style={SET_FIELD_TEXT}
-        className={`flex-1 ${fieldClass}`}
+        className={cn("flex-1", fieldClass)}
       />
 
       {!timed && (
@@ -86,7 +91,7 @@ export const SetRow = memo(function SetRow({
           placeholder="– –"
           placeholderTextColor={color["gray-400"]}
           style={SET_FIELD_TEXT}
-          className={`flex-1 ${fieldClass}`}
+          className={cn("flex-1", fieldClass)}
         />
       )}
 
@@ -94,13 +99,14 @@ export const SetRow = memo(function SetRow({
         <Pressable
           onPress={() => onToggleDone(index)}
           disabled={set.done}
-          className={`h-[22px] w-[22px] items-center justify-center rounded-full border-2 ${
+          className={cn(
+            "h-[22px] w-[22px] items-center justify-center rounded-full border-2",
             set.done
               ? "border-purple-200 bg-purple-200/20"
               : isActiveRow
                 ? "border-gray-400 active:border-purple-300"
-                : "border-gray-500"
-          }`}
+                : "border-gray-500",
+          )}
         >
           {set.done && <Check size={12} color={color["purple-200"]} />}
         </Pressable>

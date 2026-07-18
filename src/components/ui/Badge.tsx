@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { cn } from "../../lib/cn";
 
 // Semantic PULSE tones. `primary`/`secondary` use the accent ramp; the rest use
 // the semantic colours (success/warning/error/info). `neutral` is for status
@@ -48,9 +49,9 @@ const toneStyles: Record<Tone, { container: string; text: string }> = {
 export function Badge({ label, tone = "neutral" }: BadgeProps) {
   const styles = toneStyles[tone];
   return (
-    <View className={`rounded-full px-2.5 py-1 ${styles.container}`}>
+    <View className={cn("rounded-full px-2.5 py-1", styles.container)}>
       <Text
-        className={`text-label-sm uppercase tracking-widest ${styles.text}`}
+        className={cn("text-label-sm uppercase tracking-widest", styles.text)}
       >
         {label}
       </Text>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, TextInput, TextInputProps, Pressable } from "react-native";
 import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 type LabelSize = "sm" | "md" | "lg";
 
@@ -23,6 +24,12 @@ export const FOCUS_RING = {
   boxShadow: "0px 0px 0px 3px rgba(129, 19, 211, 0.25)",
 };
 
+/** Borda do campo por estado — compartilhada com [SearchInput]. */
+export function controlBorder(focused: boolean, error?: string) {
+  if (error) return "border-error";
+  return focused ? "border-purple-300" : "border-white/12";
+}
+
 export function Input({
   label,
   error,
@@ -38,9 +45,11 @@ export function Input({
   return (
     <View className="gap-1.5">
       <Text
-        className={`${labelSizes[labelSize]} uppercase tracking-widest text-gray-200 ${
-          centeredLabel ? "text-center" : ""
-        }`}
+        className={cn(
+          labelSizes[labelSize],
+          "uppercase tracking-widest text-gray-200",
+          centeredLabel && "text-center",
+        )}
       >
         {label}
       </Text>
@@ -69,7 +78,10 @@ export function Input({
             { fontSize: 18, lineHeight: 20, includeFontPadding: false },
             focused && !error ? FOCUS_RING : null,
           ]}
-          className={`w-full rounded-xl border bg-gray-600 px-5 py-5 text-body-md text-white ${error ? "border-error" : focused ? "border-purple-300" : "border-white/12"} `}
+          className={cn(
+            "w-full rounded-xl border bg-gray-600 px-5 py-5 text-body-md text-white",
+            controlBorder(focused, error),
+          )}
         />
         {secureToggle && (
           <Pressable

@@ -3,6 +3,7 @@ import Check from "lucide-react-native/icons/check";
 import type { LocalSet } from "./SetRow";
 import type { Exercise, WorkoutExercise } from "../../types/api.types";
 import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 interface ExerciseChipsProps {
   exercises: WorkoutExercise[];
@@ -37,19 +38,21 @@ export function ExerciseChips({
           <Pressable
             key={we.id}
             onPress={() => onSelect(i)}
-            className={`h-24 w-36 justify-between rounded-xl border px-3 py-3 active:opacity-70 ${
+            className={cn(
+              "h-24 w-36 justify-between rounded-xl border px-3 py-3 active:opacity-70",
               allDone
                 ? "border-purple-200/60 bg-purple-200/15"
                 : active
                   ? "border-purple-300/60 bg-purple-300/20"
-                  : "border-white/12 bg-gray-600"
-            }`}
+                  : "border-white/12 bg-gray-600",
+            )}
           >
             <View className="flex-row items-center justify-between">
               <Text
-                className={`text-xs font-bold ${
-                  active ? "text-purple-200" : "text-gray-400"
-                }`}
+                className={cn(
+                  "text-xs font-bold",
+                  active ? "text-purple-200" : "text-gray-400",
+                )}
               >
                 {i + 1}
               </Text>
@@ -64,9 +67,10 @@ export function ExerciseChips({
               )}
             </View>
             <Text
-              className={`text-label-md font-semibold ${
-                active ? "text-white" : "text-gray-200"
-              }`}
+              className={cn(
+                "text-label-md font-semibold",
+                active ? "text-white" : "text-gray-200",
+              )}
               numberOfLines={3}
             >
               {name}

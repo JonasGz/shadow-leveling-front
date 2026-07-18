@@ -25,6 +25,7 @@ import type { ExerciseSet, SessionStatus } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { bestSetId, formatSet, statsOf } from "../../../src/features/sets";
 import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -186,11 +187,12 @@ export default function SessionDetailScreen() {
                       return (
                         <View
                           key={set.id}
-                          className={`flex-row items-center justify-between rounded-xl px-3.5 py-3 ${
+                          className={cn(
+                            "flex-row items-center justify-between rounded-xl px-3.5 py-3",
                             isBest
                               ? "border border-purple-300/35 bg-purple-300/10"
-                              : "bg-gray-700"
-                          }`}
+                              : "bg-gray-700",
+                          )}
                         >
                           <View className="flex-row items-center gap-2">
                             {isBest ? (
@@ -201,9 +203,10 @@ export default function SessionDetailScreen() {
                               />
                             ) : null}
                             <Text
-                              className={`text-label-md font-semibold ${
-                                isBest ? "text-purple-100" : "text-gray-200"
-                              }`}
+                              className={cn(
+                                "text-label-md font-semibold",
+                                isBest ? "text-purple-100" : "text-gray-200",
+                              )}
                             >
                               Série {set.set_number}
                             </Text>

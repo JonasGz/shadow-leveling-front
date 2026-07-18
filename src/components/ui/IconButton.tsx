@@ -1,6 +1,7 @@
 import { Pressable, PressableProps } from "react-native";
 import type { LucideIcon } from "lucide-react-native";
 import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 type Variant = "outline" | "primary";
 
@@ -24,9 +25,10 @@ export function IconButton({
     <Pressable
       {...props}
       style={isPrimary ? PRIMARY_SHADOW : undefined}
-      className={`items-center justify-center self-center rounded-[10px] p-3 active:opacity-70 ${
-        isPrimary ? "bg-purple-300" : "border border-white/12"
-      }`}
+      className={cn(
+        "items-center justify-center self-center rounded-[10px] p-3 active:opacity-70",
+        isPrimary ? "bg-purple-300" : "border border-white/12",
+      )}
     >
       <Icon
         size={size}

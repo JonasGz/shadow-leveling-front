@@ -23,6 +23,7 @@ import { useToast } from "../../src/components/ui/Toast";
 import { groupsService } from "../../src/services/groups.service";
 import { useScreenData } from "../../src/hooks/useScreenData";
 import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 // Overlapping member avatars for a group card. Shows up to 3 real avatars and a
 // "+N" bubble for the remaining members. Falls back to a plain purple circle
@@ -35,9 +36,10 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       {shown.map((url, i) => (
         <View
           key={i}
-          className={`h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500 ${
-            i > 0 ? "-ml-2" : ""
-          }`}
+          className={cn(
+            "h-6 w-6 overflow-hidden rounded-full border-[1.5px] border-gray-600 bg-gray-500",
+            i > 0 && "-ml-2",
+          )}
         >
           <Image
             source={{ uri: url }}
@@ -48,9 +50,10 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
       ))}
       {rest > 0 && (
         <View
-          className={`h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25 ${
-            shown.length > 0 ? "-ml-2" : ""
-          }`}
+          className={cn(
+            "h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-gray-600 bg-purple-300/25",
+            shown.length > 0 && "-ml-2",
+          )}
         >
           <Text className="text-[9px] font-bold text-purple-200">+{rest}</Text>
         </View>

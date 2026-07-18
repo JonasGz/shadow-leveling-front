@@ -31,6 +31,7 @@ import {
 import { TRACK } from "../../src/lib/ui";
 import type { SessionStatus } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
+import { cn } from "../../src/lib/cn";
 
 const STATUS_META: Record<
   SessionStatus,
@@ -194,14 +195,16 @@ export default function HistoryScreen() {
               <Pressable
                 key={p.key}
                 onPress={() => setPreset(p.key)}
-                className={`rounded-full border px-3.5 py-2 ${
-                  active ? "bg-purple-300" : "border-white/12 bg-transparent"
-                }`}
+                className={cn(
+                  "rounded-full border px-3.5 py-2",
+                  active ? "bg-purple-300" : "border-white/12 bg-transparent",
+                )}
               >
                 <Text
-                  className={`text-label-md font-semibold ${
-                    active ? "text-white" : "text-gray-200"
-                  }`}
+                  className={cn(
+                    "text-label-md font-semibold",
+                    active ? "text-white" : "text-gray-200",
+                  )}
                 >
                   {p.label}
                 </Text>
@@ -256,10 +259,13 @@ export default function HistoryScreen() {
                     >
                       <View className="flex-row items-center justify-between">
                         <View
-                          className={`rounded-full px-2.5 py-1 ${meta.badge}`}
+                          className={cn("rounded-full px-2.5 py-1", meta.badge)}
                         >
                           <Text
-                            className={`text-label-sm font-bold uppercase ${meta.text}`}
+                            className={cn(
+                              "text-label-sm font-bold uppercase",
+                              meta.text,
+                            )}
                             style={TRACK}
                           >
                             {meta.label}

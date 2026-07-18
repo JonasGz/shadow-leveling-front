@@ -45,6 +45,7 @@ import type {
   WorkoutSession,
 } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const FINISH_SHADOW = { boxShadow: "0px 6px 18px rgba(129, 19, 211, 0.4)" };
 
@@ -443,9 +444,10 @@ export default function WorkoutSessionScreen() {
         {exercises.map((we, i) => (
           <View
             key={we.id}
-            className={`h-1.5 rounded-full ${
-              i === current ? "w-5 bg-purple-200" : "w-1.5 bg-gray-500"
-            }`}
+            className={cn(
+              "h-1.5 rounded-full",
+              i === current ? "w-5 bg-purple-200" : "w-1.5 bg-gray-500",
+            )}
           />
         ))}
       </View>

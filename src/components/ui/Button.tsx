@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import type { LucideIcon } from "lucide-react-native";
 import { color } from "../../theme/palette";
+import { cn } from "../../lib/cn";
 
 type Variant = "default" | "tonal" | "ghost" | "destructive";
 type Size = "sm" | "md";
@@ -74,28 +75,33 @@ export function Button({
   const transformClass = transform === "none" ? "" : transform;
   const styles = variantStyles[variant];
   const isDisabled = disabled || loading;
-  // NativeWind doesn't reliably last-wins two conflicting text-<size> classes,
-  // so only apply the default size when labelClassName doesn't set its own.
-  const sizeClass =
-    /(^|\s)text-(label|body|title|display|subtitle|button|caption|h[123])/.test(
-      labelClassName,
-    )
-      ? ""
-      : "text-label-md";
 
   return (
     <Pressable
       {...props}
       disabled={isDisabled}
-      className={`flex-row items-center justify-center gap-2 rounded-lg ${sizePad[size]} ${styles.container} ${fullWidth ? "w-full" : ""} ${isDisabled ? "opacity-50" : ""} `}
+      className={cn(
+        "flex-row items-center justify-center gap-2 rounded-lg",
+        sizePad[size],
+        styles.container,
+        fullWidth && "w-full",
+        isDisabled && "opacity-50",
+      )}
     >
       {loading ? (
         <ActivityIndicator size="small" color={styles.spinner} />
       ) : (
         <>
           {Icon && <Icon size={20} color={styles.icon} fill={styles.icon} />}
+          {/* text-label-md é o padrão; um text-* vindo em labelClassName vence
+              pelo merge, sem precisar detectá-lo antes. */}
           <Text
-            className={`${sizeClass} ${transformClass} ${styles.text} ${labelClassName}`}
+            className={cn(
+              "text-label-md",
+              transformClass,
+              styles.text,
+              labelClassName,
+            )}
           >
             {label}
           </Text>

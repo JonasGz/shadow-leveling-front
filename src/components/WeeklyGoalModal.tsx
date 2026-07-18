@@ -14,6 +14,7 @@ import { useAuthStore } from "../stores/auth.store";
 import { useToast } from "./ui/Toast";
 import type { User } from "../types/api.types";
 import { color } from "../theme/palette";
+import { cn } from "../lib/cn";
 
 interface WeeklyGoalModalProps {
   visible: boolean;
@@ -105,9 +106,10 @@ export function WeeklyGoalModal({
               <Pressable
                 onPress={save}
                 disabled={saving || !isValid}
-                className={`items-center rounded-lg py-3 active:opacity-80 ${
-                  isValid ? "bg-purple-300" : "bg-purple-300/40"
-                }`}
+                className={cn(
+                  "items-center rounded-lg py-3 active:opacity-80",
+                  isValid ? "bg-purple-300" : "bg-purple-300/40",
+                )}
               >
                 {saving ? (
                   <ActivityIndicator size="small" color={color.white} />

@@ -25,6 +25,7 @@ import Award from "lucide-react-native/icons/award";
 import Share2 from "lucide-react-native/icons/share-2";
 import type { GroupDetail, FeedItem } from "../../../src/types/api.types";
 import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 const POLL_MS = 15000;
 
@@ -55,9 +56,10 @@ const FeedRow = memo(function FeedRow({
   return (
     <Pressable
       onPress={() => router.push(`/group/${groupId}/${item.session_id}`)}
-      className={`flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70 ${
-        first ? "" : "border-t border-white/7"
-      }`}
+      className={cn(
+        "flex-row items-center gap-3 rounded-lg bg-gray-600 px-3 py-3 active:opacity-70",
+        first ? "" : "border-t border-white/7",
+      )}
     >
       {item.photo_url ? (
         <Image
@@ -110,9 +112,10 @@ function PodiumItem({
   return (
     <View className="flex-row items-center gap-2">
       <View
-        className={`items-center justify-center overflow-hidden rounded-full bg-gray-600 ${
-          badge === "you" ? "h-[52px] w-[52px]" : "h-[60px] w-[60px]"
-        }`}
+        className={cn(
+          "items-center justify-center overflow-hidden rounded-full bg-gray-600",
+          badge === "you" ? "h-[52px] w-[52px]" : "h-[60px] w-[60px]",
+        )}
         style={
           badge === "leader"
             ? {

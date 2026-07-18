@@ -21,6 +21,7 @@ import { DAY_UPPER } from "../../../src/lib/date";
 import type { WorkoutExercise } from "../../../src/types/api.types";
 import { useScreenData } from "../../../src/hooks/useScreenData";
 import { color } from "../../../src/theme/palette";
+import { cn } from "../../../src/lib/cn";
 
 function repsLabel(ex: WorkoutExercise): string {
   if (ex.exercise.type === "time") {
@@ -168,19 +169,22 @@ export default function WorkoutDetailScreen() {
           {/* Status + dias */}
           <View className="flex-row items-center gap-2">
             <View
-              className={`flex-row items-center gap-1.5 rounded-full px-3 py-1 ${
-                workout?.active ? "bg-success/15" : ""
-              }`}
+              className={cn(
+                "flex-row items-center gap-1.5 rounded-full px-3 py-1",
+                workout?.active ? "bg-success/15" : "",
+              )}
             >
               <View
-                className={`h-2 w-2 rounded-full ${
-                  workout?.active ? "bg-success" : "bg-gray-400"
-                }`}
+                className={cn(
+                  "h-2 w-2 rounded-full",
+                  workout?.active ? "bg-success" : "bg-gray-400",
+                )}
               />
               <Text
-                className={`text-label-sm font-bold ${
-                  workout?.active ? "text-success" : "text-gray-200"
-                }`}
+                className={cn(
+                  "text-label-sm font-bold",
+                  workout?.active ? "text-success" : "text-gray-200",
+                )}
               >
                 {workout?.active ? "Ativo" : "Inativo"}
               </Text>
