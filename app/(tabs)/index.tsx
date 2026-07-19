@@ -196,7 +196,7 @@ export default function HomeScreen() {
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
-          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-purple-300 active:opacity-70"
+          className="h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-purple-300 active:opacity-70"
         >
           {user?.avatar_url ? (
             <Image
