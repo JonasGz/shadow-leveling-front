@@ -13,7 +13,6 @@ import {
 import { Image } from "../../src/lib/image";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
 import Swords from "lucide-react-native/icons/swords";
@@ -140,16 +139,6 @@ export default function GroupsScreen() {
                   onPress={() => router.push(`/group/${g.id}`)}
                   className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-4 pl-5 pr-4 active:opacity-80"
                 >
-                  <LinearGradient
-                    colors={[color["purple-200"], color["purple-300"]]}
-                    style={{
-                      position: "absolute",
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: 4,
-                    }}
-                  />
                   <View className="flex-1">
                     <Text className="text-xl font-bold text-white">
                       {g.name}
