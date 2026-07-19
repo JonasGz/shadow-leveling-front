@@ -16,6 +16,9 @@ export default function LandingScreen() {
   const goToLogin = () => router.push("/(auth)/login");
 
   return (
+    // Único Image do react-native que sobrou: o resto do app migrou para
+    // expo-image (cache em disco), que não tem equivalente de ImageBackground.
+    // Aqui não faria diferença — o asset é do bundle, não vem da rede.
     <ImageBackground
       source={require("../../assets/landing/bg-landing.jpg")}
       resizeMode="cover"

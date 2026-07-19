@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   Pressable,
   TextInput,
   ActivityIndicator,
@@ -12,6 +11,7 @@ import {
   Platform,
   useWindowDimensions,
 } from "react-native";
+import { Image } from "../../../src/lib/image";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -61,7 +61,7 @@ function Avatar({
       className="bg-gray-500"
     >
       {uri ? (
-        <Image source={{ uri }} className="h-full w-full" resizeMode="cover" />
+        <Image source={{ uri }} className="h-full w-full" contentFit="cover" />
       ) : (
         <Text
           className="font-bold text-purple-200"
@@ -237,7 +237,7 @@ export default function SessionPostScreen() {
               <Image
                 source={{ uri: detail.photo_url }}
                 className="h-full w-full"
-                resizeMode="cover"
+                contentFit="cover"
               />
             ) : (
               <View className="h-full w-full bg-gray-500" />

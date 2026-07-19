@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import {
   View,
   Text,
-  Image,
   Pressable,
   ScrollView,
   ActivityIndicator,
@@ -13,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { Image } from "../../src/lib/image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -114,7 +114,7 @@ export default function ProfileScreen() {
   const displayName = user?.nickname?.trim() || generatedName;
 
   async function changeAvatar() {
-    const uri = await pickImage();
+    const uri = await pickImage(512);
     if (!uri) return;
     setUploadingAvatar(true);
     try {
@@ -233,7 +233,7 @@ export default function ProfileScreen() {
                       <Image
                         source={{ uri: user.avatar_url }}
                         className="h-full w-full"
-                        resizeMode="cover"
+                        contentFit="cover"
                       />
                     ) : (
                       <Text className="text-4xl font-extrabold text-white">

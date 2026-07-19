@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
-  Image,
   Pressable,
   ScrollView,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
+import { Image } from "../../src/lib/image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -202,7 +202,7 @@ export default function HomeScreen() {
             <Image
               source={{ uri: user.avatar_url }}
               className="h-full w-full"
-              resizeMode="cover"
+              contentFit="cover"
             />
           ) : (
             <Text className="font-bold text-white">{initials}</Text>

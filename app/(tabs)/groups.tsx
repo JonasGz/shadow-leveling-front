@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   View,
   Text,
-  Image,
   ScrollView,
   Pressable,
   RefreshControl,
@@ -11,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { Image } from "../../src/lib/image";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -44,7 +44,7 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
           <Image
             source={{ uri: url }}
             className="h-full w-full"
-            resizeMode="cover"
+            contentFit="cover"
           />
         </View>
       ))}

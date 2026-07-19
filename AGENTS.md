@@ -71,7 +71,9 @@ background is `gray-700` (`#111113`).
   classes in the app rendered nothing.
 - `style={{}}` only for what a class cannot express: `LinearGradient` and
   `Animated.View` (no cssInterop registered, they ignore `className`), shadows,
-  and genuinely dynamic values.
+  and genuinely dynamic values. `expo-image` **is** registered, in
+  `src/lib/image.ts` — import `Image` from there, never from `expo-image`, or
+  `className` is silently ignored and the image renders at size zero.
 - **Radius is four values, one per role**: `rounded-sm` 4px (micro),
   `rounded-lg` 12px (control: input, button, chip, icon tile), `rounded-2xl`
   28px (container: card, panel, modal, sheet), `rounded-full` (pill, circle).

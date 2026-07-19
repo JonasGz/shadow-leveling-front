@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   Pressable,
   RefreshControl,
   ActivityIndicator,
@@ -11,6 +10,7 @@ import {
   AppState,
   Share,
 } from "react-native";
+import { Image } from "../../../src/lib/image";
 import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthStore } from "../../../src/stores/auth.store";
@@ -152,7 +152,7 @@ function PodiumItem({
           <Image
             source={{ uri: avatarUrl }}
             className="h-full w-full"
-            resizeMode="cover"
+            contentFit="cover"
           />
         ) : (
           <Text className="text-xl font-bold text-purple-200">{initial}</Text>
@@ -257,7 +257,7 @@ export default function GroupDetailScreen() {
 
   async function handleChangeCover() {
     if (!id) return;
-    const uri = await pickImage();
+    const uri = await pickImage(1080);
     if (!uri) return;
     setUploadingCover(true);
     try {
