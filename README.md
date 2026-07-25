@@ -142,9 +142,10 @@ src/
 | **Sessão de treino** | Execução com registro de séries, timer de descanso, conclusão com resumo | `POST /workout-sessions`, `POST /workout-sessions/{id}/sets`, `PUT /workout-sessions/{id}` |
 | **Histórico**        | Sessões realizadas + treinos perdidos, detalhe da sessão                 | `GET /workout-sessions`, `GET /workout-sessions/missed`, `GET /workout-sessions/{id}`      |
 | **Perfil**           | Dados do usuário, sessões ativas (revogar), logout                       | `GET /auth/me`, `GET /auth/sessions`, `DELETE /auth/sessions/{id}`, `POST /auth/logout`    |
-
-> A **Home/Dashboard** ainda é um stub — próxima tela a ser implementada.
-> O sistema de **XP / níveis** está propositalmente fora do escopo atual.
+| **Gamificação**      | Nível, rank e XP no dashboard e no perfil                                | `GET /me/level`                                                                            |
+| **Grupos**           | Lista, detalhe, ranking, feed com reações e comentários                  | `GET/POST /groups`, `GET /groups/{id}/ranking`, `GET /groups/{id}/feed`                    |
+| **Missões**          | Tarefas do dia e resumo semanal                                          | `GET /tasks/day`, `GET /user-metrics/today`, `GET /user-metrics/weekly`                    |
+| **Assistente de IA** | Chat guiado, consentimento 18+, preview e criação da proposta            | `POST /ai/workout-chat`, `PATCH /auth/me/ai-consent`, `POST /ai/report`                    |
 
 ---
 
@@ -159,6 +160,46 @@ O token é guardado de forma segura no **`expo-secure-store`**. O Axios
 ([src/services/api.ts](src/services/api.ts)) injeta automaticamente o header
 `Authorization: Bearer <token>` em toda requisição, e um interceptor de resposta
 limpa o token e redireciona para o login em caso de `401`.
+
+---
+
+## Assistente de treino com IA
+
+Um chat guiado ([app/ai/](app/ai/)) que faz seis perguntas — dias por semana,
+tempo de treino, objetivo, foco muscular, duração e onde treina — e devolve uma
+**proposta** de treino para o usuário revisar.
+
+A proposta **não é um treino**. Ela vive apenas no estado da tela até o usuário
+confirmar; só então `createWorkoutFromProposal`
+([src/services/ai.service.ts](src/services/ai.service.ts)) cria os treinos de
+verdade, pelas mesmas rotas que o fluxo manual usa. Um treino por dia do plano,
+sequencialmente — o assistente propõe, o usuário cria.
+
+O servidor é stateless, então o app reenvia o histórico da conversa a cada
+turno. Nada é guardado em disco.
+
+A resposta chega em um de quatro estados:
+
+| Estado     | O que a tela faz                                                     |
+| ---------- | -------------------------------------------------------------------- |
+| `question` | renderiza a próxima pergunta                                         |
+| `proposal` | mostra o preview com os dias, exercícios, séries e repetições        |
+| `refusal`  | recusa; se `health_stop`, **encerra** e oferece a criação manual     |
+| `error`    | mensagem genérica de indisponibilidade                               |
+
+**Menção a saúde encerra a conversa.** Se o usuário citar lesão, dor, gravidez
+ou medicação, o assistente não adapta o treino — ele encaminha a um
+profissional. É uma decisão de produto, não uma limitação técnica.
+
+**Consentimento antes da primeira mensagem.** A tela
+[app/ai/consent.tsx](app/ai/consent.tsx) coleta o aceite e a data de nascimento
+(18+) antes de qualquer texto sair do dispositivo. Um `428` do backend leva o
+usuário para lá; `403` é menor de idade, `429` é o limite diário, e `404`
+significa backend sem provider configurado — nesse caso o app segue funcionando
+normalmente na criação manual.
+
+O botão de report envia a proposta para revisão sem sair do app, como exige a
+política de conteúdo gerado por IA do Google Play.
 
 ---
 

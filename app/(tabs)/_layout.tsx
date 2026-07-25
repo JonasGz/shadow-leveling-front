@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { View, Pressable } from "react-native";
 import Animated, {
@@ -17,6 +17,7 @@ import Users from "lucide-react-native/icons/users";
 import History from "lucide-react-native/icons/history";
 import UserPen from "lucide-react-native/icons/user-pen";
 import Dumbbell from "lucide-react-native/icons/dumbbell";
+import { LinearGradient } from "expo-linear-gradient";
 import { color } from "../../src/theme/palette";
 
 const TABS = [
@@ -270,18 +271,67 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
   );
 }
 
+/**
+ * Atalho para o assistente de treino, flutuando sobre as abas.
+ *
+ * Fica acima do alcance do círculo da aba ativa (que sobe ~36px acima da
+ * barra), senão colide com ele quando a última aba está selecionada.
+ */
+function AssistantFab() {
+  return (
+    <Pressable
+      onPress={() => router.push("/ai")}
+      accessibilityRole="button"
+      accessibilityLabel="Criar treino com IA"
+      className="absolute bottom-32 right-6 z-50"
+    >
+      <LinearGradient
+        colors={[color["purple-grad-from"], color["purple-grad-to"]]}
+        // 135° do CSS: canto superior esquerdo ao inferior direito.
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          // Dimensões explícitas, não `flex: 1`: o pai é absolute e o
+          // gradiente colapsava para altura zero.
+          width: 60,
+          height: 60,
+          borderRadius: 9999,
+          alignItems: "center",
+          justifyContent: "center",
+          borderWidth: 1,
+          // purple-100 a 35%, como no design.
+          borderColor: "rgba(202,164,255,0.35)",
+        }}
+      >
+        <Svg width={26} height={26} viewBox="0 0 24 24" fill={color.white}>
+          <Path d="M9.9 4.6 11.5 9l4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4L3.9 10.6l4.4-1.6 1.6-4.4Z" />
+          <Path d="M18 3.5l.75 2 2 .75-2 .75-.75 2-.75-2-2-.75 2-.75.75-2Z" />
+          <Path d="M18.5 14.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6.6-1.6Z" />
+        </Svg>
+      </LinearGradient>
+    </Pressable>
+  );
+}
+
 export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-      }}
-      tabBar={(props) => <TabBar {...props} />}
-    >
-      {TABS.map((t) => (
-        <Tabs.Screen key={t.name} name={t.name} options={{ title: t.title }} />
-      ))}
-    </Tabs>
+    <View style={{ flex: 1 }}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+        }}
+        tabBar={(props) => <TabBar {...props} />}
+      >
+        {TABS.map((t) => (
+          <Tabs.Screen
+            key={t.name}
+            name={t.name}
+            options={{ title: t.title }}
+          />
+        ))}
+      </Tabs>
+      <AssistantFab />
+    </View>
   );
 }

@@ -1364,11 +1364,160 @@ DELETE /me/push-token       body: { "token": "..." }
 
 ---
 
-# MÓDULO 9 — Utilitários
+# MÓDULO 9 — Assistente de Treino por IA (`/ai`)
+
+As rotas deste módulo **só existem quando o backend tem `AI_API_KEY`
+configurada**. Sem a chave, o módulo não é registrado e `/ai/workout-chat`
+responde 404 — trate isso como "recurso indisponível", não como erro.
+
+O assistente **nunca cria nada**. Ele devolve uma _proposta_; criar os treinos é
+uma chamada sua a `POST /workouts` + `POST /workouts/{id}/exercises`, depois que
+o usuário confirmar no preview.
+
+A proposta vem **dividida em dias** (`proposal.days`), um por sessão da semana.
+Cada dia vira **um workout** com **um** `days_of_week`. Um plano de 5 dias são 5
+workouts, não um workout repetido 5 vezes: o split é decidido no servidor, por
+tabela, e cobre o corpo inteiro em qualquer frequência.
 
 ---
 
-## 8.1 Health Check (público)
+## 9.1 Aceitar o consentimento de IA (privado)
+
+Obrigatório antes da primeira mensagem. Registra a data de nascimento (gate 18+)
+e o consentimento explícito exigido pela App Review Guideline 5.1.2(i) para
+enviar conteúdo do usuário a um provedor de IA terceiro.
+
+```
+PATCH /auth/me/ai-consent
+```
+
+```json
+{ "birth_date": "1995-03-14" }
+```
+
+**Resposta 204** (sem corpo). Erros: `400` data inválida ou futura.
+
+---
+
+## 9.2 Conversar com o assistente (privado)
+
+```
+POST /ai/workout-chat
+```
+
+O servidor **não guarda a conversa**: envie o histórico completo a cada
+requisição.
+
+```json
+{
+  "messages": [
+    { "role": "user", "content": "quero um treino" },
+    {
+      "role": "assistant",
+      "content": "Quantos dias por semana você quer treinar?"
+    },
+    { "role": "user", "content": "3 dias" }
+  ]
+}
+```
+
+**Resposta 200** — sempre com um `state`, e exatamente um de `text`/`proposal`:
+
+| `state`    | Significado                        | O que a UI faz                                                                                          |
+| ---------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `question` | Falta responder alguma coisa       | Mostra `text` como a próxima pergunta                                                                   |
+| `refusal`  | Fora do escopo, ou menção de saúde | Mostra `text`. Se `health_stop` for `true`, **encerre a conversa** e ofereça criar o treino manualmente |
+| `proposal` | Proposta pronta                    | Abre o preview com `proposal`                                                                           |
+| `error`    | Triagem de saúde indisponível      | Mostra `text` e ofereça tentar de novo                                                                  |
+
+```json
+{
+  "state": "proposal",
+  "proposal": {
+    "name": "Plano de Hipertrofia",
+    "days": [
+      {
+        "name": "Empurrar",
+        "day_of_week": "monday",
+        "exercises": [
+          {
+            "exercise_id": "uuid",
+            "name": "Supino reto com barra",
+            "sets": 3,
+            "reps_min": 8,
+            "reps_max": 12,
+            "sort_order": 0
+          }
+        ]
+      },
+      {
+        "name": "Puxar",
+        "day_of_week": "wednesday",
+        "exercises": []
+      },
+      {
+        "name": "Pernas",
+        "day_of_week": "friday",
+        "exercises": []
+      }
+    ]
+  }
+}
+```
+
+O `focus_muscles` que o usuário responde **não filtra** o plano: ele adiciona um
+exercício a mais nos dias que já treinam aqueles músculos. A semana continua
+cobrindo o corpo inteiro.
+
+```json
+{
+  "state": "refusal",
+  "text": "Não consigo montar um treino levando condições de saúde em conta...",
+  "health_stop": true
+}
+```
+
+**Erros:**
+
+| Código | Quando                                      | O que fazer                                                |
+| ------ | ------------------------------------------- | ---------------------------------------------------------- |
+| `428`  | Sem consentimento ou sem data de nascimento | Abrir a tela de consentimento (9.1) e repetir a requisição |
+| `403`  | Usuário com menos de 18 anos                | Recurso indisponível para esta conta                       |
+| `429`  | Passou de 20 mensagens no dia               | Avisar e sugerir voltar amanhã                             |
+| `404`  | Backend sem `AI_API_KEY`                    | Esconder o ícone do assistente                             |
+
+**Obrigações de loja na UI:** o output da IA precisa de um **botão de denúncia
+in-app** (9.3) e de um **disclaimer visível** de que é sugestão gerada por IA e
+não substitui orientação profissional.
+
+---
+
+## 9.3 Denunciar output da IA (privado)
+
+Exigido pela política de AI-Generated Content do Google Play: o usuário precisa
+conseguir denunciar conteúdo ofensivo **sem sair do app** — um link `mailto:`
+não atende.
+
+```
+POST /ai/report
+```
+
+```json
+{
+  "reason": "usuario_denunciou_proposta",
+  "content": "{...conteúdo denunciado...}"
+}
+```
+
+**Resposta 204** (sem corpo). Limite de 30 por usuário por dia.
+
+---
+
+# MÓDULO 10 — Utilitários
+
+---
+
+## 10.1 Health Check (público)
 
 ```
 GET /health

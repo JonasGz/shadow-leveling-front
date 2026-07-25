@@ -37,6 +37,13 @@ const color = {
   "purple-500": "#41006C",
   "purple-600": "#1E0037",
 
+  // Par do gradiente do FAB do assistente. Nomeados como par, e não como
+  // pontos da escala, porque só existem juntos: ambos caem entre purple-200 e
+  // purple-400, e adicioná-los como degraus tornaria a escala mais densa do
+  // que o design usa.
+  "purple-grad-from": "#9F1FFF",
+  "purple-grad-to": "#7A0FD0",
+
   // Estes seguem semânticos de propósito: cada um é um hex único, sem apelido
   // duplicado, e o nome já carrega a intenção. `bg-error` diz mais que
   // `bg-red-500`.

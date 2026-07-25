@@ -28,11 +28,38 @@ There is no E2E suite. Unit/component tests live next to the code as `*.test.ts(
 
 ## Architecture
 
-- `app/` — Expo Router file-based routes. `_layout.tsx` bootstraps auth: reads the stored token, calls `authService.me()`, and redirects to `(auth)/login` or `(tabs)/`. Route groups: `(auth)/`, `(tabs)/`, plus `workout/`, `session/` stacks.
+- `app/` — Expo Router file-based routes. `_layout.tsx` bootstraps auth: reads the stored token, calls `authService.me()`, and redirects to `(auth)/login` or `(tabs)/`. Route groups: `(auth)/`, `(tabs)/`, plus `workout/`, `session/`, `ai/` stacks.
 - `src/services/api.ts` — the single Axios instance. A **request interceptor** injects the bearer token from `expo-secure-store`; a **response interceptor** clears the token and redirects to login on any `401`. All other services (`auth`, `workouts`, `sessions`, `exercises`, `metrics`) use this instance.
 - `src/stores/` — Zustand stores (`auth`, `workouts`).
 - `src/components/ui/` — themed primitives (Button, Card, Input, Badge, Toast, EmptyState). `Toast` is provided via a `ToastProvider` at the root layout.
 - `src/types/api.types.ts` — shared API types.
+
+### O assistente de treino (`app/ai/`)
+
+Um chat guiado que devolve uma **proposta**, não um treino. A regra de ouro:
+a proposta só vira treino quando o usuário confirma, e a criação passa pelas
+rotas normais de workout — `createWorkoutFromProposal` em `ai.service.ts` faz
+um `POST /workouts` + `addExercise` por dia, **sequencial** (paralelo correria
+com o `sort_order`).
+
+O servidor é stateless: `aiService.chat()` reenvia o histórico inteiro a cada
+turno. A tela guarda as mensagens em `useState`, nada em storage.
+
+Quatro estados chegam do backend (`AIChatResponse.state`):
+
+- `question` — renderiza `text` como a próxima pergunta.
+- `proposal` — renderiza o preview; nada foi persistido ainda.
+- `refusal` — se `health_stop` for `true`, a conversa **encerra** (o usuário
+  mencionou uma condição de saúde) e a tela oferece a criação manual.
+- `error` — mensagem genérica; o motivo real só existe no log do servidor.
+
+O status HTTP vira `AIBlockedError` com um `reason` (`ai.service.ts`): 428
+manda para `app/ai/consent.tsx` (falta consentimento ou data de nascimento),
+403 é menor de 18, 429 é limite diário, 404 é backend sem provider configurado.
+Nenhum deles é erro de rede — todos têm tratamento próprio na tela.
+
+O botão de report (`aiService.report`) é exigência da política de conteúdo
+gerado por IA do Google Play: precisa funcionar sem sair do app.
 
 Visual identity is high-contrast dark mode with purple as the accent. Root
 background is `gray-700` (`#111113`).
@@ -45,7 +72,9 @@ background is `gray-700` (`#111113`).
   are visibly the same color. The scale is literal (`purple-300`, `gray-600`),
   not semantic — `primary`/`surface-low`/`on-surface` were removed because ~10
   aliases pointed at the same hex. `error`/`success`/`warning`/`info` and
-  `difficulty-*` stay semantic on purpose.
+  `difficulty-*` stay semantic on purpose. `purple-grad-from`/`purple-grad-to`
+  são um par de gradiente, não degraus da escala: só existem juntos (o FAB do
+  assistente) e ambos caem entre `purple-200` e `purple-400`.
 - Never hardcode a hex. In `className` use the token; in a JS prop (Lucide
   `color=`, `LinearGradient colors=`, `ActivityIndicator`) import `color` from
   the palette.

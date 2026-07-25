@@ -20,6 +20,9 @@ export declare const color: {
   readonly "purple-500": "#41006C";
   readonly "purple-600": "#1E0037";
 
+  readonly "purple-grad-from": "#9F1FFF";
+  readonly "purple-grad-to": "#7A0FD0";
+
   readonly success: "#22C55E";
   readonly warning: "#F59E0B";
   readonly error: "#EF4444";
