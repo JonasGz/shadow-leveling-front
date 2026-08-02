@@ -29,9 +29,6 @@ import { cn } from "../../../src/lib/cn";
 
 const POLL_MS = 15000;
 
-// Lightweight signature to detect real changes: scores + the newest feed item.
-// (Deliberately ignores feed length so paginating older items doesn't count as
-// a change and trigger a reset.)
 function signature(
   topScore: number,
   myScore: number,
@@ -40,8 +37,6 @@ function signature(
   return `${topScore}-${myScore}-${headSessionId}`;
 }
 
-// Props são só primitivos + o item; ao paginar itens antigos, as linhas já
-// renderizadas não refazem trabalho.
 const FeedRow = memo(function FeedRow({
   item,
   groupId,
@@ -70,8 +65,6 @@ const FeedRow = memo(function FeedRow({
         <Text className="text-lg font-bold text-white">
           {item.workout_name}
         </Text>
-        {/* Avatar do autor. O círculo grande da esquerda é a foto do treino
-            (ws.photo_url), não a pessoa — por isso o nome carrega o seu. */}
         <View className="mt-1 flex-row items-center gap-1.5">
           {item.avatar_url ? (
             <Image
@@ -89,8 +82,6 @@ const FeedRow = memo(function FeedRow({
         </View>
         {hasSocial && (
           <View className="absolute bottom-[-22px] right-0">
-            {/* Emoji num Text aninhado: cresce sem levar o contador junto, que
-                fica de propósito discreto no text-xs. */}
             <Text className="mt-1 text-xs font-medium text-gray-200">
               {item.reaction_count > 0 && (
                 <>
@@ -116,9 +107,6 @@ const FeedRow = memo(function FeedRow({
   );
 });
 
-// A compact podium item: circular avatar (initial), then the week's score with a
-// trophy (leader) or a "Você" label (current user) beneath it. The current
-// user's avatar gets a purple highlight ring.
 function PodiumItem({
   name,
   score,
@@ -209,7 +197,6 @@ export default function GroupDetailScreen() {
     }
   }, [id, showToast]);
 
-  // Silent poll: fetches fresh data but only re-renders if the signature moved.
   const poll = useCallback(async () => {
     if (!id) return;
     try {
@@ -222,14 +209,12 @@ export default function GroupDetailScreen() {
         detail.my_score,
         page.data[0]?.session_id ?? "",
       );
-      if (sig === sigRef.current) return; // nada mudou → nenhum setState/re-render
+      if (sig === sigRef.current) return;
       sigRef.current = sig;
       setGroup(detail);
       setFeed(page.data);
       setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
-    } catch {
-      // silencioso: mantém o que já está na tela
-    }
+    } catch {}
   }, [id]);
 
   useFocusEffect(
@@ -248,9 +233,7 @@ export default function GroupDetailScreen() {
       const page = await groupsService.feed(id, cursor);
       setFeed((prev) => [...prev, ...page.data]);
       setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
-    } catch {
-      /* silent: keep what we have */
-    }
+    } catch {}
   }
 
   const isOwner = group != null && group.owner_id === currentUserId;
@@ -277,9 +260,7 @@ export default function GroupDetailScreen() {
       await Share.share({
         message: `Entra no meu grupo "${group.name}" no Shadow Leveling: ${url}`,
       });
-    } catch {
-      /* user dismissed the share sheet */
-    }
+    } catch {}
   }
 
   function confirmLeave() {
@@ -301,7 +282,6 @@ export default function GroupDetailScreen() {
     ]);
   }
 
-  // Group feed items by day for the "--- Hoje ---" separators.
   const sections = useMemo(() => {
     const map = new Map<string, FeedItem[]>();
     for (const item of feed) {
@@ -333,7 +313,6 @@ export default function GroupDetailScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Top App Bar (mesma das outras telas) */}
       <View className="h-16 flex-row items-center px-4">
         <Pressable
           onPress={() => router.back()}
@@ -354,7 +333,6 @@ export default function GroupDetailScreen() {
         }
         onScrollEndDrag={loadMore}
       >
-        {/* Cover */}
         <Pressable
           onPress={isOwner ? handleChangeCover : undefined}
           className="rounded-4xl h-[140px] items-center justify-center overflow-hidden px-4"
@@ -365,8 +343,6 @@ export default function GroupDetailScreen() {
               className="h-full w-full rounded-3xl"
             />
           ) : (
-            // ponytail: the mockup's radial purple glow isn't expressible with
-            // expo-linear-gradient — approximated by the diagonal purple stops.
             <View className="h-full w-full items-center justify-center rounded-lg bg-gray-600">
               <Text className="text-xs font-medium uppercase text-gray-200">
                 {isOwner ? "Toque para definir a capa" : "Sem capa"}
@@ -380,11 +356,10 @@ export default function GroupDetailScreen() {
           )}
         </Pressable>
 
-        {/* Title row */}
         <View className="flex-row items-center justify-between px-4 pb-1 pt-4">
           <View className="flex-1 pr-2">
             <Text className="text-4xl font-bold text-white">{group.name}</Text>
-            <Text className="mt-1 text-xs font-medium text-gray-200">
+            <Text className="mt-1 text-xs font-normal text-gray-200">
               {group.member_count}{" "}
               {group.member_count === 1 ? "membro" : "membros"}
             </Text>
@@ -407,7 +382,6 @@ export default function GroupDetailScreen() {
           </View>
         </View>
 
-        {/* Podium: leader + you */}
         <View className="flex-row justify-center gap-6 py-4">
           <PodiumItem
             name={group.top_name}
@@ -423,7 +397,6 @@ export default function GroupDetailScreen() {
           />
         </View>
 
-        {/* Feed grouped by day */}
         <View className="px-4">
           {sections.length === 0 ? (
             <Text className="py-6 text-gray-200">

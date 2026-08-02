@@ -10,7 +10,6 @@ export interface AIMessage {
 
 export interface AIProposalExercise {
   exercise_id: string;
-  /** Comes from the catalogue row, not from model output. Display only. */
   name: string;
   sets: number;
   reps_min: number;
@@ -18,22 +17,12 @@ export interface AIProposalExercise {
   sort_order: number;
 }
 
-/** One training day of the plan. Becomes one workout, on one week day. */
 export interface AIProposalDay {
-  /** From the server's split table, e.g. "Peito e Tríceps". */
   name: string;
   day_of_week: DayOfWeek;
   exercises: AIProposalExercise[];
 }
 
-/**
- * A proposal is not a workout. It lives only in the screen's state until the
- * user confirms it, at which point {@link createWorkoutFromProposal} turns it
- * into real ones through the ordinary workout routes.
- *
- * One entry per training day, not one exercise list spread over several days:
- * a five-day plan is five different sessions.
- */
 export interface AIProposal {
   name: string;
   days: AIProposalDay[];
@@ -42,17 +31,12 @@ export interface AIProposal {
 export interface AIChatResponse {
   state: "question" | "refusal" | "proposal" | "error";
   text?: string;
-  /** Terminal refusal: the user mentioned a health condition. */
   health_stop?: boolean;
   proposal?: AIProposal;
 }
 
-/** Why a chat call could not proceed, mapped from the HTTP status. */
 export type AIBlockedReason =
-  | "consent_required" // 428 — show the consent screen, then retry
-  | "underage" // 403
-  | "rate_limited" // 429
-  | "unavailable"; // 404 — backend has no provider configured
+  "consent_required" | "underage" | "rate_limited" | "unavailable";
 
 export class AIBlockedError extends Error {
   constructor(readonly reason: AIBlockedReason) {
@@ -77,10 +61,6 @@ function toBlockedReason(status: number): AIBlockedReason | null {
 }
 
 export const aiService = {
-  /**
-   * Advances the conversation by one turn. The server keeps no state, so the
-   * full history goes on every call.
-   */
   async chat(messages: AIMessage[]): Promise<AIChatResponse> {
     try {
       const { data } = await api.post<AIChatResponse>("/ai/workout-chat", {
@@ -96,36 +76,16 @@ export const aiService = {
     }
   },
 
-  /**
-   * Records the AI disclosure consent and the birth date, in one call — the
-   * user gives both on the same screen.
-   */
   async acceptConsent(birthDate: string): Promise<void> {
     await api.patch("/auth/me/ai-consent", { birth_date: birthDate });
   },
 
-  /**
-   * Flags AI output as offensive or wrong. Required by Google Play's
-   * AI-Generated Content policy to work without leaving the app.
-   */
   async report(reason: string, content: string): Promise<void> {
     await api.post("/ai/report", { reason, content });
   },
 
-  /**
-   * Turns a confirmed proposal into a real workout. Deliberately built from
-   * the same routes the manual flow uses: the assistant proposes, the user
-   * creates.
-   */
-  /**
-   * Creates one workout per training day. A single-day plan keeps the plan's
-   * own name; a split names each workout after the day it trains, which is
-   * what the user sees in the workout list.
-   */
   async createWorkoutFromProposal(proposal: AIProposal): Promise<Workout[]> {
     const created: Workout[] = [];
-    // Sequential, not Promise.all: sort_order is the display order, and
-    // parallel writes would race it.
     for (const day of proposal.days) {
       const workout = await workoutsService.create({
         name: proposal.days.length === 1 ? proposal.name : day.name,

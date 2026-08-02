@@ -20,7 +20,6 @@ import { useToast } from "../../../src/components/ui/Toast";
 import { SubstituteExerciseModal } from "../../../src/components/SubstituteExerciseModal";
 import { ExerciseChips } from "../../../src/components/session/ExerciseChips";
 import { ExercisePage } from "../../../src/components/session/ExercisePage";
-import { RestTimer } from "../../../src/components/session/RestTimer";
 import { SessionClock } from "../../../src/components/session/SessionClock";
 import type {
   LocalSet,
@@ -49,8 +48,6 @@ import { cn } from "../../../src/lib/cn";
 
 const FINISH_SHADOW = { boxShadow: "0px 6px 18px rgba(129, 19, 211, 0.4)" };
 
-const REST_SECONDS = 60;
-
 function sortedExercises(workout: Workout | null): WorkoutExercise[] {
   if (!workout) return [];
   return [...(workout.exercises ?? [])].sort(
@@ -69,29 +66,19 @@ export default function WorkoutSessionScreen() {
   const [booting, setBooting] = useState(true);
   const [finishing, setFinishing] = useState(false);
 
-  // Índice do exercício atual e sets por exercício (keyed by workoutExercise.id)
   const [current, setCurrent] = useState(0);
   const [setsByExercise, setSetsByExercise] = useState<
     Record<string, LocalSet[]>
   >({});
-  // Dica de progressão por exercício (keyed by workoutExercise.id).
   const [hintByExercise, setHintByExercise] = useState<Record<string, Hint>>(
     {},
   );
 
-  // Trocas temporárias (Máquina Ocupada): mapeia workoutExercise.id → exercício
-  // substituto escolhido para ESTA sessão. Não persiste em workout_exercises —
-  // só afeta os exercise_sets registrados via addSet (Q15=A, Q19=A).
   const [swapByWorkoutExercise, setSwapByWorkoutExercise] = useState<
     Record<string, Exercise>
   >({});
   const [swapModalOpen, setSwapModalOpen] = useState(false);
 
-  // Instante em que o último descanso começou; serve de `key` do RestTimer,
-  // que remonta e reinicia a contagem. null = oculto.
-  const [restStartedAt, setRestStartedAt] = useState<number | null>(null);
-
-  // Pager horizontal: cada exercício é uma página que se arrasta pro lado.
   const pagerRef = useRef<FlatList<WorkoutExercise>>(null);
   const [pageWidth, setPageWidth] = useState(Dimensions.get("window").width);
 
@@ -103,15 +90,9 @@ export default function WorkoutSessionScreen() {
       const w = await workoutsService.get(workoutId);
       setWorkout(w);
 
-      // Última sessão completa (autopreenchimento + dica). Em paralelo com a
-      // criação da sessão; falha aqui não impede o treino (segue sem prefill).
       const [createdSession, lastDetail] = await Promise.all([
         sessionsService.create({
           workout_id: workoutId,
-          // A sessão é datada pelo DIA LOCAL, não pelo instante UTC: um treino
-          // às 22:31 (UTC-3) vira 01:31Z do dia seguinte, e `toISOString()`
-          // gravaria a data errada na coluna DATE — fazendo `done_today`
-          // acender no dia seguinte. Ver localCalendarDate.
           date: localCalendarDate(),
           status: "incomplete",
         }),
@@ -121,7 +102,6 @@ export default function WorkoutSessionScreen() {
       const initial: Record<string, LocalSet[]> = {};
       const hints: Record<string, Hint> = {};
       for (const we of sortedExercises(w)) {
-        // Sets da última sessão para ESTE exercício (match por exercise_id).
         const lastSets: LastSet[] = (lastDetail?.sets ?? [])
           .filter((s) => s.exercise_id === we.exercise_id)
           .map((s) => ({
@@ -152,7 +132,6 @@ export default function WorkoutSessionScreen() {
   }, [boot]);
 
   const exercises = sortedExercises(workout);
-  // Exercício sob o foco do pager (usado pelo modal de troca).
   const activeEx = exercises[current];
 
   const totalSets = exercises.reduce(
@@ -166,9 +145,6 @@ export default function WorkoutSessionScreen() {
   const progressPct =
     totalSets === 0 ? 0 : Math.round((doneSets / totalSets) * 100);
 
-  // Espelho do estado que toggleSetDone precisa ler. Mantê-lo fora das deps é
-  // o que deixa o callback estável — sem isso, digitar em uma série trocaria a
-  // identidade da função e re-renderizaria todas as páginas memoizadas.
   const liveStateRef = useRef({
     sets: setsByExercise,
     swaps: swapByWorkoutExercise,
@@ -184,7 +160,6 @@ export default function WorkoutSessionScreen() {
     pagerRef.current?.scrollToIndex({ index: clamped, animated: true });
   }, []);
 
-  // Estável de propósito: é prop do ExercisePage memoizado.
   const updateSetField = useCallback(
     (weId: string, idx: number, field: SetField, value: string) => {
       setSetsByExercise((prev) => {
@@ -202,10 +177,8 @@ export default function WorkoutSessionScreen() {
 
       const { sets, swaps } = liveStateRef.current;
       const set = (sets[we.id] ?? [])[idx];
-      if (!set || set.done) return; // já registrado
+      if (!set || set.done) return;
 
-      // Quando há troca (máquina ocupada), grava o set contra o exercício
-      // substituto. O workout_exercises original não muda — só os sets da sessão.
       const swapped = swaps[we.id] ?? null;
       const timed = (swapped ?? we.exercise).type === "time";
       const exerciseId = swapped?.id ?? we.exercise_id;
@@ -223,7 +196,6 @@ export default function WorkoutSessionScreen() {
           list[idx] = { ...list[idx], done: true, remoteId: created.id };
           return { ...prev, [we.id]: list };
         });
-        setRestStartedAt(Date.now()); // inicia descanso ao concluir uma série
       } catch (err: any) {
         const status = err?.response?.status;
         showToast(
@@ -237,27 +209,37 @@ export default function WorkoutSessionScreen() {
     [session, showToast],
   );
 
+  const completeSetsBefore = useCallback(
+    (we: WorkoutExercise, idx: number) => {
+      const { sets } = liveStateRef.current;
+      const list = sets[we.id] ?? [];
+      const timed =
+        (liveStateRef.current.swaps[we.id] ?? we.exercise).type === "time";
+      for (let i = 0; i < idx && i < list.length; i++) {
+        const s = list[i];
+        const filled = timed
+          ? s.duration.trim()
+          : s.reps.trim() || s.weight.trim();
+        if (!s.done && filled) toggleSetDone(we, i);
+      }
+    },
+    [toggleSetDone],
+  );
+
   const openSwapModal = useCallback(() => setSwapModalOpen(true), []);
-  const dismissRest = useCallback(() => setRestStartedAt(null), []);
 
   async function handleFinish() {
     if (!session) return;
     setFinishing(true);
 
-    // Sem nenhuma série registrada não houve treino de fato — o backend só
-    // concede XP quando o status é "complete".
     const status: SessionStatus = doneSets > 0 ? "complete" : "incomplete";
 
     try {
-      // O XP precisa ser calculado ANTES do PUT: a fórmula do backend usa o
-      // streak atual (50 + min(streak * 5, 50)), que é incrementado ao concluir.
       let xp = 50;
       try {
         const lvl = await authService.level();
         xp = 50 + Math.min(lvl.current_streak * 5, 50);
-      } catch {
-        // sem /me/level: usa o XP base (sem bônus de streak)
-      }
+      } catch {}
 
       await sessionsService.updateStatus(session.id, status);
       await refreshWorkouts();
@@ -334,18 +316,17 @@ export default function WorkoutSessionScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* TopAppBar */}
       <View className="px-4 pt-2">
         <View className="flex-row items-center justify-between gap-2">
           <View className="flex-1 flex-row items-center gap-3">
             <LinearGradient
               colors={[color["purple-300"], color["purple-400"]]}
               start={{ x: 0, y: 0 }}
-              end={{ x: 0.5, y: 0.87 }} // ≈ 150deg
+              end={{ x: 0.5, y: 0.87 }}
               style={{
                 width: 50,
                 height: 50,
-                borderRadius: 9999, // circulo: 50x50
+                borderRadius: 9999,
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0px 0px 16px rgba(129, 19, 211, 0.5)",
@@ -381,13 +362,12 @@ export default function WorkoutSessionScreen() {
         onSelect={(i) => goTo(i, exercises.length)}
       />
 
-      {/* Progresso */}
       <View className="px-4 pb-4">
         <View className="mb-2 flex-row items-end justify-between">
-          <Text className="text-xs font-bold uppercase text-gray-200">
+          <Text className="text-xs font-normal uppercase text-gray-200">
             Exercício {current + 1} de {exercises.length}
           </Text>
-          <Text className="text-xs font-bold text-purple-200">
+          <Text className="text-xs font-medium text-purple-200">
             {progressPct}% Concluído
           </Text>
         </View>
@@ -432,6 +412,7 @@ export default function WorkoutSessionScreen() {
                 pageWidth={pageWidth}
                 onChangeField={updateSetField}
                 onToggleDone={toggleSetDone}
+                onFocusRow={completeSetsBefore}
                 onRequestSwap={openSwapModal}
               />
             )}
@@ -439,7 +420,6 @@ export default function WorkoutSessionScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      {/* Dots de paginação */}
       <View className="flex-row justify-center gap-2 pb-10">
         {exercises.map((we, i) => (
           <View
@@ -452,7 +432,6 @@ export default function WorkoutSessionScreen() {
         ))}
       </View>
 
-      {/* Finalizar sempre disponível — pode-se pular exercícios sem concluir */}
       <View className="px-4 pb-8">
         <Button
           label="Finalizar treino"
@@ -464,15 +443,6 @@ export default function WorkoutSessionScreen() {
         />
       </View>
 
-      {restStartedAt != null && (
-        <RestTimer
-          key={restStartedAt}
-          seconds={REST_SECONDS}
-          onDismiss={dismissRest}
-        />
-      )}
-
-      {/* Modal de troca de exercício (Máquina Ocupada). Scope: sessão atual. */}
       <SubstituteExerciseModal
         visible={swapModalOpen}
         origin={activeEx?.exercise ?? null}

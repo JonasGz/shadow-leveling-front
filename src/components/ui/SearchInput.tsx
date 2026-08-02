@@ -7,9 +7,19 @@ import { cn } from "../../lib/cn";
 
 interface SearchInputProps extends TextInputProps {
   error?: string;
+  size?: "md" | "lg";
 }
 
-export function SearchInput({ error, ...props }: SearchInputProps) {
+const sizes = {
+  md: "px-4 py-3",
+  lg: "px-5 py-4",
+};
+
+export function SearchInput({
+  error,
+  size = "lg",
+  ...props
+}: SearchInputProps) {
   const [focused, setFocused] = useState(false);
 
   return (
@@ -17,7 +27,8 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
       <View
         style={focused && !error ? FOCUS_RING : undefined}
         className={cn(
-          "flex-row items-center gap-2 rounded-lg border bg-gray-600 px-5 py-4",
+          "flex-row items-center gap-2 rounded-lg border bg-gray-600",
+          sizes[size],
           controlBorder(focused, error),
         )}
       >
@@ -33,7 +44,7 @@ export function SearchInput({ error, ...props }: SearchInputProps) {
             props.onBlur?.(e);
           }}
           placeholderTextColor={color["gray-300"]}
-          style={{ fontSize: 18, lineHeight: 20, includeFontPadding: false }}
+          style={{ fontSize: 16, lineHeight: 20, includeFontPadding: false }}
           className="flex-1 text-base font-normal text-white"
         />
       </View>

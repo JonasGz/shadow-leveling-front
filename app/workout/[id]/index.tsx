@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import Dumbbell from "lucide-react-native/icons/dumbbell";
 import Play from "lucide-react-native/icons/play";
 import Plus from "lucide-react-native/icons/plus";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Pencil from "lucide-react-native/icons/pencil";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { IconButton } from "../../../src/components/ui/IconButton";
 import { workoutsService } from "../../../src/services/workouts.service";
@@ -23,6 +24,7 @@ import { useScreenData } from "../../../src/hooks/useScreenData";
 import { color } from "../../../src/theme/palette";
 import { cn } from "../../../src/lib/cn";
 import { Card } from "../../../src/components/ui/Card";
+import { EditExerciseModal } from "../../../src/components/EditExerciseModal";
 
 function repsLabel(ex: WorkoutExercise): string {
   if (ex.exercise.type === "time") {
@@ -42,10 +44,8 @@ function repsLabel(ex: WorkoutExercise): string {
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <Card className="flex-1 items-center">
-      <Text className="text-3xl font-extrabold text-white">{value}</Text>
-      <Text className="mt-2 text-base font-semibold text-gray-200">
-        {label}
-      </Text>
+      <Text className="text-3xl font-bold text-white">{value}</Text>
+      <Text className="mt-2 text-sm font-normal text-gray-200">{label}</Text>
     </Card>
   );
 }
@@ -53,14 +53,16 @@ function StatCard({ label, value }: { label: string; value: string }) {
 function ExerciseCard({
   index,
   item,
+  onEdit,
   onDelete,
 }: {
   index: number;
   item: WorkoutExercise;
+  onEdit: (item: WorkoutExercise) => void;
   onDelete: (item: WorkoutExercise) => void;
 }) {
   return (
-    <Card className="flex-row items-center gap-3">
+    <Card className="flex-row items-center gap-3" onPress={() => onEdit(item)}>
       <View className="h-10 w-10 items-center justify-center rounded-lg bg-gray-500">
         <Text className="text-base font-bold text-gray-400">{index + 1}</Text>
       </View>
@@ -69,9 +71,12 @@ function ExerciseCard({
         <Text className="text-xl font-semibold text-gray-50" numberOfLines={1}>
           {item.exercise.name}
         </Text>
-        <Text className="mt-1 text-sm font-light text-gray-400">
-          {repsLabel(item)}
-        </Text>
+        <View className="mt-1 flex-row items-center gap-2">
+          <Text className="text-sm font-light text-gray-400">
+            {repsLabel(item)}
+          </Text>
+          <Pencil size={12} color={color["gray-400"]} />
+        </View>
       </View>
 
       <Pressable
@@ -87,6 +92,7 @@ function ExerciseCard({
 
 export default function WorkoutDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [editing, setEditing] = useState<WorkoutExercise | null>(null);
   const {
     data: workout,
     loading,
@@ -122,14 +128,13 @@ export default function WorkoutDetailScreen() {
 
   const exercises = workout?.exercises ?? [];
   const totalSets = exercises.reduce((sum, e) => sum + (e.sets ?? 0), 0);
-  const estMinutes = totalSets * 3; // estimativa: ~3 min por série
+  const estMinutes = totalSets * 3;
   const daysLabel = (workout?.days_of_week ?? [])
     .map((d) => DAY_UPPER[d])
     .join(" · ");
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Top App Bar */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
@@ -164,7 +169,6 @@ export default function WorkoutDetailScreen() {
           contentContainerClassName="px-4 py-4 gap-4 pb-10"
           showsVerticalScrollIndicator={false}
         >
-          {/* Status + dias */}
           <View className="flex-row items-center gap-2">
             <View
               className={cn(
@@ -194,7 +198,6 @@ export default function WorkoutDetailScreen() {
             ) : null}
           </View>
 
-          {/* Título + descrição */}
           <View className="gap-1">
             <Text className="text-center text-3xl font-bold text-white">
               {workout?.name ?? "Treino"}
@@ -206,7 +209,6 @@ export default function WorkoutDetailScreen() {
             ) : null}
           </View>
 
-          {/* Stats */}
           <View className="flex-row gap-4">
             <StatCard label="Exercícios" value={String(exercises.length)} />
             <StatCard label="Séries" value={String(totalSets)} />
@@ -216,7 +218,6 @@ export default function WorkoutDetailScreen() {
             />
           </View>
 
-          {/* Lista de exercícios */}
           {exercises.length === 0 ? (
             <EmptyState
               icon={Dumbbell}
@@ -241,6 +242,7 @@ export default function WorkoutDetailScreen() {
                       key={ex.id}
                       index={i}
                       item={ex}
+                      onEdit={setEditing}
                       onDelete={handleDeleteExercise}
                     />
                   ))}
@@ -259,6 +261,15 @@ export default function WorkoutDetailScreen() {
           )}
         </ScrollView>
       )}
+
+      {id ? (
+        <EditExerciseModal
+          item={editing}
+          workoutId={id}
+          onClose={() => setEditing(null)}
+          onSaved={reload}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

@@ -17,8 +17,6 @@ describe("toISODate", () => {
 });
 
 describe("localCalendarDate", () => {
-  // A garantia que importa: meio-dia UTC, para o dia do calendário local não
-  // escorregar de fuso ao virar DATE no backend.
   it("usa meio-dia UTC do dia local corrente", () => {
     jest.useFakeTimers().setSystemTime(new Date(2026, 0, 5, 23, 45));
     expect(localCalendarDate()).toBe("2026-01-05T12:00:00.000Z");
@@ -64,8 +62,6 @@ describe("dayLabel", () => {
   afterEach(() => jest.useRealTimers());
 
   it("distingue hoje, ontem e datas anteriores", () => {
-    // 23h de ontem ainda é "Ontem", não "há 1 dia" — o corte é por dia
-    // civil, não por 24h corridas.
     expect(dayLabel(new Date(2026, 0, 20, 1).toISOString())).toBe("Hoje");
     expect(dayLabel(new Date(2026, 0, 19, 23).toISOString())).toBe("Ontem");
     expect(dayLabel(new Date(2026, 0, 12).toISOString())).toBe("12/01");

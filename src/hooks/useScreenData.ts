@@ -6,21 +6,11 @@ interface Result<T> {
   loading: boolean;
   error: boolean;
   refreshing: boolean;
-  /** Recarrega mostrando o spinner de pull-to-refresh. */
   refresh: () => Promise<void>;
-  /** Recarrega mostrando o loading de tela cheia. */
   reload: () => Promise<void>;
-  /** Para atualizações locais otimistas (ex.: trocar o avatar já carregado). */
   setData: React.Dispatch<React.SetStateAction<T | null>>;
 }
 
-/**
- * Carrega dados de tela: busca ao focar, expõe loading/error/refreshing e
- * ignora respostas de cargas que já foram substituídas.
- *
- * `deps` funciona como em useCallback — mude-as para refazer a busca (ex.: o
- * range de datas do histórico). O loader em si não precisa ser memoizado.
- */
 export function useScreenData<T>(
   loader: () => Promise<T>,
   deps: unknown[] = [],
@@ -33,8 +23,6 @@ export function useScreenData<T>(
   const loaderRef = useRef(loader);
   loaderRef.current = loader;
 
-  // Cada carga recebe um id; só a mais recente pode gravar estado. Sem isso,
-  // voltar rápido para a tela deixa a resposta antiga sobrescrever a nova.
   const runIdRef = useRef(0);
 
   const run = useCallback(async () => {

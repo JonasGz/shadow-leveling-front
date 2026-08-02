@@ -11,10 +11,8 @@ import { Button } from "../../src/components/ui/Button";
 import { useToast } from "../../src/components/ui/Toast";
 import { authService } from "../../src/services/auth.service";
 import { finishAuth } from "../../src/lib/finishAuth";
-// Aliasado: GoogleGlyph tem uma prop chamada `color`.
 import { color as palette } from "../../src/theme/palette";
 
-// Monochrome Google glyph from the mockup — lucide has no Google brand icon.
 function GoogleGlyph({
   size = 20,
   color = palette.white,
@@ -64,14 +62,12 @@ export default function AuthScreen() {
     try {
       await GoogleSignin.hasPlayServices();
       const result = await GoogleSignin.signIn();
-      // google-signin returns { data: { idToken } } on recent versions.
       const idToken =
         (result as any)?.data?.idToken ?? (result as any)?.idToken;
       if (!idToken) throw new Error("no id token");
       await authService.socialLogin("google", idToken);
       await finishAuth();
     } catch (err: any) {
-      // Silent when the user simply cancels the native sheet.
       if (err?.code !== "SIGN_IN_CANCELLED" && err?.code !== "-5") {
         showToast("Não foi possível entrar com o Google.", "error");
       }
@@ -122,7 +118,6 @@ export default function AuthScreen() {
             label="Continuar com Google"
             transform="capitalize"
             labelClassName="text-lg font-normal"
-            // ponytail: custom SVG isn't a LucideIcon; Button only calls it with size/color.
             icon={GoogleGlyph as unknown as LucideIcon}
             style={{
               shadowColor: palette["purple-300"],

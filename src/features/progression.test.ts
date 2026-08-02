@@ -13,7 +13,6 @@ const S = (
 ): LastSet => ({ setNumber, reps, weight, duration });
 
 describe("nextWeight", () => {
-  // Piso de 2,5kg e arredondamento ao múltiplo de 2,5.
   it("sobe ao próximo múltiplo de 2,5", () => {
     expect(nextWeight(20)).toBe(22.5);
     expect(nextWeight(100)).toBe(102.5);

@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import SendHorizontal from "lucide-react-native/icons/send-horizontal";
 import Flag from "lucide-react-native/icons/flag";
@@ -31,14 +31,6 @@ import { FOCUS_RING, controlBorder } from "../../src/components/ui/Input";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
 
-/**
- * The assistant conversation.
- *
- * The message history lives here in component state and nowhere else: the
- * server is stateless by design, so closing this screen ends the conversation.
- * That is deliberate — see ADR 0003 in the backend repo.
- */
-
 const OPENING_QUESTION = "Quantos dias por semana você quer treinar?";
 
 const blockedMessages: Record<string, string> = {
@@ -49,6 +41,7 @@ const blockedMessages: Record<string, string> = {
 };
 
 export default function AIChatScreen() {
+  const { pending } = useLocalSearchParams<{ pending?: string }>();
   const [messages, setMessages] = useState<AIMessage[]>([
     { role: "assistant", content: OPENING_QUESTION },
   ]);
@@ -56,8 +49,6 @@ export default function AIChatScreen() {
   const [sending, setSending] = useState(false);
   const [focused, setFocused] = useState(false);
   const [proposal, setProposal] = useState<AIProposal | null>(null);
-  // A health mention ends the conversation: the composer is replaced by a way
-  // out, rather than inviting another message that would be refused too.
   const [ended, setEnded] = useState(false);
   const [creating, setCreating] = useState(false);
 
@@ -69,8 +60,15 @@ export default function AIChatScreen() {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages, proposal]);
 
-  async function send() {
-    const text = draft.trim();
+  const resent = useRef(false);
+  useEffect(() => {
+    if (!pending || resent.current) return;
+    resent.current = true;
+    send(pending);
+  }, [pending]);
+
+  async function send(pending?: string) {
+    const text = (pending ?? draft).trim();
     if (!text || sending) return;
 
     const next: AIMessage[] = [...messages, { role: "user", content: text }];
@@ -90,10 +88,6 @@ export default function AIChatScreen() {
         ]);
         return;
       }
-      // A turn that renders nothing is a dead end: the spinner clears and the
-      // screen just sits there. The server guarantees a non-empty question,
-      // so this is the second line of defence, not the first — but silence is
-      // the one outcome the user cannot recover from on their own.
       const text = res.text?.trim();
       if (text) {
         setMessages([...next, { role: "assistant", content: text }]);
@@ -106,7 +100,11 @@ export default function AIChatScreen() {
     } catch (error) {
       if (error instanceof AIBlockedError) {
         if (error.reason === "consent_required") {
-          router.replace("/ai/consent");
+          setMessages(messages);
+          router.replace({
+            pathname: "/ai/consent",
+            params: { pending: text },
+          });
           return;
         }
         showToast(blockedMessages[error.reason], "error");
@@ -129,8 +127,6 @@ export default function AIChatScreen() {
         workouts.length === 1 ? "Treino criado!" : "Treinos criados!",
         "success",
       );
-      // A split lands on the workout list, where all of it is visible; a
-      // single workout opens straight into itself.
       router.replace(
         workouts.length === 1
           ? `/workout/${workouts[0].id}`
@@ -252,11 +248,11 @@ export default function AIChatScreen() {
                 multiline
                 maxLength={2000}
                 className="max-h-24 py-1 text-base text-white"
-                onSubmitEditing={send}
+                onSubmitEditing={() => send()}
               />
             </View>
             <Pressable
-              onPress={send}
+              onPress={() => send()}
               disabled={sending || !draft.trim()}
               className={cn(
                 "h-14 w-14 items-center justify-center rounded-lg bg-purple-300",
@@ -298,8 +294,6 @@ function ProposalPreview({
               : `${proposal.days.length} treinos por semana`}
           </Text>
         </View>
-        {/* Required by Google Play's AI-Generated Content policy: reporting
-            has to be possible without leaving the app. */}
         <Pressable onPress={onReport} hitSlop={8}>
           <Flag size={18} color={color["gray-300"]} />
         </Pressable>

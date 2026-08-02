@@ -5,14 +5,12 @@ import {
   ScrollView,
   Pressable,
   ActivityIndicator,
-  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import BookOpen from "lucide-react-native/icons/book-open";
 import Shield from "lucide-react-native/icons/shield";
-import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import Check from "lucide-react-native/icons/check";
 import X from "lucide-react-native/icons/x";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
@@ -28,7 +26,7 @@ import {
   formatDayMonthYear,
   toISODate,
 } from "../../src/lib/date";
-import type { SessionStatus } from "../../src/types/api.types";
+import type { SessionStatus, WorkoutSession } from "../../src/types/api.types";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
 import { Card } from "../../src/components/ui/Card";
@@ -100,14 +98,7 @@ export default function HistoryScreen() {
     [workouts],
   );
 
-  const {
-    data,
-    loading,
-    error,
-    refreshing,
-    refresh: onRefresh,
-    reload,
-  } = useScreenData(async () => {
+  const { data, loading, error, reload } = useScreenData(async () => {
     const range = { from: toISODate(from), to: toISODate(to) };
     const [s, m] = await Promise.all([
       sessionsService.list(range),
@@ -115,8 +106,11 @@ export default function HistoryScreen() {
     ]);
     const mostRecentFirst = (a: { date: string }, b: { date: string }) =>
       new Date(b.date).getTime() - new Date(a.date).getTime();
+    const sessionsMostRecentFirst = (a: WorkoutSession, b: WorkoutSession) =>
+      mostRecentFirst(a, b) ||
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     return {
-      sessions: [...s].sort(mostRecentFirst),
+      sessions: [...s].sort(sessionsMostRecentFirst),
       missed: [...m].sort(mostRecentFirst),
     };
   }, [preset]);
@@ -133,51 +127,30 @@ export default function HistoryScreen() {
       <ScrollView
         contentContainerClassName="px-5 pt-2 pb-[112px]"
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={color["purple-100"]}
-          />
-        }
       >
-        {/* Header */}
-        <View className="mt-2 flex-row items-center justify-between">
+        <View className="mt-2">
           <Text className="text-4xl font-bold text-white">Histórico</Text>
-          <Pressable
-            onPress={onRefresh}
-            disabled={refreshing}
-            className="h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-gray-600 active:opacity-70"
-          >
-            {refreshing ? (
-              <ActivityIndicator size="small" color={color["purple-200"]} />
-            ) : (
-              <RefreshCw size={19} color={color["purple-200"]} />
-            )}
-          </Pressable>
         </View>
 
-        {/* De / Até */}
         <View className="mt-4 flex-row gap-3">
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
-            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
+            <Text className="text-xs font-normal uppercase tracking-wider text-gray-300">
               De
             </Text>
-            <Text className="mt-2 text-lg font-bold text-white">
+            <Text className="font-semi-bold mt-2 text-lg text-white">
               {formatDayMonthYear(from.toISOString())}
             </Text>
           </View>
           <View className="flex-1 rounded-lg border border-white/12 bg-gray-600 px-3 py-3">
-            <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">
+            <Text className="text-xs font-normal uppercase tracking-wider text-gray-300">
               Até
             </Text>
-            <Text className="mt-2 text-lg font-bold text-white">
+            <Text className="mt-2 text-lg font-semibold text-white">
               {formatDayMonthYear(to.toISOString())}
             </Text>
           </View>
         </View>
 
-        {/* Presets de período */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -196,7 +169,7 @@ export default function HistoryScreen() {
               >
                 <Text
                   className={cn(
-                    "text-base font-semibold",
+                    "text-base font-medium",
                     active ? "text-white" : "text-gray-200",
                   )}
                 >
@@ -222,7 +195,6 @@ export default function HistoryScreen() {
           </View>
         ) : (
           <>
-            {/* Sessões realizadas */}
             <Text className="mb-3 mt-6 text-xs font-bold uppercase tracking-wider text-gray-200">
               Treinos realizados
             </Text>
@@ -299,7 +271,6 @@ export default function HistoryScreen() {
               </ScrollView>
             )}
 
-            {/* Treinos perdidos */}
             <View className="mb-3 mt-6 flex-row items-center gap-2">
               <Skull size={16} color={color["gray-300"]} strokeWidth={1.9} />
               <Text className="text-xs font-bold uppercase tracking-wider text-gray-300">

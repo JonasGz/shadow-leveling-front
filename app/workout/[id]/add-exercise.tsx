@@ -27,12 +27,8 @@ import { Card } from "../../../src/components/ui/Card";
 
 type Stage = "search" | "configure";
 
-// gap-2 entre as linhas; o FlashList recicla itens e não aceita `gap` no
-// contentContainer, então o espaçamento vira separador.
 const ExerciseSeparator = () => <View className="h-2" />;
 
-// Componente de topo e memoizado: uma closure inline aqui seria recriada a
-// cada tecla digitada na busca, anulando a reciclagem do FlashList.
 const ExerciseRow = memo(function ExerciseRow({
   exercise,
   onSelect,
@@ -62,7 +58,6 @@ export default function AddExerciseScreen() {
 
   const [stage, setStage] = useState<Stage>("search");
 
-  // --- Busca ---
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Exercise[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -101,10 +96,8 @@ export default function AddExerciseScreen() {
     }
   }, [hasMore, loadingMore, cursor, query, showToast]);
 
-  // --- Exercício selecionado / criado ---
   const [selected, setSelected] = useState<Exercise | null>(null);
 
-  // Estável: é prop do ExerciseRow memoizado.
   const selectExercise = useCallback((ex: Exercise) => {
     setSelected(ex);
     setStage("configure");
@@ -134,7 +127,6 @@ export default function AddExerciseScreen() {
     }
   }
 
-  // --- Configuração (séries/reps/duração/nota) ---
   const [sets, setSets] = useState("3");
   const [repsMin, setRepsMin] = useState("8");
   const [repsMax, setRepsMax] = useState("12");
@@ -183,7 +175,6 @@ export default function AddExerciseScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() =>
@@ -197,7 +188,6 @@ export default function AddExerciseScreen() {
         <Text className="text-2xl font-bold text-white">
           {stage === "search" ? "Adicionar exercício" : "Configurar"}
         </Text>
-        {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
 
@@ -223,8 +213,6 @@ export default function AddExerciseScreen() {
               keyExtractor={(item) => item.id}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              // FlashList não é registrado no NativeWind, então os tokens
-              // (pt-5 / pb-10 / gap-2) vêm resolvidos de tailwind.config.
               contentContainerStyle={{ paddingTop: 20, paddingBottom: 40 }}
               ItemSeparatorComponent={ExerciseSeparator}
               onEndReached={loadMore}

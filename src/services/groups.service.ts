@@ -10,14 +10,11 @@ import type {
   CommentPage,
 } from "../types/api.types";
 
-// buildImageForm wraps a local image URI (from expo-image-picker) into the
-// multipart form the backend expects under the "image" field.
 export function buildImageForm(uri: string): FormData {
   const form = new FormData();
   const name = uri.split("/").pop() ?? "photo.jpg";
   const ext = name.split(".").pop()?.toLowerCase();
   const type = ext === "png" ? "image/png" : "image/jpeg";
-  // React Native's FormData accepts this {uri,name,type} shape for files.
   form.append("image", { uri, name, type } as unknown as Blob);
   return form;
 }
@@ -82,7 +79,6 @@ export const groupsService = {
     return data;
   },
 
-  // setReaction sets/toggles the viewer's emoji; returns the updated detail.
   async setReaction(
     groupId: string,
     sessionId: string,

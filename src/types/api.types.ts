@@ -1,4 +1,3 @@
-// Auth
 export interface AuthToken {
   token: string;
   expires_at: string;
@@ -20,7 +19,6 @@ export interface Session {
   expires_at: string;
 }
 
-// Tasks
 export type TaskLevel = "easy" | "medium" | "hard" | "no_rank";
 export type RecurrenceType =
   "one_time" | "daily" | "weekly" | "monthly" | "custom";
@@ -44,7 +42,6 @@ export interface Task {
   occurrence_date: string;
 }
 
-// Exercises
 export type ExerciseType = "repetition" | "time";
 
 export interface Exercise {
@@ -53,8 +50,6 @@ export interface Exercise {
   type: ExerciseType;
   unit: string;
   created_at: string;
-  // Catalog attributes imported from exerciseapi.dev (migration 000025).
-  // Populated on imported rows, omitted on user-created ones (omitempty).
   external_id?: string;
   primary_muscles?: string[];
   secondary_muscles?: string[];
@@ -63,8 +58,6 @@ export interface Exercise {
   level?: string | null;
   mechanic?: string | null;
   category?: string | null;
-  // PT translations for display. Null on user-created or untranslated rows —
-  // the UI falls back to the EN counterpart when these are absent.
   primary_muscles_pt?: string[];
   secondary_muscles_pt?: string[];
   equipment_pt?: string | null;
@@ -80,13 +73,11 @@ export interface PaginatedExercises {
   };
 }
 
-// Substitutes response envelope from GET /exercises/{id}/substitutes.
 export interface SubstitutesResponse {
   data: Exercise[];
   total: number;
 }
 
-// Workouts
 export interface WorkoutExercise {
   id: string;
   exercise_id: string;
@@ -112,7 +103,6 @@ export interface Workout {
   updated_at: string;
 }
 
-// Workout Sessions
 export type SessionStatus = "complete" | "incomplete" | "skipped";
 
 export interface WorkoutSession {
@@ -146,7 +136,6 @@ export interface MissedWorkout {
   workout_name: string;
 }
 
-// Metrics
 export interface DayProgress {
   total: number;
   completed: number;
@@ -180,7 +169,6 @@ export interface WeeklySummary {
   };
 }
 
-// Nivelamento / XP
 export type Rank =
   "E-Rank" | "D-Rank" | "C-Rank" | "B-Rank" | "A-Rank" | "S-Rank";
 
@@ -194,7 +182,6 @@ export interface UserLevel {
   current_streak: number;
 }
 
-// Groups
 export interface Group {
   id: string;
   name: string;
@@ -204,11 +191,9 @@ export interface Group {
   created_at: string;
 }
 
-// A group as returned by GET /groups (the list), with member data for the
-// avatar stack. Distinct from GroupDetail (the group page header).
 export interface GroupListItem extends Group {
   member_count: number;
-  member_avatars: string[]; // up to 3 non-null avatar URLs
+  member_avatars: string[];
 }
 
 export interface GroupDetail extends Group {
@@ -230,14 +215,14 @@ export interface FeedItem {
   session_id: string;
   user_id: string;
   name: string;
-  avatar_url: string | null; // the author's profile photo
+  avatar_url: string | null;
   workout_name: string;
-  photo_url: string | null; // the session's progress photo, not the author's avatar
+  photo_url: string | null;
   created_at: string;
   reaction_count: number;
   comment_count: number;
-  my_reaction: string | null; // this viewer's emoji on this session, or null
-  top_emoji: string | null; // most-used emoji on this session (tie: earliest), or null
+  my_reaction: string | null;
+  top_emoji: string | null;
 }
 
 export interface CursorMeta {
@@ -255,7 +240,6 @@ export interface ReactionCount {
   count: number;
 }
 
-// SessionSocialDetail is a completed workout viewed inside a group as a post.
 export interface SessionSocialDetail {
   session_id: string;
   user_id: string;
@@ -284,7 +268,6 @@ export interface CommentPage {
   cursor: CursorMeta;
 }
 
-// Generic API error
 export interface ApiError {
   error: string;
 }

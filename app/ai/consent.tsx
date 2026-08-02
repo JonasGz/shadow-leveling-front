@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import Sparkles from "lucide-react-native/icons/sparkles";
 import { Input } from "../../src/components/ui/Input";
@@ -18,31 +18,14 @@ import { useToast } from "../../src/components/ui/Toast";
 import { aiService } from "../../src/services/ai.service";
 import { color } from "../../src/theme/palette";
 
-/**
- * Consent gate for the AI assistant, shown once before the first message.
- *
- * It carries three obligations at once, which is why it exists as its own
- * screen rather than a line of fine print:
- *   - the disclosure and explicit permission App Review Guideline 5.1.2(i)
- *     requires before user content reaches a third-party AI;
- *   - the birth date the 18+ gate checks;
- *   - the "this is AI, and not professional advice" disclaimer.
- */
-
 const MIN_YEAR = 1900;
 
-/** Formats digits as DD/MM/AAAA while the user types. */
 function maskDate(input: string): string {
   const digits = input.replace(/\D/g, "").slice(0, 8);
   const parts = [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)];
   return parts.filter(Boolean).join("/");
 }
 
-/**
- * Converts DD/MM/AAAA to the API's YYYY-MM-DD, or null when the date is not a
- * real one. Checks the round trip rather than the ranges: "31/02/2000" parses
- * into March 2nd, and only comparing the parts back catches it.
- */
 function toISODate(masked: string): string | null {
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(masked);
   if (!match) return null;
@@ -64,6 +47,7 @@ function toISODate(masked: string): string | null {
 }
 
 export default function AIConsentScreen() {
+  const { pending } = useLocalSearchParams<{ pending?: string }>();
   const [birthDate, setBirthDate] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -78,7 +62,7 @@ export default function AIConsentScreen() {
     setLoading(true);
     try {
       await aiService.acceptConsent(iso);
-      router.replace("/ai");
+      router.replace({ pathname: "/ai", params: pending ? { pending } : {} });
     } catch {
       showToast("Não foi possível salvar. Tente de novo.", "error");
     } finally {
@@ -107,8 +91,8 @@ export default function AIConsentScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View className="items-center py-4">
-            <View className="h-16 w-16 items-center justify-center rounded-2xl bg-purple-300/12">
-              <Sparkles size={30} color={color["purple-100"]} />
+            <View className="h-14 w-14 items-center justify-center rounded-2xl bg-purple-300/12">
+              <Sparkles size={24} color={color["purple-100"]} />
             </View>
           </View>
 
@@ -127,11 +111,6 @@ export default function AIConsentScreen() {
                 enviadas para um provedor de inteligência artificial
               </Text>{" "}
               para gerar a sugestão. As conversas não ficam salvas no app.
-            </Text>
-            <Text className="text-sm text-gray-200">
-              Não envie informações de saúde. Se você mencionar uma condição de
-              saúde, lesão ou dor, o assistente encerra a conversa em vez de
-              montar um treino.
             </Text>
           </Card>
 

@@ -82,7 +82,6 @@ export default function CreateWorkoutScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
@@ -92,7 +91,6 @@ export default function CreateWorkoutScreen() {
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
         <Text className="text-2xl font-bold text-white">Criar treino</Text>
-        {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
 
@@ -111,7 +109,7 @@ export default function CreateWorkoutScreen() {
               <Input
                 label="Nome do treino"
                 centeredLabel
-                labelSize="md"
+                labelSize="sm"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -128,7 +126,7 @@ export default function CreateWorkoutScreen() {
               <Input
                 label="Descrição (opcional)"
                 centeredLabel
-                labelSize="md"
+                labelSize="sm"
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -140,7 +138,7 @@ export default function CreateWorkoutScreen() {
           />
 
           <View className="gap-2">
-            <Text className="text-center text-base font-semibold uppercase text-gray-200">
+            <Text className="text-center text-xs font-normal uppercase text-gray-200">
               Dias da semana
             </Text>
             <View className="flex-row flex-wrap gap-2">
@@ -151,15 +149,15 @@ export default function CreateWorkoutScreen() {
                     key={d.value}
                     onPress={() => toggleDay(d.value)}
                     className={cn(
-                      "rounded-full border px-4 py-3 active:opacity-70",
+                      "rounded-full border px-3 py-2 active:opacity-70",
                       active
                         ? "bg-purple-300"
-                        : "border-gray-300 bg-transparent",
+                        : "border-white/10 bg-transparent",
                     )}
                   >
                     <Text
                       className={cn(
-                        "text-base font-semibold uppercase",
+                        "text-sm font-normal uppercase",
                         active ? "text-white" : "text-white",
                       )}
                     >
@@ -183,7 +181,7 @@ export default function CreateWorkoutScreen() {
               loading={loading}
               fullWidth
             />
-            <Text className="mt-2 text-center text-xs font-medium text-gray-300">
+            <Text className="font-nomrla text-normal mt-2 text-center text-gray-300">
               Você poderá adicionar exercícios no próximo passo.
             </Text>
           </View>

@@ -22,8 +22,6 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue>({ showToast: () => {} });
 
-// PULSE semantic colours drive the left border + tint. Container stays on the
-// neutral surface so the toast reads as a system message, not a banner.
 const typeStyles: Record<ToastType, string> = {
   success: "bg-gray-500 border-l-4 border-success",
   error: "bg-gray-500 border-l-4 border-error",
@@ -51,7 +49,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Acima da tab bar (60px + 32px de margem), fora do caminho da app bar. */}
       <View
         pointerEvents="none"
         className="absolute bottom-[112px] left-4 right-4 z-50 gap-2"

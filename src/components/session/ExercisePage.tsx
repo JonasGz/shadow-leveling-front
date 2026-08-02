@@ -10,7 +10,6 @@ import { Card } from "../ui/Card";
 
 interface ExercisePageProps {
   workoutExercise: WorkoutExercise;
-  /** Substituto escolhido para esta sessão, se houver (Máquina Ocupada). */
   swapped: Exercise | null;
   sets: LocalSet[];
   hint: Hint;
@@ -22,6 +21,7 @@ interface ExercisePageProps {
     value: string,
   ) => void;
   onToggleDone: (we: WorkoutExercise, index: number) => void;
+  onFocusRow: (we: WorkoutExercise, index: number) => void;
   onRequestSwap: () => void;
 }
 
@@ -33,12 +33,6 @@ function repsRangeLabel(we: WorkoutExercise, timed: boolean): string {
   return ` × ${we.reps_min}${max} reps`;
 }
 
-/**
- * Uma página do pager: card do exercício + grid de séries.
- *
- * Memoizado porque o pager mantém várias páginas montadas — sem isso, digitar
- * em uma série re-renderiza todas as páginas vizinhas.
- */
 export const ExercisePage = memo(function ExercisePage({
   workoutExercise: we,
   swapped,
@@ -47,6 +41,7 @@ export const ExercisePage = memo(function ExercisePage({
   pageWidth,
   onChangeField,
   onToggleDone,
+  onFocusRow,
   onRequestSwap,
 }: ExercisePageProps) {
   const effective = swapped ?? we.exercise;
@@ -70,10 +65,7 @@ export const ExercisePage = memo(function ExercisePage({
               </Text>
             </View>
           )}
-          <Text
-            className="text-3xl font-extrabold text-white"
-            numberOfLines={2}
-          >
+          <Text className="text-3xl font-bold text-white" numberOfLines={2}>
             {effective.name}
           </Text>
           {swapped && (
@@ -83,11 +75,11 @@ export const ExercisePage = memo(function ExercisePage({
           )}
           <View className="mt-3 flex-row flex-wrap items-center gap-2">
             <View className="rounded-full bg-black/30 px-3 py-1">
-              <Text className="text-xs font-bold uppercase text-purple-50">
+              <Text className="text-xs font-normal uppercase text-purple-50">
                 {timed ? "Tempo" : "Força"}
               </Text>
             </View>
-            <Text className="text-xs font-semibold text-gray-200">
+            <Text className="text-xs font-normal text-gray-200">
               {we.sets} séries
               {repsRangeLabel(we, timed)}
             </Text>
@@ -95,15 +87,13 @@ export const ExercisePage = memo(function ExercisePage({
               onPress={onRequestSwap}
               className="rounded-full border border-white/12 bg-gray-700/60 px-3 py-1 active:opacity-70"
             >
-              <Text className="text-xs font-bold uppercase text-white/90">
+              <Text className="text-xs font-normal uppercase text-white/90">
                 Trocar (máquina ocupada)
               </Text>
             </Pressable>
           </View>
         </View>
 
-        {/* Dica de progressão (Diferencial 2): meta discreta no topo do
-            exercício, baseada na última sessão. */}
         {hint && (
           <View className="flex-row items-center gap-2 px-6 pb-1 pt-3">
             <TrendingUp size={15} color="#5CE1E6" />
@@ -142,6 +132,7 @@ export const ExercisePage = memo(function ExercisePage({
                 onChangeField(we.id, index, field, value)
               }
               onToggleDone={(index) => onToggleDone(we, index)}
+              onFocusRow={(index) => onFocusRow(we, index)}
             />
           ))}
         </View>

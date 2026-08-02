@@ -5,16 +5,15 @@ import * as Linking from "expo-linking";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-// Benign RN/reanimated warning fired during screen transitions — not a real bug.
 LogBox.ignoreLogs(["Sending `onAnimatedValueUpdate`"]);
 import {
   useFonts,
-  OpenSans_300Light,
-  OpenSans_400Regular,
-  OpenSans_600SemiBold,
-  OpenSans_700Bold,
-  OpenSans_800ExtraBold,
-} from "@expo-google-fonts/open-sans";
+  Poppins_300Light,
+  Poppins_400Regular,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+  Poppins_800ExtraBold,
+} from "@expo-google-fonts/poppins";
 import { ToastProvider } from "../src/components/ui/Toast";
 import { authService } from "../src/services/auth.service";
 import { useAuthStore } from "../src/stores/auth.store";
@@ -23,31 +22,29 @@ import {
   registerForPush,
   addNotificationResponseListener,
 } from "../src/lib/push";
-import { installOpenSans } from "../src/lib/fonts";
+import { installPoppins } from "../src/lib/fonts";
 import { parseInviteCode, setPendingInvite } from "../src/lib/invite";
 import { color } from "../src/theme/palette";
 
-installOpenSans();
+installPoppins();
 
 export default function RootLayout() {
   const setUser = useAuthStore((s) => s.setUser);
   const [fontsLoaded] = useFonts({
-    OpenSans_300Light,
-    OpenSans_400Regular,
-    OpenSans_600SemiBold,
-    OpenSans_700Bold,
-    OpenSans_800ExtraBold,
+    Poppins_300Light,
+    Poppins_400Regular,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    Poppins_800ExtraBold,
   });
 
   useEffect(() => {
     async function bootstrap() {
-      // Cold-start invite deep-link (shadowleveling://join/<CODE>): the redirects
-      // below would otherwise clobber it, so capture the code first.
       const inviteCode = parseInviteCode(await Linking.getInitialURL());
 
       const token = await authService.getStoredToken();
       if (!token) {
-        if (inviteCode) await setPendingInvite(inviteCode); // resumed after login
+        if (inviteCode) await setPendingInvite(inviteCode);
         router.replace("/(auth)/welcome");
         return;
       }
@@ -55,7 +52,6 @@ export default function RootLayout() {
         const user = await authService.me();
         setUser(user);
         router.replace(inviteCode ? `/join/${inviteCode}` : "/(tabs)/");
-        // Register for push once authenticated (best-effort, never blocks login).
         registerForPush();
       } catch {
         router.replace("/(auth)/login");

@@ -3,12 +3,12 @@ import {
   Modal,
   View,
   Text,
-  TextInput,
   Pressable,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { Input } from "./ui/Input";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "../stores/auth.store";
 import { useToast } from "./ui/Toast";
@@ -18,11 +18,8 @@ import { cn } from "../lib/cn";
 
 interface WeeklyGoalModalProps {
   visible: boolean;
-  /** Dismisses the modal. Omitted when the user must define a goal. */
   onClose?: () => void;
-  /** Called with the updated user after a successful save. */
   onSaved?: (user: User) => void;
-  /** Force the user to define a goal: hides the "depois" escape hatch. */
   required?: boolean;
 }
 
@@ -74,19 +71,18 @@ export function WeeklyGoalModal({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1 items-center justify-center bg-black/70 px-6"
       >
-        <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
+        <View className="w-full gap-4 rounded-2xl border border-white/7 bg-gray-600 p-6">
           <Text className="text-xl font-bold text-white">Meta semanal</Text>
           <Text className="text-xs font-medium text-gray-200">
             Quantos treinos você quer fazer por semana?
           </Text>
-          <TextInput
+          <Input
             value={value}
             onChangeText={setValue}
             placeholder="ex: 5"
-            placeholderTextColor={color["gray-200"]}
             keyboardType="number-pad"
             autoFocus
-            className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-lg font-normal text-white"
+            size="md"
           />
           <View className="mt-2 flex-row gap-4">
             {!required && (

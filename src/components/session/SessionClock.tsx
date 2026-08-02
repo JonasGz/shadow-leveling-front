@@ -5,17 +5,9 @@ import { formatDuration } from "../../lib/date";
 import { color } from "../../theme/palette";
 
 interface SessionClockProps {
-  /** Começa a contar quando a sessão existe. */
   running: boolean;
 }
 
-/**
- * Cronômetro da sessão.
- *
- * O tick de 1s mora aqui de propósito: enquanto o `elapsed` era estado da tela
- * de sessão, cada segundo re-renderizava o pager e todas as linhas de série.
- * Agora só este texto atualiza.
- */
 export function SessionClock({ running }: SessionClockProps) {
   const [elapsed, setElapsed] = useState(0);
 

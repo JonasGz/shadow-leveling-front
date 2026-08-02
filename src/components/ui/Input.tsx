@@ -4,14 +4,21 @@ import { color } from "../../theme/palette";
 import { cn } from "../../lib/cn";
 
 type LabelSize = "sm" | "md" | "lg";
+type Size = "md" | "lg";
 
 interface InputProps extends TextInputProps {
-  label: string;
+  label?: string;
   error?: string;
   secureToggle?: boolean;
   centeredLabel?: boolean;
   labelSize?: LabelSize;
+  size?: Size;
 }
+
+const sizes: Record<Size, string> = {
+  md: "px-4 py-3",
+  lg: "px-5 py-5",
+};
 
 const labelSizes: Record<LabelSize, string> = {
   sm: "text-xs font-medium",
@@ -19,15 +26,13 @@ const labelSizes: Record<LabelSize, string> = {
   lg: "text-base font-normal",
 };
 
-/** Halo roxo do estado de foco — compartilhado com [SearchInput]. */
 export const FOCUS_RING = {
   boxShadow: "0px 0px 0px 3px rgba(129, 19, 211, 0.25)",
 };
 
-/** Borda do campo por estado — compartilhada com [SearchInput]. */
 export function controlBorder(focused: boolean, error?: string) {
   if (error) return "border-error";
-  return focused ? "border-purple-300" : "border-white/12";
+  return focused ? "border-purple-300" : "border-white/7";
 }
 
 export function Input({
@@ -36,6 +41,7 @@ export function Input({
   secureToggle = false,
   centeredLabel = false,
   labelSize = "sm",
+  size = "lg",
   secureTextEntry,
   ...props
 }: InputProps) {
@@ -44,15 +50,17 @@ export function Input({
 
   return (
     <View className="gap-2">
-      <Text
-        className={cn(
-          labelSizes[labelSize],
-          "uppercase text-gray-200",
-          centeredLabel && "text-center",
-        )}
-      >
-        {label}
-      </Text>
+      {label && (
+        <Text
+          className={cn(
+            labelSizes[labelSize],
+            "uppercase text-gray-200",
+            centeredLabel && "text-center",
+          )}
+        >
+          {label}
+        </Text>
+      )}
       <View className="relative">
         <TextInput
           {...props}
@@ -70,16 +78,14 @@ export function Input({
           }
           autoComplete={secureTextEntry ? "off" : props.autoComplete}
           passwordRules=""
-          placeholderTextColor={color["gray-400"]} // neutral-400
+          placeholderTextColor={color["gray-400"]}
           style={[
-            // O text-base traz lineHeight 24 para uma fonte de 16 — no Android
-            // essa sobra vai toda para baixo do texto. lineHeight = fontSize
-            // (+ includeFontPadding off) deixa o padding vertical centralizar.
-            { fontSize: 18, lineHeight: 20, includeFontPadding: false },
+            { fontSize: 16, lineHeight: 20, includeFontPadding: false },
             focused && !error ? FOCUS_RING : null,
           ]}
           className={cn(
-            "w-full rounded-lg border bg-gray-600 px-5 py-5 text-base font-normal text-white",
+            "w-full rounded-lg border bg-gray-600 text-base font-normal text-white",
+            sizes[size],
             controlBorder(focused, error),
           )}
         />

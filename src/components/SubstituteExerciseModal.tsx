@@ -3,35 +3,26 @@ import {
   Modal,
   View,
   Text,
-  TextInput,
   Pressable,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
 import Dumbbell from "lucide-react-native/icons/dumbbell";
-import Search from "lucide-react-native/icons/search";
 import ArrowLeftRight from "lucide-react-native/icons/arrow-left-right";
 import { exercisesService } from "../services/exercises.service";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import type { Exercise } from "../types/api.types";
 import { color } from "../theme/palette";
 import { Card } from "./ui/Card";
+import { SearchInput } from "./ui/SearchInput";
 
 interface SubstituteExerciseModalProps {
   visible: boolean;
-  /** The exercise currently being performed (the one whose machine is busy). */
   origin: Exercise | null;
-  /** Called when the user picks a substitute. The session screen plays it as a
-   * local, in-session swap — nothing is persisted server-side until a set is
-   * recorded against the substitute's exercise_id. */
   onSelect: (substitute: Exercise) => void;
   onClose: () => void;
 }
 
-// Two source lists side-by-side: ranked suggestions (3) from
-// /exercises/{id}/substitutes and a manual search box backed by the existing
-// /exercises?q= endpoint. The "máquina ocupada" button opens the modal; the
-// user taps any row and the active exercise is swapped for this session only.
 export function SubstituteExerciseModal({
   visible,
   origin,
@@ -97,9 +88,8 @@ export function SubstituteExerciseModal({
       <Pressable className="flex-1 justify-end bg-black/70" onPress={onClose}>
         <Pressable
           onPress={() => {}}
-          className="max-h-[85%] rounded-t-2xl border-t border-gray-300 bg-gray-600 pb-10"
+          className="max-h-[85%] rounded-t-2xl border-t border-white/7 bg-gray-600 pb-10"
         >
-          {/* Header */}
           <View className="px-6 pb-4 pt-6">
             <View className="mb-1 flex-row items-center gap-2">
               <ArrowLeftRight size={18} color={color["purple-100"]} />
@@ -107,32 +97,26 @@ export function SubstituteExerciseModal({
                 Trocar exercício
               </Text>
             </View>
-            <Text className="text-xs font-medium text-gray-200">
+            <Text className="text-xs font-normal text-gray-200">
               {origin
                 ? `Máquina ocupada? Substitua "${origin.name}" por hoje.`
                 : "Substituir o exercício atual por esta sessão."}
             </Text>
           </View>
 
-          {/* Manual search */}
           <View className="px-6 pb-4">
-            <View className="flex-row items-center gap-2 rounded-lg border border-white/12 bg-gray-600 px-4 py-3">
-              <Search size={16} color={color["gray-200"]} />
-              <TextInput
-                value={search}
-                onChangeText={setSearch}
-                placeholder="Buscar outro exercício..."
-                placeholderTextColor={color["gray-200"]}
-                className="flex-1 text-base font-normal text-white"
-              />
-            </View>
+            <SearchInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Buscar outro exercício..."
+              size="md"
+            />
           </View>
 
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerClassName="px-6 pb-4"
           >
-            {/* Suggested substitutes (only when no active search) */}
             {search.trim().length < 2 && (
               <View className="mb-4">
                 <Text className="mb-2 text-xs font-bold uppercase text-gray-200">
@@ -157,7 +141,6 @@ export function SubstituteExerciseModal({
               </View>
             )}
 
-            {/* Manual search results */}
             {search.trim().length >= 2 && (
               <View>
                 {searching ? (
@@ -192,8 +175,6 @@ function SubstituteRow({
   exercise: Exercise;
   onPick: (e: Exercise) => void;
 }) {
-  // Display layer: prefer PT translations, fallback to EN when untranslated or
-  // user-created. Display-only — the ranking query runs against EN columns.
   const equipment = exercise.equipment_pt ?? exercise.equipment ?? null;
   const mechanic = exercise.mechanic_pt ?? exercise.mechanic ?? null;
   const muscles = (

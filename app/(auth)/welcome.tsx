@@ -8,30 +8,18 @@ import { color } from "../../src/theme/palette";
 
 const ATTRIBUTES = ["Força", "Resistência", "Foco"];
 
-/**
- * Landing screen shown to signed-out users. Both CTAs lead to the same
- * login-or-register flow at /(auth)/login.
- */
 export default function LandingScreen() {
   const goToLogin = () => router.push("/(auth)/login");
 
   return (
-    // Único Image do react-native que sobrou: o resto do app migrou para
-    // expo-image (cache em disco), que não tem equivalente de ImageBackground.
-    // Aqui não faria diferença — o asset é do bundle, não vem da rede.
     <ImageBackground
       source={require("../../assets/landing/bg-landing.jpg")}
       resizeMode="cover"
       className="flex-1"
     >
-      {/* ponytail: the mockup's animated radial purple aura + mix-blend-mode
-          isn't expressible with expo-linear-gradient. Approximated here with a
-          purple-tinted linear stack; upgrade to a radial-gradient lib or a
-          blurred absolute View if the glow needs to be stronger. */}
       <LinearGradient
         colors={["rgb(25, 3, 42)", "rgba(27, 24, 28, 0.868)", "#130023"]}
         locations={[0, 0.55, 1]}
-        // LinearGradient não tem cssInterop registrado: só aceita style.
         style={{ flex: 1 }}
       >
         <SafeAreaView className="flex-1 justify-between px-6">

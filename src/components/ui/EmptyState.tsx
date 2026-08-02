@@ -26,7 +26,7 @@ export function EmptyState({
         {title}
       </Text>
       {description ? (
-        <Text className="mt-2 text-center text-base font-normal text-gray-200">
+        <Text className="mt-2 text-center text-sm font-normal text-gray-200">
           {description}
         </Text>
       ) : null}

@@ -8,7 +8,6 @@ import {
   RefreshControl,
   Alert,
   Modal,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -24,6 +23,7 @@ import ChevronRight from "lucide-react-native/icons/chevron-right";
 import LogOut from "lucide-react-native/icons/log-out";
 import Target from "lucide-react-native/icons/target";
 import { Button } from "../../src/components/ui/Button";
+import { Input } from "../../src/components/ui/Input";
 import { EmptyState } from "../../src/components/ui/EmptyState";
 import { useToast } from "../../src/components/ui/Toast";
 import { WeeklyGoalModal } from "../../src/components/WeeklyGoalModal";
@@ -58,7 +58,6 @@ export default function ProfileScreen() {
     try {
       const [me, lvl] = await Promise.all([
         authService.me(),
-        // /me/level é secundário: se falhar, perfil ainda carrega
         authService.level().catch(() => null),
       ]);
       setLocalUser(me);
@@ -95,7 +94,6 @@ export default function ProfileScreen() {
           try {
             await authService.logout();
           } catch {
-            // mesmo se o logout remoto falhar, limpamos local
           } finally {
             clearAuth();
             setLoggingOut(false);
@@ -108,7 +106,6 @@ export default function ProfileScreen() {
 
   const email = user?.email ?? storeUser?.email ?? "—";
   const initial = (email[0] ?? "?").toUpperCase();
-  // Prioriza o nickname; fallback ao nome derivado do e-mail (auto-gerado).
   const generatedName =
     email !== "—" ? email.split("@")[0].replace(/[._-]/g, " ") : "Caçador";
   const displayName = user?.nickname?.trim() || generatedName;
@@ -181,7 +178,6 @@ export default function ProfileScreen() {
           />
         }
       >
-        {/* Header */}
         <Text className="mt-2 text-4xl font-bold text-white">Perfil</Text>
 
         {loading ? (
@@ -206,7 +202,6 @@ export default function ProfileScreen() {
           </View>
         ) : (
           <>
-            {/* Avatar + identidade */}
             <View className="mt-5 items-center">
               <View className="relative">
                 <View
@@ -260,8 +255,6 @@ export default function ProfileScreen() {
                 onPress={openNicknameEditor}
                 className="mt-4 flex-row items-center gap-2 active:opacity-70"
               >
-                {/* shrink + 1 linha: sem isso um nome longo empurra o lápis
-                    para fora da tela em 320px, porque Text não encolhe. */}
                 <Text
                   numberOfLines={1}
                   className="shrink text-2xl font-bold capitalize text-white"
@@ -286,7 +279,6 @@ export default function ProfileScreen() {
 
             {level ? (
               <>
-                {/* Rank / Nível */}
                 <View className="mt-5 flex-row gap-3">
                   <Card className="flex-1 items-center">
                     <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
@@ -306,7 +298,6 @@ export default function ProfileScreen() {
                   </Card>
                 </View>
 
-                {/* Progresso do nível */}
                 <Card className="mt-3">
                   <View className="flex-row items-center justify-between">
                     <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
@@ -342,7 +333,9 @@ export default function ProfileScreen() {
                       />
                       <Text className="text-base font-bold text-warning">
                         {level.current_streak}{" "}
-                        {level.current_streak === 1 ? "dia" : "dias"} de streak
+                        {level.current_streak === 1
+                          ? "dia seguido"
+                          : "dias seguidos"}
                       </Text>
                     </View>
                   </View>
@@ -350,7 +343,6 @@ export default function ProfileScreen() {
               </>
             ) : null}
 
-            {/* Menu */}
             <Card className="mt-3 overflow-hidden p-0">
               <Pressable
                 onPress={() => setGoalModalVisible(true)}
@@ -396,7 +388,6 @@ export default function ProfileScreen() {
               </Pressable>
             </Card>
 
-            {/* Sair */}
             <Pressable
               onPress={confirmLogout}
               disabled={loggingOut}
@@ -417,7 +408,6 @@ export default function ProfileScreen() {
         )}
       </ScrollView>
 
-      {/* Modal de edição do nick */}
       <Modal
         visible={editing}
         transparent
@@ -428,21 +418,20 @@ export default function ProfileScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
+          <View className="w-full gap-4 rounded-2xl border border-white/7 bg-gray-600 p-6">
             <Text className="text-xl font-bold text-white">Editar nick</Text>
             <Text className="text-xs font-medium text-gray-200">
               Como você quer ser chamado? (2 a 30 caracteres)
             </Text>
-            <TextInput
+            <Input
               value={nicknameInput}
               onChangeText={setNicknameInput}
               placeholder={generatedName}
-              placeholderTextColor={color["gray-200"]}
               maxLength={30}
               autoFocus
               autoCapitalize="none"
               autoCorrect={false}
-              className="rounded-lg border border-white/12 bg-gray-600 px-4 py-3 text-lg font-normal text-white"
+              size="md"
             />
             <View className="mt-2 flex-row gap-4">
               <Pressable

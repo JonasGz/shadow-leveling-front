@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import Search from "lucide-react-native/icons/search";
@@ -33,62 +32,44 @@ function exerciseCountLabel(w: Workout) {
   return `${n} ${n === 1 ? "Exercício" : "Exercícios"}`;
 }
 
-/** Card destacado da seção "Programado para Hoje" */
 function TodayWorkoutCard({ workout }: { workout: Workout }) {
   return (
-    <LinearGradient
-      colors={["rgb(35, 21, 41)", "rgb(26, 25, 28)"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0.5, y: 0.87 }} // ≈ 150deg
-      // LinearGradient não aceita className (não é wrapped pelo NativeWind)
-      style={{
-        borderRadius: 28, // rounded-2xl (container)
-        borderLeftWidth: 4,
-        borderLeftColor: color["purple-300"], // secondary
-        overflow: "hidden",
-        borderWidth: 1,
-        borderColor:
-          "rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgba(129, 19, 211, 0.35) rgb(129, 19, 211)",
-      }}
-    >
-      <View className="gap-6 p-4">
-        <Pressable onPress={() => router.push(`/workout/${workout.id}`)}>
-          <View className="mb-1 flex-row items-start justify-between">
-            <Text className="flex-1 pr-2 text-2xl font-bold text-white">
-              {workout.name}
-            </Text>
-            <Text className="text-xs font-medium uppercase text-purple-200">
-              {workout.done_today ? "Feito" : "Ativo"}
+    <Card className="gap-6">
+      <Pressable onPress={() => router.push(`/workout/${workout.id}`)}>
+        <View className="mb-1 flex-row items-start justify-between">
+          <Text className="flex-1 pr-2 text-2xl font-bold text-white">
+            {workout.name}
+          </Text>
+          <Text className="text-xs font-medium uppercase text-purple-200">
+            {workout.done_today ? "Feito" : "Ativo"}
+          </Text>
+        </View>
+        {workout.description ? (
+          <Text className="mb-4 text-sm font-normal text-gray-200">
+            {workout.description}
+          </Text>
+        ) : null}
+        <View className="flex-row gap-10">
+          <View className="flex-row items-center gap-1">
+            <Dumbbell size={16} color={color["gray-300"]} />
+            <Text className="text-xs font-medium text-gray-200">
+              {exerciseCountLabel(workout)}
             </Text>
           </View>
-          {workout.description ? (
-            <Text className="mb-4 text-base font-semibold text-gray-200">
-              {workout.description}
+          <View className="flex-row items-center gap-1">
+            <CalendarRange size={16} color={color["gray-300"]} />
+            <Text className="text-xs font-medium text-gray-200">
+              {workout.days_of_week.length}x / sem
             </Text>
-          ) : null}
-          <View className="flex-row gap-10">
-            <View className="flex-row items-center gap-1">
-              <Dumbbell size={16} color={color["gray-300"]} />
-              <Text className="text-xs font-medium text-gray-200">
-                {exerciseCountLabel(workout)}
-              </Text>
-            </View>
-            <View className="flex-row items-center gap-1">
-              <CalendarRange size={16} color={color["gray-300"]} />
-              <Text className="text-xs font-medium text-gray-200">
-                {workout.days_of_week.length}x / sem
-              </Text>
-            </View>
           </View>
-        </Pressable>
+        </View>
+      </Pressable>
 
-        <StartWorkoutButton workoutId={workout.id} done={workout.done_today} />
-      </View>
-    </LinearGradient>
+      <StartWorkoutButton workoutId={workout.id} done={workout.done_today} />
+    </Card>
   );
 }
 
-/** Card da seção "Sua Biblioteca" */
 function LibraryWorkoutCard({
   workout,
   onDelete,
@@ -96,7 +77,6 @@ function LibraryWorkoutCard({
   workout: Workout;
   onDelete: (workout: Workout) => void;
 }) {
-  const count = workout.exercises?.length ?? 0;
   const daysLabel = workout.days_of_week.map((d) => DAY_SHORT[d]).join(", ");
 
   return (
@@ -104,9 +84,9 @@ function LibraryWorkoutCard({
       onPress={() => router.push(`/workout/${workout.id}`)}
       className={cn("active:bg-gray-500", !workout.active && "opacity-60")}
     >
-      <View className="mb-4 flex-row items-start justify-between">
-        <View className="flex-1 pr-2">
-          <Text className="text-2xl font-bold text-white">{workout.name}</Text>
+      <View className="mb-2 flex-row items-start justify-between">
+        <View className="flex-1 flex-row items-center pr-2">
+          <Text className="text-xl font-bold text-white">{workout.name}</Text>
           <Text className="mt-1 ps-5 text-xs font-medium text-gray-200">
             {daysLabel || "Sem dias definidos"}
           </Text>
@@ -120,20 +100,16 @@ function LibraryWorkoutCard({
         </Pressable>
       </View>
 
-      <View className="mb-4 flex-row items-center justify-between rounded-lg bg-gray-700 p-4">
-        <View>
-          <Text className="text-xs font-medium uppercase text-gray-400">
-            Exercícios
-          </Text>
-          <Text className="text-center text-2xl font-semibold text-white">
-            {count}
+      <View className="flex-row gap-10">
+        <View className="flex-row items-center gap-1">
+          <Dumbbell size={16} color={color["gray-300"]} />
+          <Text className="text-xs font-medium text-gray-200">
+            {exerciseCountLabel(workout)}
           </Text>
         </View>
-        <View className="items-end">
-          <Text className="text-xs font-medium uppercase text-gray-400">
-            Frequência
-          </Text>
-          <Text className="text-center text-2xl font-semibold text-white">
+        <View className="flex-row items-center gap-1">
+          <CalendarRange size={16} color={color["gray-300"]} />
+          <Text className="text-xs font-medium text-gray-200">
             {workout.days_of_week.length}x / sem
           </Text>
         </View>
@@ -172,12 +148,7 @@ export default function WorkoutsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      // Reavalia o dia atual a cada foco — cobre virada de meia-noite
-      // e troca de fuso horário com o app aberto em segundo plano.
       setToday(dayOfWeekFromDate());
-      // Primeira carga usa fetch (liga o spinner); focos seguintes usam
-      // refresh, que atualiza em silêncio. getState evita pôr workouts nas
-      // deps — isso re-dispararia o efeito a cada mudança da lista.
       if (useWorkoutsStore.getState().workouts.length === 0) fetch();
       else refresh();
     }, [fetch, refresh]),
@@ -231,7 +202,6 @@ export default function WorkoutsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* TopAppBar */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <View className="flex-row items-center gap-3">
           <Text className="text-4xl font-bold text-white">Meus Treinos</Text>
@@ -269,14 +239,12 @@ export default function WorkoutsScreen() {
             />
           }
         >
-          {/* Busca */}
           <SearchInput
             value={search}
             onChangeText={setSearch}
             placeholder="Buscar treino..."
           />
 
-          {/* Programado para Hoje */}
           {todayWorkouts.length > 0 && (
             <View className="gap-4">
               <View className="flex-row items-center justify-between">
@@ -289,7 +257,6 @@ export default function WorkoutsScreen() {
             </View>
           )}
 
-          {/* Sua Biblioteca */}
           <View className="flex items-center justify-between">
             <Text className="text-xl font-bold text-white">Outros treinos</Text>
           </View>
@@ -315,13 +282,12 @@ export default function WorkoutsScreen() {
                 }
               />
             ) : (
-              /* Novo treino */
               <View className="items-center gap-2 pt-5">
                 <IconButton
                   icon={Plus}
                   onPress={() => router.push("/workout/create")}
                 />
-                <Text className="text-base font-semibold text-gray-200">
+                <Text className="text-base font-medium text-gray-200">
                   Novo treino
                 </Text>
               </View>

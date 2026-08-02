@@ -40,13 +40,6 @@ export const exercisesService = {
     return data;
   },
 
-  /**
-   * Substitute suggestions for the "máquina ocupada" flow. Returns up to `limit`
-   * (default 3) strength-catalog exercises ranked by muscle overlap, force and
-   * mechanic, penalizing the same equipment so a duplicate-machine substitute
-   * sinks to the bottom. The caller combines this with the manual search
-   * (`list`) so the user can always pick something else.
-   */
   async substitutes(
     id: string,
     params: ListSubstitutesParams = {},

@@ -109,8 +109,6 @@ export default function SessionPostScreen() {
   }>();
   const insets = useSafeAreaInsets();
   const { showToast } = useToast();
-  // Antes era const de módulo, calculada uma vez no load do bundle: em
-  // split-screen ou foldable o hero ficava com a altura da tela anterior.
   const heroHeight = Math.round(useWindowDimensions().height * 0.55);
 
   const [detail, setDetail] = useState<SessionSocialDetail | null>(null);
@@ -160,9 +158,7 @@ export default function SessionPostScreen() {
       const page = await groupsService.comments(id, sessionId, cursor);
       setComments((prev) => [...prev, ...page.data]);
       setCursor(page.cursor.has_more ? page.cursor.next_cursor : null);
-    } catch {
-      /* silent: keep what we have */
-    }
+    } catch {}
   }
 
   async function sendComment() {
@@ -172,7 +168,7 @@ export default function SessionPostScreen() {
     setSending(true);
     try {
       const created = await groupsService.addComment(id, sessionId, body);
-      setComments((prev) => [created, ...prev]); // newest-first
+      setComments((prev) => [created, ...prev]);
       setDraft("");
       setDetail((d) => (d ? { ...d, comment_count: d.comment_count + 1 } : d));
     } catch {
@@ -231,7 +227,6 @@ export default function SessionPostScreen() {
           contentContainerStyle={{ paddingBottom: 96 }}
           keyboardShouldPersistTaps="handled"
         >
-          {/* 1. Hero photo */}
           <View style={{ height: heroHeight }} className="w-full">
             {detail.photo_url ? (
               <Image
@@ -242,7 +237,6 @@ export default function SessionPostScreen() {
             ) : (
               <View className="h-full w-full bg-gray-500" />
             )}
-            {/* fade into the page */}
             <LinearGradient
               colors={["transparent", "rgba(17,17,19,0.7)", color["gray-700"]]}
               locations={[0.55, 0.85, 1]}
@@ -265,7 +259,6 @@ export default function SessionPostScreen() {
             </Pressable>
           </View>
 
-          {/* 2. Author */}
           <View className="flex-row items-start gap-3 px-5">
             <Avatar uri={detail.avatar_url} name={detail.name} size={56} ring />
             <View className="flex-1 pt-1">
@@ -281,7 +274,6 @@ export default function SessionPostScreen() {
             </Text>
           </View>
 
-          {/* 3. Reactions */}
           <View className="flex-row flex-wrap items-center gap-3 px-5 pt-5">
             {detail.reactions.map((rc) => {
               const active = rc.emoji === detail.my_reaction;
@@ -323,7 +315,6 @@ export default function SessionPostScreen() {
 
           <View className="mx-5 mt-5 h-px bg-white/7" />
 
-          {/* 4. Comments */}
           <View className="px-5 pt-5">
             <Text className="mb-4 text-xs font-bold uppercase text-gray-200">
               Comentários
@@ -347,7 +338,6 @@ export default function SessionPostScreen() {
           </View>
         </ScrollView>
 
-        {/* 5. Fixed composer */}
         <View
           style={{ paddingBottom: insets.bottom + 12 }}
           className="flex-row items-center gap-3 border-t border-white/7 bg-gray-700 px-5 pt-3"
@@ -382,8 +372,6 @@ export default function SessionPostScreen() {
         </View>
       </KeyboardAvoidingView>
 
-      {/* Full emoji picker (opens on the reaction "+"). Pure-JS modal, so it
-          works in the simulator without the software keyboard. */}
       <EmojiPicker
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}

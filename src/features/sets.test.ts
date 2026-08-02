@@ -48,8 +48,8 @@ describe("statsOf", () => {
 describe("bestSetId", () => {
   it("escolhe o maior volume, não a maior carga", () => {
     const best = bestSetId([
-      set({ id: "leve", weight: 80, reps: 10 }), // volume 800
-      set({ id: "pesada", weight: 100, reps: 5 }), // volume 500
+      set({ id: "leve", weight: 80, reps: 10 }),
+      set({ id: "pesada", weight: 100, reps: 5 }),
     ]);
     expect(best).toBe("leve");
   });
@@ -73,7 +73,7 @@ describe("bestSetId", () => {
   it("empate fica com a primeira série", () => {
     const best = bestSetId([
       set({ id: "primeira", weight: 100, reps: 10 }),
-      set({ id: "segunda", weight: 50, reps: 20 }), // mesmo volume
+      set({ id: "segunda", weight: 50, reps: 20 }),
     ]);
     expect(best).toBe("primeira");
   });
@@ -98,14 +98,13 @@ describe("buildSessionSummary", () => {
       isTimeOf,
     );
 
-    expect(totalVolume).toBe(1960); // 1000 + 960 + 0
+    expect(totalVolume).toBe(1960);
     expect(summaries).toHaveLength(2);
 
     const supino = summaries.find((s) => s.exerciseId === "ex1")!;
     expect(supino.name).toBe("Supino");
     expect(supino.isTime).toBe(false);
     expect(supino.setsCount).toBe(2);
-    // Pontua por volume: 100×10=1000 vence 80×12=960.
     expect(supino.bestWeight).toBe(100);
     expect(supino.bestReps).toBe(10);
 
@@ -121,12 +120,10 @@ describe("buildSessionSummary", () => {
     });
   });
 
-  // Trava a regressão: detalhe da sessão e resumo pós-treino devem destacar a
-  // MESMA série. Antes cada tela tinha seu próprio critério e discordavam.
   it("concorda com bestSetId quando volume e carga apontam séries diferentes", () => {
     const sets = [
-      set({ id: "pesada", exercise_id: "ex1", weight: 100, reps: 5 }), // vol 500
-      set({ id: "volumosa", exercise_id: "ex1", weight: 60, reps: 12 }), // vol 720
+      set({ id: "pesada", exercise_id: "ex1", weight: 100, reps: 5 }),
+      set({ id: "volumosa", exercise_id: "ex1", weight: 60, reps: 12 }),
     ];
 
     const destaqueDetalhe = bestSetId(sets);

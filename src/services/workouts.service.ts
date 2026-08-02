@@ -11,6 +11,15 @@ export interface AddExerciseInput {
   sort_order: number;
 }
 
+export interface UpdateExerciseInput {
+  sets?: number;
+  reps_min?: number | null;
+  reps_max?: number | null;
+  duration?: number | null;
+  note?: string;
+  sort_order?: number;
+}
+
 export interface CreateWorkoutInput {
   name: string;
   description?: string;
@@ -55,6 +64,18 @@ export const workoutsService = {
   ): Promise<WorkoutExercise> {
     const { data } = await api.post<WorkoutExercise>(
       `/workouts/${workoutId}/exercises`,
+      input,
+    );
+    return data;
+  },
+
+  async updateExercise(
+    workoutId: string,
+    weId: string,
+    input: UpdateExerciseInput,
+  ): Promise<WorkoutExercise> {
+    const { data } = await api.put<WorkoutExercise>(
+      `/workouts/${workoutId}/exercises/${weId}`,
       input,
     );
     return data;

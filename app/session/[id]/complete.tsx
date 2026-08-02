@@ -27,8 +27,6 @@ import { color } from "../../../src/theme/palette";
 import { Card } from "../../../src/components/ui/Card";
 
 export default function SessionCompleteScreen() {
-  // A sessão já foi finalizada na tela de treino — aqui é só o resumo.
-  // `xp` vem de lá (vazio quando o treino saiu como incompleto).
   const { id, workoutId, xp } = useLocalSearchParams<{
     id: string;
     workoutId?: string;
@@ -54,7 +52,6 @@ export default function SessionCompleteScreen() {
       const s = await sessionsService.get(id);
       setSession(s);
 
-      // Resolve nome/tipo de cada exercício pelo workout da sessão
       const wId = workoutId || s.workout_id;
       if (wId) {
         try {
@@ -67,9 +64,7 @@ export default function SessionCompleteScreen() {
             };
           }
           setExerciseMeta(meta);
-        } catch {
-          // segue sem nomes; usa fallback
-        }
+        } catch {}
       }
     } catch {
       setError(true);
@@ -101,8 +96,6 @@ export default function SessionCompleteScreen() {
 
   const hasSets = (session?.sets?.length ?? 0) > 0;
 
-  // A foto é enviada assim que escolhida — cada envio sobrescreve a anterior
-  // no backend (SetSessionPhoto), então trocar é só escolher outra.
   async function handlePickPhoto() {
     if (!session) return;
     const uri = await pickImage(1080);
@@ -159,7 +152,6 @@ export default function SessionCompleteScreen() {
         contentContainerClassName="px-4 py-6 pb-40"
         showsVerticalScrollIndicator={false}
       >
-        {/* Header de celebração */}
         <View className="mb-6 items-center">
           <LinearGradient
             colors={[color["purple-200"], color["purple-400"]]}
@@ -168,7 +160,7 @@ export default function SessionCompleteScreen() {
             style={{
               width: 54,
               height: 54,
-              borderRadius: 9999, // circulo: 54x54
+              borderRadius: 9999,
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "0px 0px 22px rgba(129, 19, 211, 0.55)",
@@ -186,14 +178,13 @@ export default function SessionCompleteScreen() {
           </Text>
         </View>
 
-        {/* XP ganho */}
         {hasSets && earnedXp != null ? (
           <LinearGradient
             colors={[color["purple-200"], color["purple-400"]]}
             start={{ x: 0, y: 0 }}
-            end={{ x: 0.87, y: 0.5 }} // ≈ 120deg
+            end={{ x: 0.87, y: 0.5 }}
             style={{
-              borderRadius: 28, // rounded-2xl (container)
+              borderRadius: 28,
               padding: 14,
               alignItems: "center",
               boxShadow: "0px 8px 22px rgba(129, 19, 211, 0.4)",
@@ -211,7 +202,6 @@ export default function SessionCompleteScreen() {
           </LinearGradient>
         ) : null}
 
-        {/* Foto do treino (opcional) — em destaque: é ela que vai para o grupo */}
         <Pressable
           onPress={handlePickPhoto}
           disabled={uploadingPhoto}
@@ -244,7 +234,6 @@ export default function SessionCompleteScreen() {
           </Pressable>
         ) : null}
 
-        {/* Stats */}
         <View className="mt-4 flex-row gap-3">
           <View className="flex-1 rounded-2xl border border-l-[3px] border-white/7 border-l-purple-300 bg-gray-600 p-4">
             <Text className="text-xs font-medium uppercase text-gray-200">
@@ -277,7 +266,6 @@ export default function SessionCompleteScreen() {
           </View>
         </View>
 
-        {/* Resumo de performance */}
         <Text className="mb-4 mt-6 text-center text-xs font-bold uppercase text-purple-200">
           Resumo de performance
         </Text>
@@ -354,7 +342,6 @@ export default function SessionCompleteScreen() {
         )}
       </ScrollView>
 
-      {/* Barra de ação fixa */}
       <View className="absolute bottom-0 left-0 right-0 border-t border-gray-300 bg-gray-600 p-4">
         <Button
           label="Concluir"

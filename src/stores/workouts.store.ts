@@ -36,7 +36,6 @@ export const useWorkoutsStore = create<WorkoutsState>((set, get) => ({
   },
 
   remove: async (id) => {
-    // Remoção otimista: tira da lista já e reverte se a API falhar.
     const previous = get().workouts;
     set({ workouts: previous.filter((w) => w.id !== id) });
     try {

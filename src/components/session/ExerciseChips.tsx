@@ -13,7 +13,6 @@ interface ExerciseChipsProps {
   onSelect: (index: number) => void;
 }
 
-/** Atalhos para pular direto a qualquer exercício da sessão. */
 export function ExerciseChips({
   exercises,
   currentIndex,
@@ -50,7 +49,7 @@ export function ExerciseChips({
             <View className="flex-row items-center justify-between">
               <Text
                 className={cn(
-                  "text-xs font-bold",
+                  "text-xs font-medium",
                   active ? "text-purple-200" : "text-gray-400",
                 )}
               >
@@ -68,7 +67,7 @@ export function ExerciseChips({
             </View>
             <Text
               className={cn(
-                "text-base font-semibold",
+                "text-base font-medium",
                 active ? "text-white" : "text-gray-200",
               )}
               numberOfLines={3}

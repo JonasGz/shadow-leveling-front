@@ -1,5 +1,3 @@
-// Tipos para palette.js. O arquivo continua .js porque tailwind.config.js o
-// carrega via require em tempo de build, fora do pipeline do TS.
 export declare const color: {
   readonly white: "#FFFFFF";
 

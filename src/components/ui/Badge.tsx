@@ -1,9 +1,6 @@
 import { Text, View } from "react-native";
 import { cn } from "../../lib/cn";
 
-// Semantic PULSE tones. `primary`/`secondary` use the accent ramp; the rest use
-// the semantic colours (success/warning/error/info). `neutral` is for status
-// that has no semantic weight.
 type Tone =
   | "primary"
   | "secondary"

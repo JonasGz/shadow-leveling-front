@@ -16,7 +16,6 @@ export interface SetStats {
   volume: number;
 }
 
-/** "45s" para exercício de tempo, "80kg × 10" para carga. */
 export function formatSet(set: ExerciseSet): string {
   return set.duration != null
     ? `${set.duration}s`
@@ -34,26 +33,14 @@ export function statsOf(sets: ExerciseSet[]): SetStats {
   );
 }
 
-/** Volume de uma série. Série por tempo não tem volume. */
 export function volumeOf(set: ExerciseSet): number {
   return (set.weight ?? 0) * (set.reps ?? 0);
 }
 
-/**
- * Pontuação que define a melhor série: volume (peso × reps) para carga,
- * duração para exercício de tempo.
- */
 function scoreOf(set: ExerciseSet): number {
   return set.duration != null ? set.duration : volumeOf(set);
 }
 
-/**
- * Melhor série do conjunto, por volume (ou duração, em exercício de tempo).
- * Empate fica com a primeira — a de menor número de série.
- *
- * Fonte única para o destaque no detalhe da sessão e no resumo pós-treino:
- * antes cada tela tinha seu próprio critério e as duas discordavam.
- */
 export function bestSetOf(sets: ExerciseSet[]): ExerciseSet | null {
   let best: ExerciseSet | null = null;
   let bestScore = -1;
@@ -71,7 +58,6 @@ export function bestSetId(sets: ExerciseSet[]): string | null {
   return bestSetOf(sets)?.id ?? null;
 }
 
-/** Agrupa os sets por exercício para a tela de resumo e soma o volume total. */
 export function buildSessionSummary(
   sets: ExerciseSet[],
   nameOf: (id: string) => string,

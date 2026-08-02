@@ -70,8 +70,6 @@ export const sessionsService = {
     const { data } = await api.get<WorkoutSessionDetail>(
       `/workout-sessions/${id}`,
     );
-    // O backend pode omitir/retornar null em `sets` quando a sessão
-    // não tem séries registradas. Normaliza para sempre ser um array.
     return { ...data, sets: data.sets ?? [] };
   },
 
@@ -109,8 +107,6 @@ export const sessionsService = {
     await api.delete(`/workout-sessions/${sessionId}/sets/${setId}`);
   },
 
-  // Última sessão COMPLETA do treino, com os sets — base do autopreenchimento
-  // e da dica de progressão. null se o treino nunca foi concluído.
   async lastCompletedDetail(
     workoutId: string,
   ): Promise<WorkoutSessionDetail | null> {

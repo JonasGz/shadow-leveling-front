@@ -1,8 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 import { useScreenData } from "./useScreenData";
 
-// useFocusEffect só existe com um navigator montado; para o hook em si, focar
-// uma vez ao montar é equivalente e mantém o teste sem árvore de navegação.
 jest.mock("expo-router", () => ({
   useFocusEffect: (cb: () => void) => {
     const { useEffect } = jest.requireActual("react");
@@ -60,14 +58,12 @@ describe("useScreenData", () => {
 
     await waitFor(() => expect(resolvers).toHaveLength(1));
 
-    // Dispara a segunda carga antes da primeira responder.
     let second!: Promise<void>;
     await act(async () => {
       second = result.current.reload();
     });
     await waitFor(() => expect(resolvers).toHaveLength(2));
 
-    // A primeira responde por último e deve ser ignorada.
     await act(async () => {
       resolvers[1]("nova");
       resolvers[0]("antiga");

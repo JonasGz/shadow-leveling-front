@@ -4,7 +4,6 @@ import Check from "lucide-react-native/icons/check";
 import { color } from "../../theme/palette";
 import { cn } from "../../lib/cn";
 
-/** Uma linha de série em edição. `remoteId` só existe após gravar na API. */
 export interface LocalSet {
   weight: string;
   reps: string;
@@ -15,8 +14,6 @@ export interface LocalSet {
 
 export type SetField = "weight" | "reps" | "duration";
 
-// Mesma correção de métrica usada em Input/SearchInput: sem isso o número
-// fica caído dentro da caixa no Android.
 const SET_FIELD_TEXT = {
   fontSize: 14,
   lineHeight: 16,
@@ -28,10 +25,10 @@ interface SetRowProps {
   index: number;
   set: LocalSet;
   timed: boolean;
-  /** Primeira série ainda não concluída — recebe o destaque de "faça agora". */
   isActiveRow: boolean;
   onChangeField: (index: number, field: SetField, value: string) => void;
   onToggleDone: (index: number) => void;
+  onFocusRow: (index: number) => void;
 }
 
 export const SetRow = memo(function SetRow({
@@ -41,8 +38,8 @@ export const SetRow = memo(function SetRow({
   isActiveRow,
   onChangeField,
   onToggleDone,
+  onFocusRow,
 }: SetRowProps) {
-  // altura vem do padding: h-[..] + py-* juntos zeram a área do texto
   const fieldClass = cn(
     "rounded-lg border py-3 text-center",
     isActiveRow && !set.done
@@ -74,6 +71,7 @@ export const SetRow = memo(function SetRow({
         onChangeText={(v) =>
           onChangeField(index, timed ? "duration" : "weight", v)
         }
+        onFocus={() => onFocusRow(index)}
         editable={!set.done}
         keyboardType="numeric"
         placeholder="– –"
@@ -86,6 +84,7 @@ export const SetRow = memo(function SetRow({
         <TextInput
           value={set.reps}
           onChangeText={(v) => onChangeField(index, "reps", v)}
+          onFocus={() => onFocusRow(index)}
           editable={!set.done}
           keyboardType="numeric"
           placeholder="– –"

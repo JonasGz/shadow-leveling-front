@@ -24,9 +24,6 @@ import { useScreenData } from "../../src/hooks/useScreenData";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
 
-// Overlapping member avatars for a group card. Shows up to 3 real avatars and a
-// "+N" bubble for the remaining members. Falls back to a plain purple circle
-// when a slot has no photo (mirrors the profile screen's avatar fallback).
 function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
   const shown = avatars.slice(0, 3);
   const rest = count - shown.length;
@@ -54,8 +51,6 @@ function AvatarStack({ avatars, count }: { avatars: string[]; count: number }) {
             shown.length > 0 && "-ml-2",
           )}
         >
-          {/* Sem teto o texto estoura o círculo: um grupo de 150 renderiza
-              "+147". +99 é o pior caso e cabe nos 28px. */}
           <Text className="text-xs font-bold text-purple-200">
             {rest > 99 ? "+99" : `+${rest}`}
           </Text>
@@ -76,7 +71,6 @@ export default function GroupsScreen() {
       return await groupsService.list();
     } catch (e) {
       showToast("Não foi possível carregar seus grupos");
-      // Relança para o hook marcar erro sem descartar a lista já exibida.
       throw e;
     }
   });
@@ -100,7 +94,6 @@ export default function GroupsScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* TopAppBar */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <Text className="text-4xl font-bold text-white">Grupos</Text>
         <Pressable
@@ -137,17 +130,22 @@ export default function GroupsScreen() {
                 <Pressable
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 py-4 pl-5 pr-4 active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 p-4 active:opacity-80"
                 >
+                  <View className="h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-purple-300/25">
+                    {g.cover_url ? (
+                      <Image
+                        source={{ uri: g.cover_url }}
+                        className="h-full w-full"
+                        contentFit="cover"
+                      />
+                    ) : (
+                      <Swords size={20} color={color["purple-200"]} />
+                    )}
+                  </View>
                   <View className="flex-1">
-                    <Text className="text-xl font-bold text-white">
+                    <Text className="text-xl font-semibold text-white">
                       {g.name}
-                    </Text>
-                    <Text className="mt-1 text-xs font-medium text-gray-200">
-                      Código:{" "}
-                      <Text className="font-semibold text-white">
-                        {g.invite_code}
-                      </Text>
                     </Text>
                   </View>
                   <View className="flex-row items-center gap-2">
@@ -164,7 +162,6 @@ export default function GroupsScreen() {
         )}
       </ScrollView>
 
-      {/* Modal de criação de grupo */}
       <Modal
         visible={creating}
         transparent
@@ -175,7 +172,7 @@ export default function GroupsScreen() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           className="flex-1 items-center justify-center bg-black/70 px-6"
         >
-          <View className="w-full gap-4 rounded-2xl border border-gray-300 bg-gray-600 p-6">
+          <View className="w-full gap-4 rounded-2xl border border-white/7 bg-gray-600 p-6">
             <Text className="text-xl font-bold text-white">
               Criar novo grupo
             </Text>

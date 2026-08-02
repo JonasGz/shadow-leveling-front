@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Image } from "../../src/lib/image";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import Calendar from "lucide-react-native/icons/calendar";
@@ -121,10 +120,10 @@ function StatCard({
   return (
     <Card className="flex-1">
       <Icon size={26} color={iconColor} fill={iconFill ?? "none"} />
-      <Text className="mt-2 text-center text-3xl font-extrabold text-white">
+      <Text className="mt-1 text-center text-2xl font-extrabold text-white">
         {value}
       </Text>
-      <Text className="mt-1 text-center text-base font-semibold text-gray-200">
+      <Text className="mt-1 text-center text-sm font-normal text-gray-200">
         {label}
       </Text>
     </Card>
@@ -155,8 +154,6 @@ export default function HomeScreen() {
   const weekly = data?.weekly ?? null;
   const level = data?.level ?? null;
 
-  // Prompt the user to define a weekly goal on first entry (coluna NULL).
-  // "Definir depois" closes the modal; it reappears next visit until set.
   useEffect(() => {
     if (!loading && user && user.weekly_goal_days === null) {
       setGoalModalVisible(true);
@@ -189,10 +186,9 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Header */}
       <View className="flex-row items-center justify-between px-4 py-4">
         <View>
-          <Text className="text-4xl font-bold text-white">Hey, {name} 👋</Text>
+          <Text className="text-2xl font-bold text-white">Hey, {name}</Text>
         </View>
         <Pressable
           onPress={() => router.navigate("/(tabs)/profile")}
@@ -235,57 +231,39 @@ export default function HomeScreen() {
             />
           }
         >
-          {/* Weekly goal card */}
           {weekly ? (
-            <Pressable
+            <Card
+              className="flex-row items-center gap-3"
               onPress={
                 goalScheduled > 0 ? undefined : () => setGoalModalVisible(true)
               }
-              disabled={goalScheduled > 0}
             >
-              <LinearGradient
-                colors={["rgb(42, 23, 48)", "rgb(26, 25, 28)"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 12,
-                  borderRadius: 28, // rounded-2xl (container)
-                  padding: 16,
-                  borderWidth: 1,
-                  // purple-300 a 30%; LinearGradient só aceita style.
-                  borderColor: `${color["purple-300"]}4D`,
-                }}
-              >
-                <WeeklyGoalRing pct={goalPct} />
-                <View className="flex-1">
-                  <Text className="text-center text-2xl font-bold text-white">
-                    Meta semanal
-                  </Text>
-                  <Text className="mt-1 text-center text-sm font-normal text-gray-100">
-                    {goalScheduled === 0
-                      ? "Defina sua meta semanal"
-                      : goalCompleted >= goalScheduled
-                        ? "Meta da semana concluída. Excelente!"
-                        : `${goalCompleted} de ${goalScheduled} treinos feitos. Faltam ${Math.max(
-                            0,
-                            goalScheduled - goalCompleted,
-                          )} pra completar!`}
-                  </Text>
-                </View>
-              </LinearGradient>
-            </Pressable>
+              <WeeklyGoalRing pct={goalPct} />
+              <View className="flex-1">
+                <Text className="text-center text-2xl font-bold text-white">
+                  Meta semanal
+                </Text>
+                <Text className="mt-1 text-center text-sm font-normal text-gray-100">
+                  {goalScheduled === 0
+                    ? "Defina sua meta semanal"
+                    : goalCompleted >= goalScheduled
+                      ? "Meta da semana concluída. Excelente!"
+                      : `${goalCompleted} de ${goalScheduled} treinos feitos. Faltam ${Math.max(
+                          0,
+                          goalScheduled - goalCompleted,
+                        )} pra completar!`}
+                </Text>
+              </View>
+            </Card>
           ) : null}
 
-          {/* Stat cards */}
           <View className="flex-row gap-4">
             <StatCard
               icon={Flame}
               iconColor={color.warning}
               iconFill={color.warning}
               value={String(streak)}
-              label="Dia de streak"
+              label="Dias seguidos"
             />
             <StatCard
               icon={TrendingUp}
@@ -295,7 +273,6 @@ export default function HomeScreen() {
             />
           </View>
 
-          {/* Today's workout */}
           <View>
             <Text className="mb-4 text-center text-2xl font-bold text-white">
               Treino de hoje
@@ -306,14 +283,6 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/workout/${featured.id}`)}
                 className="overflow-hidden p-0"
               >
-                <View className="bg-purple-400 px-4 py-4">
-                  <View className="mt-6 self-start rounded-full bg-black/35 px-2 py-1">
-                    <Text className="text-xs font-medium uppercase text-white">
-                      {featured.is_completed ? "Concluído" : "Próximo"}
-                    </Text>
-                  </View>
-                </View>
-
                 <View className="items-center p-6">
                   <Text
                     className="text-3xl font-bold text-white"

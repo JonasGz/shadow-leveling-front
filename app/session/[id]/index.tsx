@@ -46,8 +46,6 @@ export default function SessionDetailScreen() {
   const { data, loading, error, reload } = useScreenData(async () => {
     if (!id) return null;
     const session = await sessionsService.get(id);
-    // Os sets só trazem exercise_id; os nomes vêm do detalhe do treino.
-    // Secundário: se falhar, cada card cai no rótulo genérico.
     const w = await workoutsService.get(session.workout_id).catch(() => null);
     const exerciseNames = Object.fromEntries(
       (w?.exercises ?? []).map((we) => [we.exercise_id, we.exercise.name]),
@@ -74,7 +72,6 @@ export default function SessionDetailScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-700" edges={["top"]}>
-      {/* Top App Bar (mesma da tela de workout) */}
       <View className="h-16 flex-row items-center justify-between px-4">
         <Pressable
           onPress={() => router.back()}
@@ -84,7 +81,6 @@ export default function SessionDetailScreen() {
           <ChevronLeft size={22} color={color["gray-50"]} />
         </Pressable>
         <Text className="text-2xl font-bold text-white">Sessão</Text>
-        {/* espaçador para manter o título centralizado */}
         <View className="w-[22px]" />
       </View>
 
@@ -106,7 +102,6 @@ export default function SessionDetailScreen() {
           contentContainerClassName="px-5 py-4 gap-3 pb-10"
           showsVerticalScrollIndicator={false}
         >
-          {/* Resumo */}
           <Card className="p-[18px]">
             <Text className="text-2xl font-bold text-white">{workoutName}</Text>
             <Text className="mt-2 text-base font-normal text-gray-200">
@@ -120,7 +115,6 @@ export default function SessionDetailScreen() {
             </View>
           </Card>
 
-          {/* Estatísticas da sessão */}
           <View className="flex-row gap-3">
             {[
               { value: totals.series, label: "Séries" },

@@ -19,9 +19,6 @@ interface ButtonProps extends PressableProps {
   loading?: boolean;
   fullWidth?: boolean;
   labelClassName?: string;
-  // Text-casing of the label. Defaults to uppercase (existing behavior). Pass
-  // "capitalize"/"none" to opt out. Weight is controlled via labelClassName
-  // (e.g. labelClassName="font-bold").
   transform?: "uppercase" | "capitalize" | "none";
 }
 
@@ -38,25 +35,25 @@ const variantStyles: Record<
     container: "bg-purple-300 active:opacity-80",
     text: "text-gray-50 font-semibold",
     icon: color.white,
-    spinner: color["gray-50"], // neutral-50 (on-primary)
+    spinner: color["gray-50"],
   },
   tonal: {
     container: "bg-purple-300/12 active:opacity-80",
     text: "text-purple-100 font-semibold",
-    icon: color["purple-100"], // purple-100
+    icon: color["purple-100"],
     spinner: color["purple-100"],
   },
   ghost: {
     container: "active:opacity-60",
     text: "text-gray-200 font-semibold",
     icon: color["gray-200"],
-    spinner: color["gray-200"], // neutral-200
+    spinner: color["gray-200"],
   },
   destructive: {
     container: "bg-error active:opacity-80",
     text: "text-gray-50 font-semibold",
     icon: color["gray-50"],
-    spinner: color["gray-50"], // neutral-50 (on-error)
+    spinner: color["gray-50"],
   },
 };
 
@@ -87,7 +84,6 @@ export function Button({
         styles.container,
         fullWidth && "w-full",
         isDisabled && "opacity-50",
-        // por último: quem chama vence a base.
         className,
       )}
     >
@@ -96,8 +92,6 @@ export function Button({
       ) : (
         <>
           {Icon && <Icon size={20} color={styles.icon} fill={styles.icon} />}
-          {/* text-base + font-semibold é o padrão; um tamanho ou peso vindo em
-              labelClassName vence pelo merge, sem precisar detectá-lo antes. */}
           <Text
             className={cn(
               "text-base font-semibold",

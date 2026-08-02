@@ -7,12 +7,10 @@ import type { AuthToken, User, Session, UserLevel } from "../types/api.types";
 export type SocialProvider = "google" | "apple";
 
 export const authService = {
-  /** Sends a 6-digit login code to the email. Create-or-login is decided at verify time. */
   async requestEmailCode(email: string): Promise<void> {
     await api.post("/auth/email/request", { email });
   },
 
-  /** Verifies the emailed code and stores the returned session token. */
   async verifyEmailCode(email: string, code: string): Promise<AuthToken> {
     const { data } = await api.post<AuthToken>("/auth/email/verify", {
       email,
@@ -22,7 +20,6 @@ export const authService = {
     return data;
   },
 
-  /** Exchanges a provider ID token for a session and stores it. */
   async socialLogin(
     provider: SocialProvider,
     idToken: string,
@@ -57,7 +54,6 @@ export const authService = {
     return data;
   },
 
-  /** Uploads a new profile picture (local URI from expo-image-picker). */
   async updateAvatar(uri: string): Promise<User> {
     const { data } = await api.patch<User>(
       "/auth/me/avatar",
@@ -70,7 +66,6 @@ export const authService = {
   },
 
   async logout() {
-    // Remove the push token while the session is still valid.
     await unregisterPush();
     await api.post("/auth/logout");
     await SecureStore.deleteItemAsync(TOKEN_KEY);

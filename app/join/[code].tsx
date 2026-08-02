@@ -7,9 +7,6 @@ import { groupsService } from "../../src/services/groups.service";
 import { setPendingInvite } from "../../src/lib/invite";
 import { color } from "../../src/theme/palette";
 
-// Landing route for invite deep-links (shadowleveling://join/<CODE>). Joins the
-// group and forwards into it. If reached signed-out, stashes the code and sends
-// the user through login — finishAuth resumes the join afterwards.
 export default function JoinGroupScreen() {
   const { code } = useLocalSearchParams<{ code: string }>();
   const user = useAuthStore((s) => s.user);

@@ -8,7 +8,6 @@ import { notificationsService } from "../services/notifications.service";
 
 const PUSH_TOKEN_KEY = "push_token";
 
-// Foreground behavior: show the notification as a banner even with the app open.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -25,9 +24,6 @@ function getProjectId(): string | undefined {
   );
 }
 
-// registerForPush requests permission, gets the Expo push token, and registers
-// it with the backend. Best-effort: returns null (never throws) if unavailable
-// (simulator, denied permission, Expo Go, missing projectId).
 export async function registerForPush(): Promise<string | null> {
   if (!Device.isDevice) return null;
 
@@ -60,7 +56,6 @@ export async function registerForPush(): Promise<string | null> {
   }
 }
 
-// unregisterPush removes the stored token from the backend and device (on logout).
 export async function unregisterPush(): Promise<void> {
   try {
     const token = await SecureStore.getItemAsync(PUSH_TOKEN_KEY);
@@ -68,13 +63,11 @@ export async function unregisterPush(): Promise<void> {
       await notificationsService.deleteToken(token);
     }
   } catch {
-    // best-effort
   } finally {
     await SecureStore.deleteItemAsync(PUSH_TOKEN_KEY);
   }
 }
 
-// addNotificationResponseListener opens the Groups tab when a push is tapped.
 export function addNotificationResponseListener() {
   return Notifications.addNotificationResponseReceivedListener(() => {
     router.push("/(tabs)/groups");
