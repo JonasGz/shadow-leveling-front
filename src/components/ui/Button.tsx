@@ -79,7 +79,7 @@ export function Button({
       {...props}
       disabled={isDisabled}
       className={cn(
-        "flex-row items-center justify-center gap-2 rounded-lg",
+        "flex-row items-center justify-center gap-2 rounded-xl",
         sizePad[size],
         styles.container,
         fullWidth && "w-full",

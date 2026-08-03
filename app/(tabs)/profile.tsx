@@ -178,7 +178,23 @@ export default function ProfileScreen() {
           />
         }
       >
-        <Text className="mt-2 text-4xl font-bold text-white">Perfil</Text>
+        <View className="mt-2 flex-row items-center justify-between">
+          <Text className="text-4xl font-bold text-white">Perfil</Text>
+          <Pressable
+            onPress={confirmLogout}
+            disabled={loggingOut}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Sair da conta"
+            className="h-11 w-11 items-center justify-center rounded-full active:opacity-70"
+          >
+            {loggingOut ? (
+              <ActivityIndicator size="small" color={color.error} />
+            ) : (
+              <LogOut size={22} color={color.error} strokeWidth={2} />
+            )}
+          </Pressable>
+        </View>
 
         {loading ? (
           <View className="items-center justify-center py-10">
@@ -387,23 +403,6 @@ export default function ProfileScreen() {
                 />
               </Pressable>
             </Card>
-
-            <Pressable
-              onPress={confirmLogout}
-              disabled={loggingOut}
-              className="mt-4 h-[50px] w-full flex-row items-center justify-center gap-3 rounded-lg border border-error/40 bg-error/10 active:opacity-80"
-            >
-              {loggingOut ? (
-                <ActivityIndicator size="small" color={color.error} />
-              ) : (
-                <>
-                  <LogOut size={18} color={color.error} strokeWidth={2} />
-                  <Text className="text-base font-semibold tracking-wider text-error">
-                    Sair
-                  </Text>
-                </>
-              )}
-            </Pressable>
           </>
         )}
       </ScrollView>
