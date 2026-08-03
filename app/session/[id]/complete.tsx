@@ -105,7 +105,6 @@ export default function SessionCompleteScreen() {
     try {
       await sessionsService.attachPhoto(session.id, uri);
       setPhotoUri(uri);
-      showToast("Foto salva.", "success");
     } catch {
       showToast("Não foi possível enviar a foto.", "error");
     } finally {

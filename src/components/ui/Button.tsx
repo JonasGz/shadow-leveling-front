@@ -8,7 +8,7 @@ import type { LucideIcon } from "lucide-react-native";
 import { color } from "../../theme/palette";
 import { cn } from "../../lib/cn";
 
-type Variant = "default" | "tonal" | "ghost" | "destructive";
+type Variant = "default" | "tonal" | "ghost";
 type Size = "sm" | "md";
 
 interface ButtonProps extends PressableProps {
@@ -48,12 +48,6 @@ const variantStyles: Record<
     text: "text-gray-200 font-semibold",
     icon: color["gray-200"],
     spinner: color["gray-200"],
-  },
-  destructive: {
-    container: "bg-error active:opacity-80",
-    text: "text-gray-50 font-semibold",
-    icon: color["gray-50"],
-    spinner: color["gray-50"],
   },
 };
 

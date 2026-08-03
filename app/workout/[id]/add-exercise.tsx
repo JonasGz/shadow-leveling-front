@@ -156,7 +156,6 @@ export default function AddExerciseScreen() {
         sort_order: 0,
       });
       await refreshWorkouts();
-      showToast("Exercício adicionado ao treino.", "success");
       router.back();
     } catch (err: any) {
       const status = err?.response?.status;

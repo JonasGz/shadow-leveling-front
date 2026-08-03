@@ -64,7 +64,6 @@ export function EditExerciseModal({
         note: note.trim(),
       });
       await onSaved();
-      showToast("Exercício atualizado.", "success");
       onClose();
     } catch (err: any) {
       const status = err?.response?.status;

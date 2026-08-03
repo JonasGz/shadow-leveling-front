@@ -21,15 +21,15 @@ export declare const color: {
   readonly "purple-grad-from": "#9F1FFF";
   readonly "purple-grad-to": "#7A0FD0";
 
-  readonly success: "#22C55E";
-  readonly warning: "#F59E0B";
-  readonly error: "#EF4444";
-  readonly info: "#3B82F6";
+  readonly success: "#4ADE80";
+  readonly warning: "#FACC15";
+  readonly error: "#F87171";
+  readonly info: "#CAA4FF";
 };
 
 export declare const difficulty: {
-  readonly easy: "#22C55E";
-  readonly medium: "#F59E0B";
-  readonly hard: "#EF4444";
+  readonly easy: "#4ADE80";
+  readonly medium: "#FACC15";
+  readonly hard: "#F87171";
   readonly "no-rank": "#908D94";
 };

@@ -21,10 +21,10 @@ const color = {
   "purple-grad-from": "#9F1FFF",
   "purple-grad-to": "#7A0FD0",
 
-  success: "#22C55E",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  info: "#3B82F6",
+  success: "#4ADE80",
+  warning: "#FACC15",
+  error: "#F87171",
+  info: "#CAA4FF", // = purple-100, de propósito: info é o accent do app, não azul
 };
 
 const difficulty = {

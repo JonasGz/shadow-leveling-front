@@ -118,7 +118,6 @@ export default function ProfileScreen() {
       const updated = await authService.updateAvatar(uri);
       setLocalUser(updated);
       setUser(updated);
-      showToast("Foto de perfil atualizada.", "success");
     } catch (err: any) {
       const st = err?.response?.status;
       showToast(
@@ -151,7 +150,6 @@ export default function ProfileScreen() {
       setLocalUser(updated);
       setUser(updated);
       setEditing(false);
-      showToast("Nick atualizado.", "success");
     } catch (err: any) {
       const st = err?.response?.status;
       showToast(

@@ -51,7 +51,6 @@ export function WeeklyGoalModal({
       const user = await authService.updateWeeklyGoal(parsed);
       setUser(user);
       onSaved?.(user);
-      showToast("Meta semanal definida.", "success");
       onClose?.();
     } catch {
       showToast("Não foi possível salvar a meta.", "error");

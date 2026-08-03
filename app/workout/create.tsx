@@ -69,7 +69,6 @@ export default function CreateWorkoutScreen() {
         days_of_week: days,
       });
       await refreshWorkouts();
-      showToast("Treino criado.", "success");
       router.replace(`/workout/${workout.id}`);
     } catch (err: any) {
       const status = err?.response?.status;

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, router } from "expo-router";
@@ -14,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import Dumbbell from "lucide-react-native/icons/dumbbell";
 import Zap from "lucide-react-native/icons/zap";
+import X from "lucide-react-native/icons/x";
 import { Button } from "../../../src/components/ui/Button";
 import { EmptyState } from "../../../src/components/ui/EmptyState";
 import { useToast } from "../../../src/components/ui/Toast";
@@ -344,12 +346,15 @@ export default function WorkoutSessionScreen() {
               <SessionClock running={session != null} />
             </View>
           </View>
-          <Button
-            label="Encerrar"
-            variant="destructive"
-            size="sm"
+          <Pressable
             onPress={confirmQuit}
-          />
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Encerrar treino"
+            className="h-10 w-10 items-center justify-center rounded-lg border border-purple-300/30 bg-purple-300/10 active:opacity-70"
+          >
+            <X size={17} color={color["purple-100"]} />
+          </Pressable>
         </View>
         <View className="mt-4 h-px bg-white/12" />
       </View>
@@ -452,10 +457,6 @@ export default function WorkoutSessionScreen() {
             ...prev,
             [activeEx.id]: sub,
           }));
-          showToast(
-            `Trocando para ${sub.name} (só para esta sessão).`,
-            "success",
-          );
         }}
         onClose={() => setSwapModalOpen(false)}
       />

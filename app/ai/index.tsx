@@ -127,10 +127,6 @@ export default function AIChatScreen() {
     try {
       const workouts = await aiService.createWorkoutFromProposal(proposal);
       await refreshWorkouts();
-      showToast(
-        workouts.length === 1 ? "Treino criado!" : "Treinos criados!",
-        "success",
-      );
       router.replace(
         workouts.length === 1
           ? `/workout/${workouts[0].id}`
