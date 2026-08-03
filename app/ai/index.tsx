@@ -9,7 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import SendHorizontal from "lucide-react-native/icons/send-horizontal";
@@ -54,6 +57,7 @@ export default function AIChatScreen() {
 
   const scrollRef = useRef<ScrollView>(null);
   const { showToast } = useToast();
+  const insets = useSafeAreaInsets();
   const refreshWorkouts = useWorkoutsStore((s) => s.refresh);
 
   useEffect(() => {
@@ -216,7 +220,10 @@ export default function AIChatScreen() {
         </ScrollView>
 
         {ended ? (
-          <View className="gap-2 px-4 pb-4">
+          <View
+            className="gap-2 px-4"
+            style={{ paddingBottom: insets.bottom + 16 }}
+          >
             <Button
               label="Criar treino manualmente"
               fullWidth
@@ -230,7 +237,10 @@ export default function AIChatScreen() {
             />
           </View>
         ) : (
-          <View className="flex-row items-end gap-2 px-4 pb-8">
+          <View
+            className="flex-row items-end gap-2 px-4"
+            style={{ paddingBottom: insets.bottom + 8 }}
+          >
             <View
               className={cn(
                 "flex-1 rounded-lg border bg-gray-600 px-4 py-3",
