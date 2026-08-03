@@ -60,7 +60,9 @@ export default function AuthScreen() {
   async function handleGoogle() {
     setBusy("google");
     try {
-      await GoogleSignin.hasPlayServices();
+      if (Platform.OS === "android") {
+        await GoogleSignin.hasPlayServices();
+      }
       const result = await GoogleSignin.signIn();
       const idToken =
         (result as any)?.data?.idToken ?? (result as any)?.idToken;
