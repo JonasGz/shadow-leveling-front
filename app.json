@@ -15,7 +15,8 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.jonasgz.shadowleveling"
+      "bundleIdentifier": "com.jonasgz.shadowleveling",
+      "usesAppleSignIn": true
     },
     "android": {
       "package": "com.jonasgz.shadowleveling",
@@ -33,6 +34,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
+      "expo-apple-authentication",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/notification-icon.png",
+          "color": "#111113"
+        }
+      ],
       [
         "expo-secure-store",
         {
@@ -58,11 +67,6 @@
       "router": {},
       "eas": {
         "projectId": "bda9751d-bd11-450f-99bb-a12b5dd60c97"
-      },
-      "_disabledForFreeSigning": {
-        "_note": "Removidos temporariamente p/ buildar iOS com Apple Developer grátis (Sign in with Apple + Push exigem conta paga). Quando a conta paga ativar, restaurar: ios.usesAppleSignIn=true, e os plugins 'expo-notifications' e 'expo-apple-authentication'. Depois: npx expo prebuild --clean -p ios.",
-        "ios.usesAppleSignIn": true,
-        "plugins": ["expo-notifications", "expo-apple-authentication"]
       }
     },
     "owner": "jonasgz"
