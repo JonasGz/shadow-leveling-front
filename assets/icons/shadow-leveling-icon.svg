@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%"><stop offset="0%" stop-color="#232127"></stop><stop offset="55%" stop-color="#161519"></stop><stop offset="100%" stop-color="#0B0B0D"></stop></radialGradient>
+    <radialGradient id="aura" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(159,31,255,0.42)"></stop><stop offset="60%" stop-color="rgba(159,31,255,0.15)"></stop><stop offset="100%" stop-color="rgba(159,31,255,0)"></stop></radialGradient>
+    <linearGradient id="fcL" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#CAA4FF"></stop><stop offset="100%" stop-color="#9F1FFF"></stop></linearGradient>
+    <linearGradient id="fcC" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EBDCFF"></stop><stop offset="100%" stop-color="#B26CFF"></stop></linearGradient>
+    <linearGradient id="fcR" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#B26CFF"></stop><stop offset="100%" stop-color="#7A0FD0"></stop></linearGradient>
+    <linearGradient id="pvL" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0%" stop-color="#8A18E0"></stop><stop offset="100%" stop-color="#4A0C80"></stop></linearGradient>
+    <linearGradient id="pvC" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#B26CFF"></stop><stop offset="100%" stop-color="#6B12B3"></stop></linearGradient>
+    <linearGradient id="pvR" x1="1" y1="0" x2="0.4" y2="1"><stop offset="0%" stop-color="#6B12B3"></stop><stop offset="100%" stop-color="#38085F"></stop></linearGradient>
+    <linearGradient id="ring" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="rgba(202,164,255,0.7)"></stop><stop offset="60%" stop-color="rgba(159,31,255,0.25)"></stop><stop offset="100%" stop-color="rgba(159,31,255,0)"></stop></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"></rect>
+  <ellipse cx="512" cy="520" rx="368" ry="396" fill="url(#aura)"></ellipse>
+  <circle cx="512" cy="512" r="322" fill="none" stroke="rgba(178,108,255,0.20)" stroke-width="3"></circle>
+  <circle cx="512" cy="512" r="274" fill="none" stroke="rgba(178,108,255,0.09)" stroke-width="2"></circle>
+  <path d="M 512 834 A 322 322 0 0 1 190 512" fill="none" stroke="url(#ring)" stroke-width="6" stroke-linecap="round"></path>
+  <circle cx="512" cy="834" r="9" fill="#CAA4FF"></circle>
+  <g transform="translate(512 512) scale(0.88) translate(-512 -512)">
+    <polygon points="512,178 344,430 452,430" fill="url(#fcL)"></polygon>
+    <polygon points="512,178 452,430 572,430" fill="url(#fcC)"></polygon>
+    <polygon points="512,178 572,430 680,430" fill="url(#fcR)"></polygon>
+    <polygon points="344,430 452,430 512,846" fill="url(#pvL)"></polygon>
+    <polygon points="452,430 572,430 512,846" fill="url(#pvC)"></polygon>
+    <polygon points="572,430 680,430 512,846" fill="url(#pvR)"></polygon>
+    <polyline points="344,430 680,430" stroke="rgba(255,255,255,0.55)" stroke-width="4" fill="none"></polyline>
+    <polygon points="512,178 344,430 512,846 680,430" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="5"></polygon>
+  </g>
+</svg>

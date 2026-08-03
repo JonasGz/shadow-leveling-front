@@ -116,7 +116,7 @@ export default function AuthScreen() {
         <View className="gap-3">
           <Button
             label="Continuar com Google"
-            transform="capitalize"
+            transform="none"
             labelClassName="text-lg font-normal"
             icon={GoogleGlyph as unknown as LucideIcon}
             style={{
@@ -136,7 +136,7 @@ export default function AuthScreen() {
             <Button
               label="Continuar com Apple"
               variant="tonal"
-              transform="capitalize"
+              transform="none"
               labelClassName="text-lg font-normal"
               icon={Apple}
               className="border border-purple-300/35"
@@ -151,7 +151,7 @@ export default function AuthScreen() {
         <Button
           label="Continuar com e-mail"
           variant="ghost"
-          transform="capitalize"
+          transform="none"
           labelClassName="text-lg font-normal"
           onPress={() => router.push("/(auth)/email")}
           disabled={busy !== null}
