@@ -1425,7 +1425,7 @@ requisição.
 
 | `state`    | Significado                        | O que a UI faz                                                                                          |
 | ---------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `question` | Falta responder alguma coisa       | Mostra `text` como a próxima pergunta                                                                   |
+| `question` | Falta responder alguma coisa       | Mostra `text` como a próxima pergunta, e `suggestions` como respostas prontas                           |
 | `refusal`  | Fora do escopo, ou menção de saúde | Mostra `text`. Se `health_stop` for `true`, **encerre a conversa** e ofereça criar o treino manualmente |
 | `proposal` | Proposta pronta                    | Abre o preview com `proposal`                                                                           |
 | `error`    | Triagem de saúde indisponível      | Mostra `text` e ofereça tentar de novo                                                                  |
@@ -1476,6 +1476,28 @@ cobrindo o corpo inteiro.
   "health_stop": true
 }
 ```
+
+Em `question`, a resposta traz ainda `suggestions` e `remaining`:
+
+```json
+{
+  "state": "question",
+  "text": "Qual seu objetivo: hipertrofia, força ou resistência?",
+  "suggestions": ["hipertrofia", "força", "resistência"],
+  "remaining": 4
+}
+```
+
+`suggestions` são respostas prontas para a pergunta em `text`, derivadas em Go
+a partir da primeira das seis perguntas ainda sem resposta — o modelo não
+participa. Nas perguntas de enum (objetivo, local) elas são exatamente as
+palavras que o schema aceita. Como o campo de digitação continua aberto, são
+sugestões e não um conjunto fechado: em foco muscular, chips compostos
+("Peito e tríceps") existem para mostrar que dá para pedir mais de um grupo.
+
+`remaining` conta quantas das seis ainda faltam. Zero é o turno que gera a
+proposta — é o sinal de que não vem outra pergunta, e a UI pode dizer que está
+montando o treino em vez de esperar em silêncio.
 
 **Erros:**
 

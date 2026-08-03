@@ -5,7 +5,6 @@ import {
   Pressable,
   TextInput,
   ScrollView,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -33,8 +32,27 @@ import { DAY_SHORT } from "../../src/lib/date";
 import { FOCUS_RING, controlBorder } from "../../src/components/ui/Input";
 import { color } from "../../src/theme/palette";
 import { cn } from "../../src/lib/cn";
+import {
+  useTypewriter,
+  useRotatingPhrase,
+} from "../../src/hooks/useTypewriter";
 
 const OPENING_QUESTION = "Quantos dias por semana você quer treinar?";
+const OPENING_SUGGESTIONS = ["3", "4", "5", "6"];
+
+const THINKING_PHRASES = [
+  "Pensando…",
+  "Analisando sua resposta…",
+  "Só um instante…",
+  "Organizando as informações…",
+];
+
+const BUILDING_PHRASES = [
+  "Montando seu treino…",
+  "Escolhendo os exercícios…",
+  "Ajustando séries e repetições…",
+  "Quase lá…",
+];
 
 const blockedMessages: Record<string, string> = {
   underage: "O assistente está disponível para maiores de 18 anos.",
@@ -54,6 +72,10 @@ export default function AIChatScreen() {
   const [proposal, setProposal] = useState<AIProposal | null>(null);
   const [ended, setEnded] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>(OPENING_SUGGESTIONS);
+  const [remaining, setRemaining] = useState(6);
+  const [typingIndex, setTypingIndex] = useState<number | null>(null);
+  const [typingDone, setTypingDone] = useState(true);
 
   const scrollRef = useRef<ScrollView>(null);
   const { showToast } = useToast();
@@ -62,7 +84,7 @@ export default function AIChatScreen() {
 
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
-  }, [messages, proposal]);
+  }, [proposal]);
 
   const resent = useRef(false);
   useEffect(() => {
@@ -79,10 +101,12 @@ export default function AIChatScreen() {
     setMessages(next);
     setDraft("");
     setProposal(null);
+    setSuggestions([]);
     setSending(true);
 
     try {
       const res = await aiService.chat(next);
+      setRemaining(res.remaining ?? 6);
 
       if (res.state === "proposal" && res.proposal) {
         setProposal(res.proposal);
@@ -95,6 +119,9 @@ export default function AIChatScreen() {
       const text = res.text?.trim();
       if (text) {
         setMessages([...next, { role: "assistant", content: text }]);
+        setTypingIndex(next.length);
+        setTypingDone(false);
+        setSuggestions(res.suggestions ?? []);
       } else {
         showToast("Não consegui responder agora. Tente de novo.", "error");
       }
@@ -176,33 +203,22 @@ export default function AIChatScreen() {
           className="flex-1 px-4"
           contentContainerClassName="gap-3 pb-4"
           keyboardShouldPersistTaps="handled"
+          onContentSizeChange={() =>
+            scrollRef.current?.scrollToEnd({ animated: true })
+          }
+          onTouchStart={() => setTypingDone(true)}
         >
           {messages.map((message, index) => (
-            <View
+            <MessageBubble
               key={index}
-              className={cn(
-                "max-w-[85%] rounded-2xl px-4 py-3",
-                message.role === "user"
-                  ? "self-end bg-purple-300"
-                  : "self-start border border-white/7 bg-gray-600",
-              )}
-            >
-              <Text
-                className={cn(
-                  "text-base",
-                  message.role === "user" ? "text-gray-50" : "text-gray-100",
-                )}
-              >
-                {message.content}
-              </Text>
-            </View>
+              message={message}
+              typing={index === typingIndex}
+              skip={typingDone}
+              onDone={() => setTypingDone(true)}
+            />
           ))}
 
-          {sending && (
-            <View className="self-start rounded-2xl border border-white/7 bg-gray-600 px-4 py-3">
-              <ActivityIndicator size="small" color={color["purple-100"]} />
-            </View>
-          )}
+          {sending && <PendingBubble building={remaining <= 1} />}
 
           {proposal && (
             <ProposalPreview
@@ -233,44 +249,125 @@ export default function AIChatScreen() {
             />
           </View>
         ) : (
-          <View
-            className="flex-row items-end gap-2 px-4"
-            style={{ paddingBottom: insets.bottom + 8 }}
-          >
+          <>
+            {typingDone && !sending && suggestions.length > 0 && (
+              <View
+                className="flex-row flex-wrap gap-2 px-4 pb-3"
+                onLayout={() =>
+                  scrollRef.current?.scrollToEnd({ animated: true })
+                }
+              >
+                {suggestions.map((suggestion) => (
+                  <Pressable
+                    key={suggestion}
+                    onPress={() => send(suggestion)}
+                    className="rounded-lg border border-purple-300/40 bg-purple-300/10 px-3 py-2"
+                  >
+                    <Text className="text-sm font-medium text-purple-100">
+                      {suggestion}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
             <View
-              className={cn(
-                "flex-1 rounded-lg border bg-gray-600 px-4 py-3",
-                controlBorder(focused),
-              )}
-              style={focused ? FOCUS_RING : undefined}
+              className="flex-row items-end gap-2 px-4"
+              style={{ paddingBottom: insets.bottom + 8 }}
             >
-              <TextInput
-                value={draft}
-                onChangeText={setDraft}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                placeholder="Escreva sua resposta…"
-                placeholderTextColor={color["gray-300"]}
-                multiline
-                maxLength={2000}
-                className="max-h-24 py-1 text-base text-white"
-                onSubmitEditing={() => send()}
-              />
+              <View
+                className={cn(
+                  "flex-1 rounded-lg border bg-gray-600 px-4 py-3",
+                  controlBorder(focused),
+                )}
+                style={focused ? FOCUS_RING : undefined}
+              >
+                <TextInput
+                  value={draft}
+                  onChangeText={setDraft}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
+                  placeholder="Escreva sua resposta…"
+                  placeholderTextColor={color["gray-300"]}
+                  multiline
+                  maxLength={2000}
+                  className="max-h-24 py-1 text-base text-white"
+                  onSubmitEditing={() => send()}
+                />
+              </View>
+              <Pressable
+                onPress={() => send()}
+                disabled={sending || !draft.trim()}
+                className={cn(
+                  "h-14 w-14 items-center justify-center rounded-lg bg-purple-300",
+                  (sending || !draft.trim()) && "opacity-50",
+                )}
+              >
+                <SendHorizontal size={20} color={color.white} />
+              </Pressable>
             </View>
-            <Pressable
-              onPress={() => send()}
-              disabled={sending || !draft.trim()}
-              className={cn(
-                "h-14 w-14 items-center justify-center rounded-lg bg-purple-300",
-                (sending || !draft.trim()) && "opacity-50",
-              )}
-            >
-              <SendHorizontal size={20} color={color.white} />
-            </Pressable>
-          </View>
+          </>
         )}
       </KeyboardAvoidingView>
     </SafeAreaView>
+  );
+}
+
+function MessageBubble({
+  message,
+  typing,
+  skip,
+  onDone,
+}: {
+  message: AIMessage;
+  typing: boolean;
+  skip: boolean;
+  onDone: () => void;
+}) {
+  const {
+    shown,
+    done,
+    skip: skipTyping,
+  } = useTypewriter(message.content, typing);
+
+  useEffect(() => {
+    if (typing && skip) skipTyping();
+  }, [typing, skip]);
+
+  useEffect(() => {
+    if (typing && done) onDone();
+  }, [typing, done]);
+
+  return (
+    <View
+      className={cn(
+        "max-w-[85%] rounded-2xl px-4 py-3",
+        message.role === "user"
+          ? "self-end bg-purple-300"
+          : "self-start border border-white/7 bg-gray-600",
+      )}
+    >
+      <Text
+        className={cn(
+          "text-base",
+          message.role === "user" ? "text-gray-50" : "text-gray-100",
+        )}
+      >
+        {shown}
+      </Text>
+    </View>
+  );
+}
+
+function PendingBubble({ building }: { building: boolean }) {
+  const phrase = useRotatingPhrase(
+    building ? BUILDING_PHRASES : THINKING_PHRASES,
+    true,
+    building ? 3000 : 2000,
+  );
+  return (
+    <View className="self-start rounded-2xl border border-white/7 bg-gray-600 px-4 py-3">
+      <Text className="text-base text-gray-300">{phrase}</Text>
+    </View>
   );
 }
 

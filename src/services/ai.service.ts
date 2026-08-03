@@ -33,6 +33,9 @@ export interface AIChatResponse {
   text?: string;
   health_stop?: boolean;
   proposal?: AIProposal;
+
+  suggestions?: string[];
+  remaining?: number;
 }
 
 export type AIBlockedReason =
