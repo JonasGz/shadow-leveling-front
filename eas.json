@@ -5,13 +5,17 @@
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.shadowcannabandispensary.uk"
+        "EXPO_PUBLIC_API_URL": "https://api.shadowcannabandispensary.uk",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "895232327106-ggl4ao0gvti9ddph7t0sbf4m2gt3054o.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "895232327106-einluulvapfme5eim0dtrnb2gs7tkah8.apps.googleusercontent.com"
       }
     },
     "production": {
       "android": { "buildType": "app-bundle" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.shadowcannabandispensary.uk"
+        "EXPO_PUBLIC_API_URL": "https://api.shadowcannabandispensary.uk",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "895232327106-ggl4ao0gvti9ddph7t0sbf4m2gt3054o.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "895232327106-einluulvapfme5eim0dtrnb2gs7tkah8.apps.googleusercontent.com"
       }
     }
   }
