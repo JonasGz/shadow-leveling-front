@@ -20,7 +20,7 @@ um resumo do que já está **pronto e funcional** para o Flutter consumir:
 | **Progresso**         | Progresso por exercício ao longo do tempo                                                     |
 | **Sessões Perdidas**  | Listagem de treinos não realizados                                                            |
 | **Métricas do Dia**   | Dashboard com missões do dia (tarefas + treinos, todos os dias da semana)                     |
-| **Nivelamento**       | XP, níveis, ranks (E→S) e streak por conclusão de treino                                      |
+| **Nivelamento**       | XP, níveis, títulos (Novato→Soberano) e streak por conclusão de treino                                      |
 | **Grupos**            | Grupos por código de convite, ranking semanal (1 ponto/dia), feed com foto, capa opcional     |
 | **Foto de Treino**    | Foto opcional (multipart) anexada à sessão, exibida no feed dos grupos                        |
 
@@ -1015,7 +1015,7 @@ GET /user-metrics/today
 
 # MÓDULO 7 — Nivelamento (`/me/level`)
 
-> Rota **privada**. Retorna o progresso de XP, nível e rank do usuário ("caçador").
+> Rota **privada**. Retorna o progresso de XP, nível e título do usuário ("caçador").
 >
 > O nível é **derivado automaticamente** do XP total — não precisa ser gerenciado pelo front.
 > XP é concedido toda vez que uma sessão de treino é marcada como `complete`.
@@ -1032,65 +1032,113 @@ GET /me/level
 
 ```json
 {
-  "level": 7,
-  "rank": "D-Rank",
-  "total_xp": 4250,
-  "xp_into_level": 650,
-  "xp_for_next_level": 1300,
+  "level": 100,
+  "title": "Comandante",
+  "total_xp": 4975,
+  "xp_into_level": 25,
+  "xp_for_next_level": 50,
   "progress_pct": 50,
-  "current_streak": 4
+  "current_streak": 4,
+  "weekly_streak": 6,
+  "best_weekly_streak": 11,
+  "week_workouts": 3,
+  "weekly_goal_days": 4
 }
 ```
 
-| Campo               | Tipo   | Descrição                                            |
-| ------------------- | ------ | ---------------------------------------------------- |
-| `level`             | int    | Nível atual do usuário (começa em 1)                 |
-| `rank`              | string | Rank temático derivado do nível (veja tabela abaixo) |
+| Campo               | Tipo   | Descrição                                              |
+| ------------------- | ------ | ------------------------------------------------------ |
+| `level`             | int    | Nível atual do usuário (começa em 1)                   |
+| `title`             | string | Título temático derivado do nível (veja tabela abaixo) |
 | `total_xp`          | int    | XP total acumulado                                   |
 | `xp_into_level`     | int    | XP acumulado dentro do nível atual                   |
 | `xp_for_next_level` | int    | XP total necessário para completar o nível atual     |
-| `progress_pct`      | int    | Percentual de progresso no nível atual (0–100)       |
-| `current_streak`    | int    | Dias consecutivos com pelo menos um treino concluído |
+| `progress_pct`       | int    | Percentual de progresso no nível atual (0–100)          |
+| `current_streak`     | int    | Dias consecutivos com pelo menos um treino concluído    |
+| `weekly_streak`      | int    | Semanas consecutivas batendo a meta semanal            |
+| `best_weekly_streak` | int    | Recorde de semanas consecutivas (nunca diminui)        |
+| `week_workouts`      | int    | Treinos concluídos na semana atual (segunda a domingo) |
+| `weekly_goal_days`   | int    | Meta semanal do usuário (padrão 3 se não definida)     |
 
-> Usuário sem nenhum treino concluído ainda: retorna `level: 1`, `rank: "E-Rank"`, todos os outros campos zerados.
+> Usuário sem nenhum treino concluído ainda: retorna `level: 1`, `title: "Novato"`, todos os outros campos zerados.
 
 ---
 
-## 7.2 Tabela de Ranks
+## 7.2 Tabela de Títulos
 
-| Nível   | Rank     |
-| ------- | -------- |
-| 1 – 4   | `E-Rank` |
-| 5 – 9   | `D-Rank` |
-| 10 – 19 | `C-Rank` |
-| 20 – 29 | `B-Rank` |
-| 30 – 49 | `A-Rank` |
-| 50+     | `S-Rank` |
+| Nível       | Título        |
+| ----------- | ------------- |
+| 1 – 9       | `Novato`      |
+| 10 – 24     | `Caçador`     |
+| 25 – 49     | `Incansável`  |
+| 50 – 99     | `Inquebrável` |
+| 100 – 199   | `Comandante`  |
+| 200 – 499   | `Lendário`    |
+| 500 – 999   | `Monarca`     |
+| 1000+       | `Soberano`    |
 
 ---
 
 ## 7.3 Como o XP é calculado
 
-| Evento                                    | XP                           |
-| ----------------------------------------- | ---------------------------- |
-| Concluir um treino (`status: "complete"`) | **+50 XP**                   |
-| Bônus de streak (dias consecutivos)       | **+5 XP × streak** (máx +50) |
+Cada nível custa **50 XP**, do nível 1 ao 1000. O que cresce é o ganho por
+treino, não o custo do nível — por isso a progressão acelera conforme o usuário
+sobe.
 
-**Exemplos de XP ganho por treino:**
+**Ganho base:** `40 × √nível`
 
-| Streak atual | Bônus     | Total ganho |
-| ------------ | --------- | ----------- |
-| 1 dia        | +5        | **55 XP**   |
-| 3 dias       | +15       | **65 XP**   |
-| 5 dias       | +25       | **75 XP**   |
-| 10+ dias     | +50 (cap) | **100 XP**  |
+| Nível | Ganho base |
+| ----- | ---------- |
+| 1     | 40 XP      |
+| 25    | 200 XP     |
+| 100   | 400 XP     |
+| 1000  | 1264 XP    |
 
-**Regras do streak:**
+### Bônus (somados sobre o ganho base)
 
-- Treinar em dias consecutivos incrementa o streak.
-- Faltar um dia **reseta** o streak para 1 (sem perda de XP já acumulado).
-- Dois ou mais treinos no mesmo dia contam como 1 para o streak.
-- O streak usa a **data do treino**, não a hora do request.
+**1. Bônus diário — progresso na semana atual**
+
+`25% × (treinos na semana ÷ meta semanal)`, máximo +25%.
+
+É **proporcional à meta do próprio usuário**: quem tem meta de 4 treinos atinge
+o máximo no 4º treino, quem tem meta de 7 atinge no 7º. Ambos chegam a +25%.
+**Reseta toda segunda-feira.**
+
+**2. Bônus semanal — semanas consecutivas batendo a meta**
+
+`50 × (1 − 0,6^n)` até a semana 6, depois `+2%` por semana, **sem teto**.
+
+| Semanas consecutivas | Bônus |
+| -------------------- | ----- |
+| 1                    | +20%  |
+| 2                    | +32%  |
+| 4                    | +43%  |
+| 7                    | +50%  |
+| 15                   | +67%  |
+| 52                   | +141% |
+
+Cresce rápido no início (onde a constância ainda é frágil) e nunca para de
+crescer. **Zera se o usuário não bater a meta na semana.**
+
+> Meta semanal vem de `users.weekly_goal_days`. Se for `null`, o padrão é 3.
+
+**Ritmo esperado** (meta de 4 treinos/semana, batendo a meta toda semana):
+
+| Título      | Nível | Semana | Tempo     |
+| ----------- | ----- | ------ | --------- |
+| Comandante  | 100   | 5      | 1,2 mês   |
+| Monarca     | 500   | 10     | 2,3 meses |
+| Soberano    | 1000  | 13     | 3,0 meses |
+
+**Regras dos streaks:**
+
+- A semana vai de **segunda a domingo**.
+- O streak **diário** (`current_streak`) conta dias consecutivos com treino; faltar um dia reseta para 1.
+- O bônus **diário** depende de `week_workouts / weekly_goal_days`, não do streak diário — e zera na virada da semana.
+- O streak **semanal** (`weekly_streak`) incrementa quando o usuário bate a meta e a semana seguinte é consecutiva; não bater a meta ou pular uma semana **zera**.
+- `best_weekly_streak` guarda o recorde histórico e nunca diminui.
+- Dois ou mais treinos no mesmo dia contam como 1 (para ambos os streaks).
+- Os streaks usam a **data do treino**, não a hora do request.
 
 ---
 
@@ -1099,17 +1147,18 @@ GET /me/level
 O front pode calcular localmente para exibir barras de progresso:
 
 ```
-XP necessário para atingir o nível N = 100 × (N - 1)²
+XP necessário para atingir o nível N = 50 × (N - 1)
+Nível a partir do XP total       = (XP / 50) + 1
 ```
 
 | Nível | XP total necessário |
 | ----- | ------------------- |
 | 1     | 0                   |
-| 2     | 100                 |
-| 3     | 400                 |
-| 5     | 1.600               |
-| 10    | 8.100               |
-| 20    | 36.100              |
+| 2     | 50                  |
+| 10    | 450                 |
+| 100   | 4.950               |
+| 500   | 24.950              |
+| 1000  | 49.950              |
 
 > O endpoint `GET /me/level` já retorna `xp_into_level`, `xp_for_next_level` e `progress_pct` calculados — o front só precisa renderizar.
 
@@ -1610,7 +1659,7 @@ Retorna a especificação OpenAPI 3.0 em YAML.
 | `PUT`    | `/workout-sessions/{id}/sets/{setId}`        | sim  | Atualizar set                   |
 | `DELETE` | `/workout-sessions/{id}/sets/{setId}`        | sim  | Deletar set                     |
 | `GET`    | `/user-metrics/today`                        | sim  | Dashboard do dia                |
-| `GET`    | `/me/level`                                  | sim  | XP, nível, rank e streak        |
+| `GET`    | `/me/level`                                  | sim  | XP, nível, título e streak      |
 | `POST`   | `/groups`                                    | sim  | Criar grupo                     |
 | `GET`    | `/groups`                                    | sim  | Listar meus grupos              |
 | `POST`   | `/groups/join`                               | sim  | Entrar por código               |

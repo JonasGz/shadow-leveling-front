@@ -296,10 +296,14 @@ export default function ProfileScreen() {
                 <View className="mt-5 flex-row gap-3">
                   <Card className="flex-1 items-center">
                     <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
-                      Rank
+                      Título
                     </Text>
-                    <Text className="mt-3 text-3xl font-extrabold text-purple-200">
-                      {level.rank}
+                    <Text
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      className="mt-3 text-3xl font-extrabold text-purple-200"
+                    >
+                      {level.title}
                     </Text>
                   </Card>
                   <Card className="flex-1 items-center">
@@ -335,10 +339,7 @@ export default function ProfileScreen() {
                     />
                   </View>
 
-                  <View className="mt-3 flex-row items-center justify-between">
-                    <Text className="text-base font-semibold text-gray-300">
-                      {level.total_xp.toLocaleString("pt-BR")} XP total
-                    </Text>
+                  <View className="mt-3 flex-row items-center justify-end">
                     <View className="flex-row items-center gap-2">
                       <Flame
                         size={14}
@@ -352,6 +353,50 @@ export default function ProfileScreen() {
                           : "dias seguidos"}
                       </Text>
                     </View>
+                  </View>
+                </Card>
+
+                <Card className="mt-3">
+                  <View className="flex-row items-center justify-between">
+                    <Text className="text-xs font-semibold uppercase tracking-wider text-gray-200">
+                      Constância semanal
+                    </Text>
+                    <Text className="text-base font-bold text-purple-200">
+                      {level.week_workouts} / {level.weekly_goal_days} treinos
+                    </Text>
+                  </View>
+
+                  <View className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-500">
+                    <LinearGradient
+                      colors={[color["purple-400"], color["purple-300"]]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={{
+                        height: "100%",
+                        width: `${Math.max(
+                          0,
+                          Math.min(
+                            100,
+                            (level.week_workouts / level.weekly_goal_days) * 100,
+                          ),
+                        )}%`,
+                        borderRadius: 9999,
+                      }}
+                    />
+                  </View>
+
+                  <View className="mt-3 flex-row items-center justify-between">
+                    <Text className="text-base font-bold text-white">
+                      {level.weekly_streak}{" "}
+                      {level.weekly_streak === 1
+                        ? "semana seguida"
+                        : "semanas seguidas"}
+                    </Text>
+                    {level.best_weekly_streak > 0 ? (
+                      <Text className="text-base font-normal text-gray-200">
+                        Recorde: {level.best_weekly_streak}
+                      </Text>
+                    ) : null}
                   </View>
                 </Card>
               </>

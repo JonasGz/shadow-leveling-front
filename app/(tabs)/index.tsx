@@ -173,7 +173,7 @@ export default function HomeScreen() {
       : 0;
 
   const streak = level?.current_streak ?? 0;
-  const rank = level?.rank ?? "E-Rank";
+  const title = level?.title ?? "Novato";
   const lvlNumber = level?.level ?? 0;
 
   const featured = useMemo(() => {
@@ -268,7 +268,7 @@ export default function HomeScreen() {
             <StatCard
               icon={TrendingUp}
               iconColor={color["purple-200"]}
-              value={rank}
+              value={title}
               label={`Nível ${lvlNumber}`}
             />
           </View>

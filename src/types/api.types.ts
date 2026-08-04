@@ -169,17 +169,28 @@ export interface WeeklySummary {
   };
 }
 
-export type Rank =
-  "E-Rank" | "D-Rank" | "C-Rank" | "B-Rank" | "A-Rank" | "S-Rank";
+export type Title =
+  | "Novato"
+  | "Caçador"
+  | "Incansável"
+  | "Inquebrável"
+  | "Comandante"
+  | "Lendário"
+  | "Monarca"
+  | "Soberano";
 
 export interface UserLevel {
   level: number;
-  rank: Rank;
+  title: Title;
   total_xp: number;
   xp_into_level: number;
   xp_for_next_level: number;
   progress_pct: number;
   current_streak: number;
+  weekly_streak: number;
+  best_weekly_streak: number;
+  week_workouts: number;
+  weekly_goal_days: number;
 }
 
 export interface Group {

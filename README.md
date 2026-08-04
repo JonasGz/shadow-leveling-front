@@ -142,11 +142,95 @@ src/
 | **Sessão de treino** | Execução com registro de séries, timer de descanso, conclusão com resumo | `POST /workout-sessions`, `POST /workout-sessions/{id}/sets`, `PUT /workout-sessions/{id}` |
 | **Histórico**        | Sessões realizadas + treinos perdidos, detalhe da sessão                 | `GET /workout-sessions`, `GET /workout-sessions/missed`, `GET /workout-sessions/{id}`      |
 | **Perfil**           | Dados do usuário, sessões ativas (revogar), logout                       | `GET /auth/me`, `GET /auth/sessions`, `DELETE /auth/sessions/{id}`, `POST /auth/logout`    |
-| **Gamificação**      | Nível, rank e XP no dashboard e no perfil                                | `GET /me/level`                                                                            |
+| **Gamificação**      | Nível, título e constância semanal no dashboard e no perfil              | `GET /me/level`                                                                            |
 | **Grupos**           | Lista, detalhe, ranking, feed com reações e comentários                  | `GET/POST /groups`, `GET /groups/{id}/ranking`, `GET /groups/{id}/feed`                    |
 | **Missões**          | Tarefas do dia e resumo semanal                                          | `GET /tasks/day`, `GET /user-metrics/today`, `GET /user-metrics/weekly`                    |
 | **Assistente de IA** | Chat guiado, consentimento 18+, preview e criação da proposta            | `POST /ai/workout-chat`, `PATCH /auth/me/ai-consent`, `POST /ai/report`                    |
 
+---
+
+## Como funciona a progressão
+
+> Esta seção descreve o jogo do ponto de vista de quem usa o app. O cálculo
+> acontece no backend; o app apenas exibe o que `GET /me/level` devolve.
+
+Cada treino concluído dá XP. XP sobe seu nível. E o nível te dá um **título** —
+que é o que aparece no seu perfil.
+
+### Os oito títulos
+
+| Título          | A partir do nível | Quando você chega (treinando 4× por semana) |
+| --------------- | ----------------- | ------------------------------------------- |
+| **Novato**      | 1                 | no primeiro treino                          |
+| **Caçador**     | 10                | ~1ª semana                                  |
+| **Incansável**  | 25                | ~2ª semana                                  |
+| **Inquebrável** | 50                | ~3ª semana                                  |
+| **Comandante**  | 100               | ~1 mês                                      |
+| **Lendário**    | 200               | ~1,5 mês                                    |
+| **Monarca**     | 500               | ~2,5 meses                                  |
+| **Soberano**    | 1000              | ~3 meses                                    |
+
+### Por que fica mais rápido com o tempo
+
+Cada nível custa sempre a mesma coisa: **50 XP**. O que muda é o quanto você
+ganha por treino — e isso cresce conforme você sobe.
+
+| Seu nível | Você ganha por treino | Quantos níveis isso vale |
+| --------- | --------------------- | ------------------------ |
+| 1         | 40 XP                 | ~1 nível                 |
+| 25        | 200 XP                | 4 níveis                 |
+| 100       | 400 XP                | 8 níveis                 |
+| 1000      | 1.264 XP              | 25 níveis                |
+
+No começo, um treino te dá um nível. Mais para frente, o mesmo treino te dá 25.
+É o oposto do que costuma acontecer em jogos, onde cada nível fica mais caro que
+o anterior — aqui, quanto mais longe você chega, mais rápido avança.
+
+### Os dois bônus
+
+Além do ganho base, dois bônus se somam. Ambos dependem da **sua meta semanal**
+(quantos dias por semana você se comprometeu a treinar), configurável no app.
+
+**1. Bônus da semana — até +25%**
+
+Cresce conforme você avança na sua meta e chega ao máximo quando você a cumpre.
+
+Se sua meta é 4 treinos por semana, o 4º treino te dá +25%. Se é 7, o 7º te dá
+os mesmos +25%. **Ninguém é penalizado por treinar menos vezes** — o que conta é
+cumprir o que você mesmo definiu.
+
+Toda segunda-feira ele zera e a corrida recomeça.
+
+**2. Bônus de constância — a partir de +20%, sem limite**
+
+Este é o que premia não faltar. A cada semana em que você bate sua meta, ele
+cresce:
+
+| Semanas seguidas | Bônus |
+| ---------------- | ----- |
+| 1                | +20%  |
+| 2                | +32%  |
+| 4                | +43%  |
+| 7                | +50%  |
+| 15               | +67%  |
+| 52 (um ano)      | +141% |
+
+Ele sobe rápido nas primeiras semanas — que é quando é mais fácil desistir — e
+depois nunca para de crescer. Um ano de constância mais que dobra o XP de cada
+treino.
+
+**Se você não bater a meta em uma semana, este bônus zera.** Mas seu recorde de
+semanas seguidas fica guardado no perfil para sempre.
+
+### Os dois contadores do perfil
+
+- **Dias seguidos** — dias consecutivos em que você treinou. É seu histórico de
+  constância diária; não afeta o XP.
+- **Semanas seguidas** — semanas consecutivas batendo sua meta. É este que
+  aumenta seu bônus, e é o número que continua crescendo mesmo depois de você
+  chegar a Soberano.
+
+A semana vai de **segunda a domingo**.
 ---
 
 ## Autenticação
