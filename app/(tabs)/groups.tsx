@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../../src/components/ui/Input";
 import { Button } from "../../src/components/ui/Button";
+import { Card } from "../../src/components/ui/Card";
 import Swords from "lucide-react-native/icons/swords";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
 import { EmptyState } from "../../src/components/ui/EmptyState";
@@ -127,10 +128,10 @@ export default function GroupsScreen() {
           <View className="pb-10">
             <View className="gap-4">
               {groups.map((g) => (
-                <Pressable
+                <Card
                   key={g.id}
                   onPress={() => router.push(`/group/${g.id}`)}
-                  className="relative flex-row items-center justify-between gap-3 overflow-hidden rounded-2xl bg-gray-600 p-4 active:opacity-80"
+                  className="relative flex-row items-center justify-between gap-3 overflow-hidden"
                 >
                   <View className="h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-purple-300/25">
                     {g.cover_url ? (
@@ -155,7 +156,7 @@ export default function GroupsScreen() {
                     />
                     <ChevronRight size={18} color={color["gray-300"]} />
                   </View>
-                </Pressable>
+                </Card>
               ))}
             </View>
           </View>
