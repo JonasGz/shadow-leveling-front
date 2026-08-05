@@ -16,6 +16,11 @@ describe("cn", () => {
     expect(cn("text-xs", "text-5xl")).toBe("text-5xl");
   });
 
+  it("trata text-xxs como tamanho, não como cor", () => {
+    expect(cn("text-xxs", "text-base")).toBe("text-base");
+    expect(cn("text-xxs", "text-purple-200")).toBe("text-xxs text-purple-200");
+  });
+
   it("não confunde tamanho de fonte com cor de texto", () => {
     expect(cn("text-4xl", "text-gray-200")).toBe("text-4xl text-gray-200");
     expect(cn("text-gray-200", "text-purple-300")).toBe("text-purple-300");

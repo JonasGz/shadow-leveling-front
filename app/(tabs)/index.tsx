@@ -191,7 +191,7 @@ export default function HomeScreen() {
           <Text className="text-2xl font-bold text-white">Hey, {name}</Text>
         </View>
         <Pressable
-          onPress={() => router.navigate("/(tabs)/profile")}
+          onPress={() => router.push("/(tabs)/profile")}
           className="h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-purple-300 active:opacity-70"
         >
           {user?.avatar_url ? (

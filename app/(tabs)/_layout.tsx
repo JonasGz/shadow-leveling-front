@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Home from "lucide-react-native/icons/house";
 import Users from "lucide-react-native/icons/users";
 import History from "lucide-react-native/icons/history";
-import UserPen from "lucide-react-native/icons/user-pen";
+import Trophy from "lucide-react-native/icons/trophy";
 import Dumbbell from "lucide-react-native/icons/dumbbell";
 import { color } from "../../src/theme/palette";
 
@@ -22,8 +22,8 @@ const TABS = [
   { name: "index", title: "Home", Icon: Home },
   { name: "workouts", title: "Treinos", Icon: Dumbbell },
   { name: "groups", title: "Grupos", Icon: Users },
+  { name: "ranking", title: "Ranking", Icon: Trophy },
   { name: "history", title: "Histórico", Icon: History },
-  { name: "profile", title: "Perfil", Icon: UserPen },
 ];
 
 const DURATION = 260;
@@ -207,7 +207,11 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
       >
         {state.routes.map((route, i) => {
           const isFocused = state.index === i;
-          const { Icon, title } = TABS[i];
+          // por nome, não por índice: uma rota escondida (href:null) não pode
+          // deslocar o ícone das outras
+          const tab = TABS.find((t) => t.name === route.name);
+          if (!tab) return null;
+          const { Icon, title } = tab;
           return (
             <Tab
               key={route.key}
@@ -269,6 +273,9 @@ export default function TabsLayout() {
             options={{ title: t.title }}
           />
         ))}
+        {/* Perfil saiu da tab bar: entra pelo avatar da topbar. href:null tira
+            da barra sem desalinhar TABS[i] de state.routes. */}
+        <Tabs.Screen name="profile" options={{ href: null, title: "Perfil" }} />
       </Tabs>
       <AssistantFab />
     </View>

@@ -20,6 +20,7 @@ import Pencil from "lucide-react-native/icons/pencil";
 import Flame from "lucide-react-native/icons/flame";
 import Trophy from "lucide-react-native/icons/trophy";
 import ChevronRight from "lucide-react-native/icons/chevron-right";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
 import LogOut from "lucide-react-native/icons/log-out";
 import Target from "lucide-react-native/icons/target";
 import { Button } from "../../src/components/ui/Button";
@@ -177,7 +178,18 @@ export default function ProfileScreen() {
         }
       >
         <View className="mt-2 flex-row items-center justify-between">
-          <Text className="text-4xl font-bold text-white">Perfil</Text>
+          <View className="flex-row items-center gap-2">
+            <Pressable
+              onPress={() => router.back()}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Voltar"
+              className="h-11 w-11 items-center justify-center rounded-full active:opacity-70"
+            >
+              <ChevronLeft size={26} color={color.white} strokeWidth={2} />
+            </Pressable>
+            <Text className="text-4xl font-bold text-white">Perfil</Text>
+          </View>
           <Pressable
             onPress={confirmLogout}
             disabled={loggingOut}
@@ -377,7 +389,8 @@ export default function ProfileScreen() {
                           0,
                           Math.min(
                             100,
-                            (level.week_workouts / level.weekly_goal_days) * 100,
+                            (level.week_workouts / level.weekly_goal_days) *
+                              100,
                           ),
                         )}%`,
                         borderRadius: 9999,

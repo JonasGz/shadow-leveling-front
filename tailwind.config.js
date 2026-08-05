@@ -30,6 +30,7 @@ module.exports = {
         mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
+        xxs: ["10px", { lineHeight: "14px" }],
         xs: ["12px", { lineHeight: "16px" }],
         sm: ["14px", { lineHeight: "20px" }],
         base: ["16px", { lineHeight: "24px" }],
