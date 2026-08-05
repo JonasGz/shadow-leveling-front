@@ -264,12 +264,12 @@ turno. Nada é guardado em disco.
 
 A resposta chega em um de quatro estados:
 
-| Estado     | O que a tela faz                                                     |
-| ---------- | -------------------------------------------------------------------- |
-| `question` | renderiza a próxima pergunta                                         |
-| `proposal` | mostra o preview com os dias, exercícios, séries e repetições        |
-| `refusal`  | recusa; se `health_stop`, **encerra** e oferece a criação manual     |
-| `error`    | mensagem genérica de indisponibilidade                               |
+| Estado     | O que a tela faz                                                 |
+| ---------- | ---------------------------------------------------------------- |
+| `question` | renderiza a próxima pergunta                                     |
+| `proposal` | mostra o preview com os dias, exercícios, séries e repetições    |
+| `refusal`  | recusa; se `health_stop`, **encerra** e oferece a criação manual |
+| `error`    | mensagem genérica de indisponibilidade                           |
 
 **Menção a saúde encerra a conversa.** Se o usuário citar lesão, dor, gravidez
 ou medicação, o assistente não adapta o treino — ele encaminha a um
@@ -297,8 +297,7 @@ Tema escuro "Cyber-Athletic". Tokens definidos em
 - **Tipografia:** Inter — escala `display` / `headline` / `title` / `body` / `label`
 - Espaçamento em grid de 4px, bordas `sm`/`md`/`lg`/`xl`/`full`
 
-O detalhamento completo de telas, fluxos e o HTML de referência de cada tela
-está em [PRD.md](PRD.md).
+O detalhamento de telas e fluxos vive nas issues do repositório.
 
 ---
 

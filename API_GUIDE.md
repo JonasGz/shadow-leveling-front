@@ -20,7 +20,7 @@ um resumo do que já está **pronto e funcional** para o Flutter consumir:
 | **Progresso**         | Progresso por exercício ao longo do tempo                                                     |
 | **Sessões Perdidas**  | Listagem de treinos não realizados                                                            |
 | **Métricas do Dia**   | Dashboard com missões do dia (tarefas + treinos, todos os dias da semana)                     |
-| **Nivelamento**       | XP, níveis, títulos (Novato→Soberano) e streak por conclusão de treino                                      |
+| **Nivelamento**       | XP, níveis, títulos (Novato→Soberano) e streak por conclusão de treino                        |
 | **Grupos**            | Grupos por código de convite, ranking semanal (1 ponto/dia), feed com foto, capa opcional     |
 | **Foto de Treino**    | Foto opcional (multipart) anexada à sessão, exibida no feed dos grupos                        |
 
@@ -1046,15 +1046,15 @@ GET /me/level
 }
 ```
 
-| Campo               | Tipo   | Descrição                                              |
-| ------------------- | ------ | ------------------------------------------------------ |
-| `level`             | int    | Nível atual do usuário (começa em 1)                   |
-| `title`             | string | Título temático derivado do nível (veja tabela abaixo) |
-| `total_xp`          | int    | XP total acumulado                                   |
-| `xp_into_level`     | int    | XP acumulado dentro do nível atual                   |
-| `xp_for_next_level` | int    | XP total necessário para completar o nível atual     |
-| `progress_pct`       | int    | Percentual de progresso no nível atual (0–100)          |
-| `current_streak`     | int    | Dias consecutivos com pelo menos um treino concluído    |
+| Campo                | Tipo   | Descrição                                              |
+| -------------------- | ------ | ------------------------------------------------------ |
+| `level`              | int    | Nível atual do usuário (começa em 1)                   |
+| `title`              | string | Título temático derivado do nível (veja tabela abaixo) |
+| `total_xp`           | int    | XP total acumulado                                     |
+| `xp_into_level`      | int    | XP acumulado dentro do nível atual                     |
+| `xp_for_next_level`  | int    | XP total necessário para completar o nível atual       |
+| `progress_pct`       | int    | Percentual de progresso no nível atual (0–100)         |
+| `current_streak`     | int    | Dias consecutivos com pelo menos um treino concluído   |
 | `weekly_streak`      | int    | Semanas consecutivas batendo a meta semanal            |
 | `best_weekly_streak` | int    | Recorde de semanas consecutivas (nunca diminui)        |
 | `week_workouts`      | int    | Treinos concluídos na semana atual (segunda a domingo) |
@@ -1066,16 +1066,16 @@ GET /me/level
 
 ## 7.2 Tabela de Títulos
 
-| Nível       | Título        |
-| ----------- | ------------- |
-| 1 – 9       | `Novato`      |
-| 10 – 24     | `Caçador`     |
-| 25 – 49     | `Incansável`  |
-| 50 – 99     | `Inquebrável` |
-| 100 – 199   | `Comandante`  |
-| 200 – 499   | `Lendário`    |
-| 500 – 999   | `Monarca`     |
-| 1000+       | `Soberano`    |
+| Nível     | Título        |
+| --------- | ------------- |
+| 1 – 9     | `Novato`      |
+| 10 – 24   | `Caçador`     |
+| 25 – 49   | `Incansável`  |
+| 50 – 99   | `Inquebrável` |
+| 100 – 199 | `Comandante`  |
+| 200 – 499 | `Lendário`    |
+| 500 – 999 | `Monarca`     |
+| 1000+     | `Soberano`    |
 
 ---
 
@@ -1124,11 +1124,11 @@ crescer. **Zera se o usuário não bater a meta na semana.**
 
 **Ritmo esperado** (meta de 4 treinos/semana, batendo a meta toda semana):
 
-| Título      | Nível | Semana | Tempo     |
-| ----------- | ----- | ------ | --------- |
-| Comandante  | 100   | 5      | 1,2 mês   |
-| Monarca     | 500   | 10     | 2,3 meses |
-| Soberano    | 1000  | 13     | 3,0 meses |
+| Título     | Nível | Semana | Tempo     |
+| ---------- | ----- | ------ | --------- |
+| Comandante | 100   | 5      | 1,2 mês   |
+| Monarca    | 500   | 10     | 2,3 meses |
+| Soberano   | 1000  | 13     | 3,0 meses |
 
 **Regras dos streaks:**
 

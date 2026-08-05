@@ -6,7 +6,7 @@ Guidance for AI coding agents (Claude Code, Codex, opencode, …) working in thi
 
 **Shadow Leveling — frontend.** An Expo / React Native mobile app for a gamified workout tracker themed after Solo Leveling. It consumes the Go REST API in the separate `shadow-leveling-back` repo.
 
-Reference docs in this repo: `README.md`, `API_GUIDE.md` (API contract), `PRD.md` (product spec), `DEPLOY.md` (EAS deploy).
+Reference docs in this repo: `README.md`, `API_GUIDE.md` (API contract), `DEPLOY.md` (EAS deploy).
 
 ## Stack
 
